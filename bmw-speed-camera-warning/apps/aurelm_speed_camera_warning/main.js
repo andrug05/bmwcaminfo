@@ -2,7 +2,6 @@
 const mgu=require('./kit/mgu');
 const bundledDatabase=require('./camera-db.json');
 const cityMap=require('./city-map.json');
-const speedLimitMap=require('./speed-limits.json');
 const {CameraStore}=require('./camera-store');
 const {BmwGps}=require('./gps');
 const {ProximityWarnings}=require('./proximity');
@@ -59,12 +58,12 @@ mgu.run({async start(ctx){
  }
  function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),36,39,Date.now()<alertUntil?18:19,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
  function renderSafe(){Promise.resolve().then(render).catch(e=>log.warn('map render: '+e));}
- function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix)proximity.update(fix,monitoringCameras(),speedLimitMap.segments||[]).forEach(e=>{lastAlert=e.type==='speeding'?'ПРЕВЫШЕНИЕ · '+e.speedKmh+' при '+e.limitKmh+' км/ч (+'+e.excessKmh+') · '+(e.roadName||e.camera.name):(e.stage===1?'КАМЕРА ЧЕРЕЗ':'ПОВТОР · КАМЕРА ЧЕРЕЗ')+' '+e.distanceM+' м · '+e.camera.name;alertUntil=Date.now()+10000;log.warn((e.type==='speeding'?'SPEEDING_WARNING':'PROXIMITY_WARNING')+' stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id+(e.type==='speeding'?' speed='+e.speedKmh+' limit='+e.limitKmh:''));});renderSafe();}
+ function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix)proximity.update(fix,monitoringCameras()).forEach(e=>{lastAlert=e.type==='speeding'?'ПРЕВЫШЕНИЕ · '+e.speedKmh+' при '+e.limitKmh+' км/ч (+'+e.excessKmh+') · '+(e.roadName||e.camera.name):(e.stage===1?'КАМЕРА ЧЕРЕЗ':'ПОВТОР · КАМЕРА ЧЕРЕЗ')+' '+e.distanceM+' м · '+e.camera.name;alertUntil=Date.now()+10000;log.warn((e.type==='speeding'?'SPEEDING_WARNING':'PROXIMITY_WARNING')+' stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id+(e.type==='speeding'?' speed='+e.speedKmh+' limit='+e.limitKmh:''));});renderSafe();}
  async function refresh(){if(refreshInFlight)return refreshInFlight;refreshInFlight=store.refresh().then(r=>{database=r.database;if(r.updated){index=0;proximity.reset();}renderSafe();return r;}).catch(e=>{log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshInFlight=null;return r;});return refreshInFlight;}
  ui.onClick('BTN_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_NEXT',()=>{index=Math.min(cameras().length-1,index+1);renderSafe();});
  ui.onClick('BTN_ZOOM_IN',()=>{zoom=Math.min(2.5,zoom*1.25);renderSafe();});ui.onClick('BTN_ZOOM_OUT',()=>{zoom=Math.max(.55,zoom/1.25);renderSafe();});ui.onClick('BTN_REFRESH',refresh);
  settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;proximity.reset();renderSafe();}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
  renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);
- log.info('Speed Camera Warning 0.5.8 started; offline OSM per-road-segment speed limits; speeding alerts at road limit +18 km/h; visual alert banner; audio not enabled');
+ log.info('Speed Camera Warning 0.5.8 started; camera proximity alerts; camera-record speed limits only; visual alert banner; audio not enabled');
 }});
