@@ -32,7 +32,7 @@ def inside(lon,lat,rings):
 
 def numeric_limit(raw):
     if not raw:return None
-    m=re.match(r"^\\s*(\\d+(?:\\.\\d+)?)\\s*(mph)?\\s*$",raw,re.I)
+    m=re.match(r"^\s*(\d+(?:\.\d+)?)\s*(mph)?\s*$",raw,re.I)
     if not m:return None
     n=float(m.group(1))*(1.609344 if m.group(2) else 1)
     return int(round(n)) if 5<=n<=250 else None
