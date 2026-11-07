@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "source": "OpenStreetMap way[maxspeed]",
+  "updatedAt": null,
+  "region": "Республика Марий Эл",
+  "segments": [],
+  "counts": {
+    "mari-el": 0,
+    "yoshkar-ola": 0
+  }
+}
