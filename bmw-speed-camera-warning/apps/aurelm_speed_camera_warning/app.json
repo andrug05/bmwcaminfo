@@ -2,7 +2,7 @@
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
   "description": "Камеры Марий Эл и отдельная база Йошкар-Олы; офлайн-карта и GPS-предупреждения.",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
