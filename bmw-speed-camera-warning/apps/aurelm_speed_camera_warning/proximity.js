@@ -5,6 +5,7 @@ const SECOND_WARNING_M = 200;
 const FAST_SPEED_KMH = 90;
 const SPEEDING_TOLERANCE_KMH = 18;
 const RESET_MARGIN_M = 150;
+const EARTH_RADIUS_M = 6371008.8;
 function distanceMeters(a, b) {
     const rad = Math.PI / 180;
     const dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
