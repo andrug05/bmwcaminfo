@@ -1,8 +1,8 @@
 {
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
-  "description": "Камеры Марий Эл и отдельная база Йошкар-Олы; офлайн-карта улиц OpenStreetMap и GPS-предупреждения и контроль превышения лимита на 18 км/ч.",
-  "version": "0.5.7",
+  "description": "Камеры Марий Эл и отдельная база Йошкар-Олы; офлайн-карта улиц OpenStreetMap и GPS-предупреждения и контроль превышения лимита по каждому участку OSM на 18 км/ч.",
+  "version": "0.5.8",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
