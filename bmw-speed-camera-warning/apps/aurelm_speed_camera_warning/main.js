@@ -10,10 +10,20 @@ const REFRESH_INTERVAL_MS=21600000,W=1600,H=520;
 const MAP={x:24,y:66,w:1120,h:420},P={x:1170,y:66,w:406,h:420};
 const C={bg:'#080d13',panel:'#101923',road:'#334252',edge:'#637487',text:'#e9f0f6',muted:'#91a2b5',blue:'#58b6ff',red:'#ff525e',green:'#5de0a1',yellow:'#ffd166',grid:'#172430'};
 mgu.run({async start(ctx){
- const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),index=0,zoom=.75,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений';
+ const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),index=0,zoom=.75,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0;
  const store=new CameraStore({dataDir,bundled:bundledDatabase});let database=store.loadLocal().database;
  const gps=new BmwGps(),proximity=new ProximityWarnings();let refreshInFlight=null;
  const cameras=()=>database.cities&&Array.isArray(database.cities[city])?database.cities[city]:[];
+ const monitoringCameras=()=>{
+  const primary=cameras().filter(c=>c&&typeof c.lat==='number'&&typeof c.lon==='number');
+  const regional=city==='yoshkar-ola'&&database.cities&&Array.isArray(database.cities['mari-el'])?database.cities['mari-el']:[];
+  const all=primary.slice();
+  regional.forEach(c=>{if(!c||typeof c.lat!=='number'||typeof c.lon!=='number')return;
+   const duplicate=all.some(x=>{const dy=(x.lat-c.lat)*111320,dx=(x.lon-c.lon)*111320*Math.cos(c.lat*Math.PI/180);return dx*dx+dy*dy<900;});
+   if(!duplicate)all.push(c);
+  });
+  return all;
+ };
  const mapped=()=>cameras().filter(c=>c&&typeof c.lat==='number'&&typeof c.lon==='number');
  const selected=()=>cameras()[Math.max(0,Math.min(index,cameras().length-1))]||null;
  const txt=(cv,s,x,y,z,col,o)=>cv.text(String(s),x,y,z,col,Object.assign({font:'label',literal:true},o||{}));
@@ -46,14 +56,14 @@ mgu.run({async start(ctx){
   if(c){txt(cv,(index+1)+' / '+cameras().length,P.x+22,P.y+216,15,C.blue);txt(cv,c.name,P.x+22,P.y+246,17,C.text);txt(cv,'Лимит: '+(c.limit?c.limit+' км/ч':'не указан'),P.x+22,P.y+272,15,C.muted);txt(cv,'Источник: '+(c.sourceLabel||c.source||'не указан'),P.x+22,P.y+296,13,typeof c.lat==='number'?C.green:C.yellow);}
   ln(cv,[P.x+20,P.y+316],[P.x+P.w-20,P.y+316],1,'#2a3948');txt(cv,'ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ',P.x+22,P.y+342,13,C.muted);txt(cv,lastAlert,P.x+22,P.y+370,14,C.yellow);txt(cv,'База rev.'+database.revision+' · '+store.source,P.x+22,P.y+397,13,C.muted);
  }
- function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),36,39,19,C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
+ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),36,39,Date.now()<alertUntil?18:19,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
  function renderSafe(){Promise.resolve().then(render).catch(e=>log.warn('map render: '+e));}
- function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix)proximity.update(fix,cameras()).forEach(e=>{lastAlert=(e.stage===1?'Предупреждение':'Повтор')+': '+e.distanceM+' м · '+e.camera.name;log.warn('PROXIMITY_WARNING stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id);});renderSafe();}
+ function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix)proximity.update(fix,monitoringCameras()).forEach(e=>{lastAlert=(e.stage===1?'КАМЕРА ЧЕРЕЗ':'ПОВТОР · КАМЕРА ЧЕРЕЗ')+' '+e.distanceM+' м · '+e.camera.name;alertUntil=Date.now()+10000;log.warn('PROXIMITY_WARNING stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id);});renderSafe();}
  async function refresh(){if(refreshInFlight)return refreshInFlight;refreshInFlight=store.refresh().then(r=>{database=r.database;if(r.updated){index=0;proximity.reset();}renderSafe();return r;}).catch(e=>{log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshInFlight=null;return r;});return refreshInFlight;}
  ui.onClick('BTN_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_NEXT',()=>{index=Math.min(cameras().length-1,index+1);renderSafe();});
  ui.onClick('BTN_ZOOM_IN',()=>{zoom=Math.min(2.5,zoom*1.25);renderSafe();});ui.onClick('BTN_ZOOM_OUT',()=>{zoom=Math.max(.55,zoom/1.25);renderSafe();});ui.onClick('BTN_REFRESH',refresh);
  settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;proximity.reset();renderSafe();}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
  renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);
- log.info('Speed Camera Warning 0.5.3 started; GPS diagnostics enabled; Mari El + Yoshkar-Ola camera sources; offline map; voice disabled');
+ log.info('Speed Camera Warning 0.5.6 started; GPS proximity warnings enabled; Yoshkar-Ola alerts include regional Mari El cameras; visual alert banner; audio not enabled');
 }});
