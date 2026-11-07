@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 6,
-  "updatedAt": "2026-11-07T19:44:21.287025+00:00",
+  "revision": 7,
+  "updatedAt": "2026-11-07T20:47:57.637304+00:00",
   "attribution": "© OpenStreetMap contributors; ODbL 1.0. SpeedCams.world data is derived from OpenStreetMap.",
   "cities": {
     "mari-el": [
@@ -3303,11 +3303,11 @@
   "sourceCounts": {
     "mari-el": {
       "speedcams": 100,
-      "osm": 100
+      "osm": 0
     },
     "yoshkar-ola": {
       "speedcams": 84,
-      "osm": 84,
+      "osm": 0,
       "local": 5,
       "helpradar": 120
     }
