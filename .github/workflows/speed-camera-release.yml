@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.5.9"
+        default: "0.6.0"
   schedule:
     - cron: "17 3 * * 1"
   push:
@@ -26,7 +26,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.5.9' }}
+      APP_VERSION: ${{ inputs.version || '0.6.0' }}
       APP_ID: aurelm_speed_camera_warning
     steps:
       - uses: actions/checkout@v5
@@ -147,5 +147,5 @@ jobs:
               "release/${APP_ID}@${APP_VERSION}.mgu" \
               --repo "$GITHUB_REPOSITORY" \
               --title "BMW Speed Camera Warning ${APP_VERSION}" \
-              --notes "Standalone offline BMW MGU ID7 speed camera database; camera proximity warnings and optional camera-record speed limits. No OSM road speed-limit detection. Voice output disabled."
+              --notes "Standalone offline BMW MGU ID7 speed camera database; direction-filtered camera-ahead warnings and optional camera-record speed limits. No OSM road speed-limit detection. Voice output disabled."
           fi
