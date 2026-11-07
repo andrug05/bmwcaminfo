@@ -11,8 +11,11 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.5.7');assert.strictEqual(app.screens[0].kind,'canvas');
+assert.strictEqual(app.version,'0.5.8');assert.strictEqual(app.screens[0].kind,'canvas');
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
+const speedLimits=require(path.join(base,'speed-limits.json'));
+assert(Array.isArray(speedLimits.segments));
+assert(speedLimits.source.includes('OpenStreetMap'));
 const {ProximityWarnings}=require(path.join(base,'proximity.js'));
 const warnings=new ProximityWarnings();
 const near={id:'test-camera',name:'Test',lat:56.63,lon:47.928};
@@ -24,8 +27,13 @@ assert(!w.update({lat:56.63,lon:47.928,speedKmh:77,accuracyM:10},[limited]).some
 w=new ProximityWarnings();
 assert(w.update({lat:56.63,lon:47.928,speedKmh:78,accuracyM:10},[limited]).some(e=>e.type==='speeding'&&e.excessKmh===18), 'Speeding alert must trigger at exactly +18 km/h');
 w=new ProximityWarnings();
+const road={name:'Тестовая улица',limitKmh:40,a:[56.6299,47.928],b:[56.6301,47.928]};
+const roadEvent=w.update({lat:56.63,lon:47.928,speedKmh:58,accuracyM:10},[near],[road]).find(e=>e.type==='speeding');
+assert(roadEvent&&roadEvent.limitKmh===40&&roadEvent.limitSource==='OpenStreetMap'&&roadEvent.roadName==='Тестовая улица','Use nearest OSM road segment limit');
+w=new ProximityWarnings();
 assert(!w.update({lat:56.63,lon:47.928,speedKmh:100,accuracyM:10},[{id:'unknown-limit',lat:56.63,lon:47.928}]).some(e=>e.type==='speeding'), 'Do not infer speeding when camera limit is unknown');
 for(const f of ['main.js','gps.js','camera-store.js','proximity.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_camera_sources.py')]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_city_roads.py')]);
-console.log('Speed Camera Warning 0.5.7 proximity and +18 km/h speeding tests passed');
+cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_speed_limits.py')]);
+console.log('Speed Camera Warning 0.5.8 OSM segment speed-limit tests passed');
