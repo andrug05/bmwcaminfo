@@ -162,7 +162,11 @@ class BmwGps extends EventEmitter {
         const attempt = ++this.attempt;
         let proxy;
         Promise.resolve().then(() => {
-            const builders = this.builders || require('oap-sdk/src/someip/someipBuilders');
+            const sdk = require('oap-sdk');
+            const builders = this.builders || (sdk && sdk.someipBuilders);
+            if (!builders || typeof builders.buildAndInitTypedProxy !== 'function') {
+                throw Object.assign(new Error('oap-sdk.someipBuilders is unavailable'), { code: 'GPS_SDK_API_MISSING' });
+            }
             return builders.buildAndInitTypedProxy(INTERFACE, INSTANCE, this.timeoutMs);
         }).then((p) => {
             if (!this.running || generation !== this.generation || attempt !== this.attempt) return;
