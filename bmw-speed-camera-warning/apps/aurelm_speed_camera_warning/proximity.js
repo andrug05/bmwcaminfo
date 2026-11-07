@@ -18,15 +18,16 @@ class ProximityWarnings {
     update(fix, cameras) {
         if (!fix || typeof fix.lat !== 'number' || !isFinite(fix.lat) ||
             typeof fix.lon !== 'number' || !isFinite(fix.lon) ||
-            typeof fix.speedKmh !== 'number' || !isFinite(fix.speedKmh) || fix.speedKmh < 0 ||
-            typeof fix.accuracyM !== 'number' || !isFinite(fix.accuracyM) || fix.accuracyM > 50) return [];
+            ((fix.speedKmh !== null && fix.speedKmh !== undefined) && (typeof fix.speedKmh !== 'number' || !isFinite(fix.speedKmh) || fix.speedKmh < 0)) ||
+            (typeof fix.accuracyM === 'number' && (!isFinite(fix.accuracyM) || fix.accuracyM > 75))) return [];
         const events = [], seen = Object.create(null);
         (cameras || []).forEach((camera) => {
             if (!camera || typeof camera.id !== 'string' || typeof camera.lat !== 'number' || !isFinite(camera.lat) ||
                 typeof camera.lon !== 'number' || !isFinite(camera.lon)) return;
             seen[camera.id] = true;
             const d = distanceMeters(fix, camera);
-            const firstM = fix.speedKmh > FAST_SPEED_KMH ? FAST_WARNING_M : FIRST_WARNING_M;
+            const speedKmh = typeof fix.speedKmh === 'number' && isFinite(fix.speedKmh) ? fix.speedKmh : 0;
+            const firstM = speedKmh > FAST_SPEED_KMH ? FAST_WARNING_M : FIRST_WARNING_M;
             let state = this.states[camera.id];
             if (!state) state = this.states[camera.id] = { stage: 0, resetAt: firstM + RESET_MARGIN_M };
             if (state.stage > 0 && d > state.resetAt) {
@@ -36,7 +37,7 @@ class ProximityWarnings {
             if (state.stage === 0 && d <= firstM) {
                 state.stage = 1;
                 events.push({ stage: 1, distanceM: Math.round(d), thresholdM: firstM,
-                    camera, speedKmh: Math.round(fix.speedKmh) });
+                    camera, speedKmh: Math.round(speedKmh) });
             } else if (state.stage === 1 && d <= SECOND_WARNING_M) {
                 state.stage = 2;
                 events.push({ stage: 2, distanceM: Math.round(d), thresholdM: SECOND_WARNING_M,
