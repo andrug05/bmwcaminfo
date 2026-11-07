@@ -65,5 +65,5 @@ mgu.run({async start(ctx){
  settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;proximity.reset();renderSafe();}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
  renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);
- log.info('Speed Camera Warning 0.5.9 started; camera proximity alerts; camera-record speed limits only; visual alert banner; audio not enabled');
+ log.info('Speed Camera Warning 0.6.0 started; forward-direction camera filtering enabled; camera proximity alerts; camera-record speed limits only; visual alert banner; audio not enabled');
 }});
