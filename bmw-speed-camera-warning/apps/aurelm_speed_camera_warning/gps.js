@@ -92,11 +92,14 @@ function nmeaFix(payload, now) {
     if (gst && Math.abs(delta(gst.tod, g.tod)) <= ACCURACY_PAIR_MS &&
         gst.latSigma > 0 && gst.lonSigma > 0) {
         accuracyM = 2 * Math.sqrt(gst.latSigma * gst.latSigma + gst.lonSigma * gst.lonSigma);
+    } else if (typeof g.hdop === 'number' && isFinite(g.hdop) && g.hdop > 0) {
+        // GST is not broadcast by every MGU software version; use a conservative HDOP estimate.
+        accuracyM = Math.min(100, Math.max(5, g.hdop * 8));
     }
     if (!fresh(r.time, now)) return null;
     return {
         lat: g.lat, lon: g.lon,
-        speedKmh: r.speed !== null && r.speed >= 0 ? r.speed * 1.852 : null,
+        speedKmh: r.speed !== null && r.speed >= 0 ? r.speed * 1.852 : 0,
         headingDeg: r.heading !== null && r.heading >= 0 && r.heading <= 360 ? r.heading % 360 : null,
         accuracyM: accuracyM, timeMs: r.time, quality: g.quality, hdop: g.hdop,
         satellites: g.satellites, source: 'BMW SatellitePositioning'
