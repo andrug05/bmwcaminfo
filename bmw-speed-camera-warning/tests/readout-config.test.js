@@ -11,13 +11,20 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.5.9');assert.strictEqual(app.screens[0].kind,'canvas');
+assert.strictEqual(app.version,'0.6.0');assert.strictEqual(app.screens[0].kind,'canvas');
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 const {ProximityWarnings}=require(path.join(base,'proximity.js'));
 const warnings=new ProximityWarnings();
 const near={id:'test-camera',name:'Test',lat:56.63,lon:47.928};
-assert.strictEqual(warnings.update({lat:56.63,lon:47.928,speedKmh:null,accuracyM:null},[near]).length,1,
-  'Warnings must work when BMW omits GST accuracy and RMC speed');
+const northFix={lat:56.629,lon:47.928,speedKmh:36,headingDeg:0,accuracyM:10};
+assert.strictEqual(warnings.update(northFix,[near]).filter(e=>e.type==='camera').length,1,
+  'Warn for a camera ahead on the current heading');
+assert.strictEqual(new ProximityWarnings().update({lat:56.631,lon:47.928,speedKmh:36,headingDeg:0,accuracyM:10},[near]).length,0,
+  'Do not warn for a camera behind the vehicle');
+assert.strictEqual(new ProximityWarnings().update({lat:56.629,lon:47.931,speedKmh:36,headingDeg:0,accuracyM:10},[near]).length,0,
+  'Do not warn for a camera far off the current road corridor');
+assert.strictEqual(new ProximityWarnings().update({lat:56.629,lon:47.928,speedKmh:0,headingDeg:0,accuracyM:10},[near]).length,0,
+  'Do not warn when course is unreliable at very low speed');
 const limited={id:'limited-camera',name:'60 zone',lat:56.63,lon:47.928,limit:60};
 let w=new ProximityWarnings();
 assert(!w.update({lat:56.63,lon:47.928,speedKmh:77,accuracyM:10},[limited]).some(e=>e.type==='speeding'), 'No speeding alert below +18 km/h');
@@ -25,11 +32,11 @@ w=new ProximityWarnings();
 assert(w.update({lat:56.63,lon:47.928,speedKmh:78,accuracyM:10},[limited]).some(e=>e.type==='speeding'&&e.excessKmh===18), 'Speeding alert must trigger at exactly +18 km/h');
 w=new ProximityWarnings();
 const road={name:'Тестовая улица',limitKmh:40,a:[56.6299,47.928],b:[56.6301,47.928]};
-const roadEvent=w.update({lat:56.63,lon:47.928,speedKmh:100,accuracyM:10},[near],[road]).find(e=>e.type==='speeding');
+const roadEvent=w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accuracyM:10},[near],[road]).find(e=>e.type==='speeding');
 assert(!roadEvent,'OSM road-segment limits must not trigger speeding alerts');
 w=new ProximityWarnings();
-assert(!w.update({lat:56.63,lon:47.928,speedKmh:100,accuracyM:10},[{id:'unknown-limit',lat:56.63,lon:47.928}]).some(e=>e.type==='speeding'), 'Do not infer speeding when camera limit is unknown');
+assert(!w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accuracyM:10},[{id:'unknown-limit',lat:56.63,lon:47.928}]).some(e=>e.type==='speeding'), 'Do not infer speeding when camera limit is unknown');
 for(const f of ['main.js','gps.js','camera-store.js','proximity.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_camera_sources.py')]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_city_roads.py')]);
-console.log('Speed Camera Warning 0.5.9 camera-only speed-limit tests passed');
+console.log('Speed Camera Warning 0.6.0 forward-camera direction tests passed');
