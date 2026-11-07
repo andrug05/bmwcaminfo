@@ -51,7 +51,15 @@ jobs:
       - name: Import offline Yoshkar-Ola street geometry
         run: |
           python3 bmw-speed-camera-warning/tools/import_city_roads.py
-          cp bmw-speed-camera-warning/apps/${APP_ID}/city-map.json bmw-speed-camera-warning/apps/${APP_ID}/city-map.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bmw-speed-camera-warning/apps/${APP_ID}/city-map.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update offline Yoshkar-Ola street geometry [skip ci]"
+            git fetch origin main
+            git rebase origin/main
+            git push
+          fi
 
       - name: Prepare standalone app
         run: |
