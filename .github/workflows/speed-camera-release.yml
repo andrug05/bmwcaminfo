@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.5.8"
+        default: "0.5.9"
   schedule:
     - cron: "17 3 * * 1"
   push:
@@ -26,7 +26,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.5.8' }}
+      APP_VERSION: ${{ inputs.version || '0.5.9' }}
       APP_ID: aurelm_speed_camera_warning
     steps:
       - uses: actions/checkout@v5
@@ -112,8 +112,6 @@ jobs:
           node --check upstream/apps/${APP_ID}/camera-store.js
           node --check upstream/apps/${APP_ID}/proximity.js
           node --check upstream/apps/${APP_ID}/main.js
-          python3 -m py_compile bmw-speed-camera-warning/tools/import_speed_limits.py
-          test -s upstream/apps/${APP_ID}/speed-limits.json
           node bmw-speed-camera-warning/tests/readout-config.test.js
           test -f upstream/apps/${APP_ID}/city-map.json
           # Run in high-priority background to receive BMW GPS events behind native navigation.
@@ -162,5 +160,5 @@ jobs:
               "release/${APP_ID}@${APP_VERSION}.mgu" \
               --repo "$GITHUB_REPOSITORY" \
               --title "BMW Speed Camera Warning ${APP_VERSION}" \
-              --notes "Standalone offline BMW MGU ID7 speed camera database and OSM per-road-segment speed limits; speeding alert at +18 km/h. Voice output disabled."
+              --notes "Standalone offline BMW MGU ID7 speed camera database; camera proximity warnings and optional camera-record speed limits. No OSM road speed-limit detection. Voice output disabled."
           fi
