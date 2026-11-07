@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.5.1"
+        default: "0.5.2"
   schedule:
     - cron: "17 3 * * 1"
   push:
@@ -26,7 +26,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.5.1' }}
+      APP_VERSION: ${{ inputs.version || '0.5.2' }}
       APP_ID: aurelm_speed_camera_warning
     steps:
       - uses: actions/checkout@v5
@@ -59,6 +59,24 @@ jobs:
           d['version']=os.environ['APP_VERSION']
           json.dump(d,open(p,'w',encoding='utf-8'),ensure_ascii=False,indent=2)
           PY
+
+      - name: Generate Cyrillic font atlases
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-ubuntu python3-pil
+          python3 - <<'PY'
+          p='upstream/kit/tools/bake_fonts.py'
+          s=open(p,encoding='utf-8').read()
+          old="TEXT = ''.join(chr(c) for c in range(32, 127)) + '°μ│·–—…×±²³€↑↓→←✓✕'"
+          extra='АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+          new=old + " + '" + extra + "'"
+          if old not in s:
+              raise SystemExit('Could not locate the standard font charset declaration')
+          open(p,'w',encoding='utf-8').write(s.replace(old,new,1))
+          PY
+          cd upstream
+          python3 kit/tools/bake_fonts.py
+          cd ..
 
       - name: Validate and build
         run: |
