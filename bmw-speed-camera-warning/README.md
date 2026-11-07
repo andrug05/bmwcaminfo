@@ -1,4 +1,4 @@
-# BMW Speed Camera Warning 0.5.1
+# BMW Speed Camera Warning 0.5.6
 
 Standalone BMW MGU ID7 app. Independent of Weather; Weather 0.2.7 is not used.
 
@@ -25,7 +25,9 @@ SpeedCams.world data is derived from OpenStreetMap. OSM source snapshot may lag 
 - Offline vector/schematic map, GPS marker, camera markers and source label.
 - Yoshkar-Ola road drawing is a simplified scheme from published route coordinate ranges, not a full OSM street map or navigation.
 - First warning: 500 m; at speed strictly above 90 km/h: 700 m; repeat warning: 200 m.
-- GPS warnings require a fresh BMW GPS fix and numeric GST accuracy no worse than 50 m.
+- GPS warnings use fresh BMW GPS coordinates. If GST is unavailable, HDOP is used as a conservative accuracy estimate; missing RMC speed is treated as 0 km/h. Fixes with reported accuracy worse than 75 m are ignored.
+- When Yoshkar-Ola is selected, proximity monitoring also includes the regional Mari El camera list, so cameras outside the city boundary are not silently excluded.
+- A detected camera triggers a prominent on-screen warning banner and a log event for 10 seconds. Audio output is not enabled in this release.
 - Unlocated entries are excluded from proximity calculations.
 - Voice output remains disabled; the app does not manipulate radio/system volume.
 
