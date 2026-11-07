@@ -11,14 +11,21 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.5.6');assert.strictEqual(app.screens[0].kind,'canvas');
+assert.strictEqual(app.version,'0.5.7');assert.strictEqual(app.screens[0].kind,'canvas');
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 const {ProximityWarnings}=require(path.join(base,'proximity.js'));
 const warnings=new ProximityWarnings();
 const near={id:'test-camera',name:'Test',lat:56.63,lon:47.928};
 assert.strictEqual(warnings.update({lat:56.63,lon:47.928,speedKmh:null,accuracyM:null},[near]).length,1,
   'Warnings must work when BMW omits GST accuracy and RMC speed');
+const limited={id:'limited-camera',name:'60 zone',lat:56.63,lon:47.928,limit:60};
+let w=new ProximityWarnings();
+assert(!w.update({lat:56.63,lon:47.928,speedKmh:77,accuracyM:10},[limited]).some(e=>e.type==='speeding'), 'No speeding alert below +18 km/h');
+w=new ProximityWarnings();
+assert(w.update({lat:56.63,lon:47.928,speedKmh:78,accuracyM:10},[limited]).some(e=>e.type==='speeding'&&e.excessKmh===18), 'Speeding alert must trigger at exactly +18 km/h');
+w=new ProximityWarnings();
+assert(!w.update({lat:56.63,lon:47.928,speedKmh:100,accuracyM:10},[{id:'unknown-limit',lat:56.63,lon:47.928}]).some(e=>e.type==='speeding'), 'Do not infer speeding when camera limit is unknown');
 for(const f of ['main.js','gps.js','camera-store.js','proximity.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_camera_sources.py')]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_city_roads.py')]);
-console.log('Speed Camera Warning 0.5.6 offline OSM map tests passed');
+console.log('Speed Camera Warning 0.5.7 proximity and +18 km/h speeding tests passed');
