@@ -14,7 +14,7 @@ const C={bg:'#080d13',panel:'#101923',road:'#334252',edge:'#637487',text:'#e9f0f
 mgu.run({async start(ctx){
  const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),index=0,zoom=.75,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
  const store=new CameraStore({dataDir,bundled:bundledDatabase});let database=store.loadLocal().database;
- const gps=new BmwGps(),roadGuidance=new RoadGuidanceWarnings(roadZones.zones||[]),voice=new CameraVoiceAlerts({assetDir:__dirname,log:(m)=>log.warn(m)});let refreshInFlight=null;
+ const gps=new BmwGps(),roadGuidance=new RoadGuidanceWarnings(roadZones.zones||[]),voice=new CameraVoiceAlerts({assetDir:__dirname,log:(m)=>log.warn(m)});let refreshInFlight=null,dbMessage='Проверка базы ещё не выполнялась';
  const cameras=()=>database.cities&&Array.isArray(database.cities[city])?database.cities[city]:[];
  const monitoringCameras=()=>{
   const primary=cameras().filter(c=>c&&typeof c.lat==='number'&&typeof c.lon==='number');
@@ -56,7 +56,7 @@ mgu.run({async start(ctx){
   if(fix){txt(cv,fix.lat.toFixed(6)+'  '+fix.lon.toFixed(6),P.x+22,P.y+120,15,C.muted);txt(cv,'Точность '+(fix.accuracyM===null?'нет GST':fix.accuracyM.toFixed(1)+' м')+' · '+(fix.speedKmh===null?'—':Math.round(fix.speedKmh)+' км/ч'),P.x+22,P.y+143,14,C.muted);}
   ln(cv,[P.x+20,P.y+160],[P.x+P.w-20,P.y+160],1,'#2a3948');txt(cv,'ВЫБРАННАЯ КАМЕРА',P.x+22,P.y+188,13,C.muted);
   if(c){txt(cv,(index+1)+' / '+cameras().length,P.x+22,P.y+216,15,C.blue);txt(cv,c.name,P.x+22,P.y+246,17,C.text);txt(cv,'Лимит: '+(c.limit?c.limit+' км/ч':'не указан'),P.x+22,P.y+272,15,C.muted);txt(cv,'Источник: '+(c.sourceLabel||c.source||'не указан'),P.x+22,P.y+296,13,typeof c.lat==='number'?C.green:C.yellow);}
-  ln(cv,[P.x+20,P.y+316],[P.x+P.w-20,P.y+316],1,'#2a3948');txt(cv,'ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ',P.x+22,P.y+342,13,C.muted);txt(cv,lastAlert,P.x+22,P.y+370,14,C.yellow);txt(cv,'База rev.'+database.revision+' · '+store.source,P.x+22,P.y+397,13,C.muted);
+  ln(cv,[P.x+20,P.y+316],[P.x+P.w-20,P.y+316],1,'#2a3948');txt(cv,'ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ',P.x+22,P.y+342,13,C.muted);txt(cv,lastAlert,P.x+22,P.y+370,13,C.yellow);txt(cv,'База rev.'+database.revision+' · '+store.source+' · '+dbMessage,P.x+22,P.y+397,12,C.text);txt(cv,'На сервере: '+formatDate(database.updatedAt),P.x+22,P.y+420,12,C.muted);txt(cv,'Успешная проверка: '+formatDate(store.lastSuccessAt),P.x+22,P.y+442,12,C.muted);
  }
  function drawAlertBanner(cv){
   if(!activeAlert||Date.now()>=alertUntil)return;
@@ -93,7 +93,7 @@ mgu.run({async start(ctx){
 function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),36,39,Date.now()<alertUntil?18:19,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);drawAlertBanner(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
  function renderSafe(){Promise.resolve().then(render).catch(e=>log.warn('map render: '+e));}
  function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix)roadGuidance.update(fix,monitoringCameras(),Date.now()).forEach(e=>{if(e.type==='camera')voice.camera(e.stage);activeAlert=e;lastAlert=e.type==='speeding'?'ПРЕВЫШЕНИЕ · '+e.speedKmh+' при '+e.limitKmh+' км/ч (+'+e.excessKmh+') · '+(e.roadName||e.camera.name):(e.stage===1?'КАМЕРА ЧЕРЕЗ':'ПОВТОР · КАМЕРА ЧЕРЕЗ')+' '+e.distanceM+' м · '+e.camera.name;alertUntil=Date.now()+10000;log.warn((e.type==='speeding'?'SPEEDING_WARNING':'PROXIMITY_WARNING')+' stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id+(e.type==='speeding'?' speed='+e.speedKmh+' limit='+e.limitKmh:''));});renderSafe();}
- async function refresh(){if(refreshInFlight)return refreshInFlight;refreshInFlight=store.refresh().then(r=>{database=r.database;if(r.updated){index=0;roadGuidance.reset();}renderSafe();return r;}).catch(e=>{log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshInFlight=null;return r;});return refreshInFlight;}
+ async function refresh(){if(refreshInFlight)return refreshInFlight;dbMessage='Загрузка...';renderSafe();refreshInFlight=store.refresh().then(r=>{database=r.database;if(r.updated){index=0;roadGuidance.reset();dbMessage='База обновлена';}else if(r.error){dbMessage='Ошибка: '+String(r.error).slice(0,38);log.warn('DB refresh '+r.error);}else{dbMessage='База актуальна';}renderSafe();return r;}).catch(e=>{dbMessage='Ошибка обновления';log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshInFlight=null;return r;});return refreshInFlight;}
  ui.onClick('BTN_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_NEXT',()=>{index=Math.min(cameras().length-1,index+1);renderSafe();});
  ui.onClick('BTN_ZOOM_IN',()=>{zoom=Math.min(2.5,zoom*1.25);renderSafe();});ui.onClick('BTN_ZOOM_OUT',()=>{zoom=Math.max(.55,zoom/1.25);renderSafe();});ui.onClick('BTN_REFRESH',refresh);
  ui.onClick('BTN_VOICE_TEST',()=>{
