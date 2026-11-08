@@ -1,8 +1,8 @@
 {
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
-  "description": "Голосовые и визуальные предупреждения о камерах; локальное добавление и удаление пользовательских камер. Убрана фоновая перерисовка экранов управления камерами.",
-  "version": "0.7.23",
+  "description": "Вкладки карты, добавления и управления пользовательскими камерами в одном окне MGU; кнопки добавления и удаления доступны в разделе «Мои камеры».",
+  "version": "0.7.24",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
@@ -10,108 +10,31 @@
     {
       "name": "MAIN",
       "kind": "canvas",
-      "title": "Карта камер",
+      "title": "Камеры",
       "buttons": [
         [
           "BTN_CAM_PREV",
-          "< Назад"
+          "1 ◀"
         ],
         [
           "BTN_CAM_NEXT",
-          "Вперёд >"
+          "2 ▶"
         ],
         [
           "BTN_ZOOM",
-          "Масштаб"
+          "3 Выбор"
         ],
         [
           "BTN_REFRESH",
-          "Обновить"
+          "4 Действие"
         ],
         [
           "BTN_VOICE_TEST",
-          "Проверка голоса"
+          "5 Готово"
         ],
         [
           "BTN_CAMERA_MENU",
-          "Мои камеры"
-        ]
-      ]
-    },
-    {
-      "name": "ADD_CAMERA",
-      "kind": "canvas",
-      "title": "Добавить камеру",
-      "buttons": [
-        [
-          "BTN_LIMIT_DOWN",
-          "Лимит −"
-        ],
-        [
-          "BTN_LIMIT_UP",
-          "Лимит +"
-        ],
-        [
-          "BTN_TYPE",
-          "Тип камеры"
-        ],
-        [
-          "BTN_DIRECTION",
-          "Направление"
-        ],
-        [
-          "BTN_SAVE_CAMERA",
-          "Сохранить"
-        ],
-        [
-          "BTN_CANCEL_CAMERA",
-          "Отмена"
-        ]
-      ]
-    },
-    {
-      "name": "CAMERA_MENU",
-      "kind": "canvas",
-      "title": "Мои камеры",
-      "buttons": [
-        [
-          "BTN_MENU_ADD",
-          "Добавить камеру"
-        ],
-        [
-          "BTN_MENU_MANAGE",
-          "Список камер"
-        ],
-        [
-          "BTN_MENU_BACK",
-          "Назад"
-        ]
-      ]
-    },
-    {
-      "name": "MY_CAMERAS",
-      "kind": "canvas",
-      "title": "Мои камеры",
-      "buttons": [
-        [
-          "BTN_LOCAL_PREV",
-          "< Назад"
-        ],
-        [
-          "BTN_LOCAL_NEXT",
-          "Вперёд >"
-        ],
-        [
-          "BTN_LOCAL_DELETE",
-          "Удалить"
-        ],
-        [
-          "BTN_LOCAL_CONFIRM",
-          "Подтвердить"
-        ],
-        [
-          "BTN_LOCAL_BACK",
-          "Выход"
+          "Вкладка >"
         ]
       ]
     }
