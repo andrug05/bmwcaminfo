@@ -52,7 +52,7 @@ class CameraVoiceAlerts {
         if (error) reject(error);
         else resolve(result);
       };
-      const timer = setTimeout(() => finish(new Error('BMW voice service timeout (20 s)')), 20000);
+      const timer = setTimeout(() => finish(new Error('BMW voice service timeout (35 s)')), 35000);
       socket.setEncoding('utf8');
       socket.on('connect', () => {
         socket.write(JSON.stringify({ action: 'play', file: file }) + '\n');
