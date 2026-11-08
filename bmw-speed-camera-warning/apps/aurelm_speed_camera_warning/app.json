@@ -2,7 +2,7 @@
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
   "description": "Голосовые и визуальные предупреждения только о камерах на текущей дороге впереди автомобиля; privileged BMW voice service, offline OSM road matching, BMW GPS and camera-record speed limits only.",
-  "version": "0.7.18",
+  "version": "0.7.19",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
@@ -13,12 +13,12 @@
       "title": "Карта камер",
       "buttons": [
         [
-          "BTN_PREV",
-          "←"
+          "BTN_CAM_PREV",
+          "< Назад"
         ],
         [
-          "BTN_NEXT",
-          "→"
+          "BTN_CAM_NEXT",
+          "Вперёд >"
         ],
         [
           "BTN_ZOOM_OUT",
