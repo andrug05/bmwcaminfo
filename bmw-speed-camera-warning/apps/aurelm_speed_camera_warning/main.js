@@ -99,7 +99,8 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
  ui.onClick('BTN_VOICE_TEST',()=>{
   lastAlert='ПРОВЕРКА ГОЛОСОВОГО ОПОВЕЩЕНИЯ...';alertUntil=Date.now()+10000;renderSafe();
   voice.test().then(ok=>{
-   lastAlert=ok?'ГОЛОСОВОЕ ОПОВЕЩЕНИЕ: УСПЕШНО':'ОШИБКА ГОЛОСОВОГО ОПОВЕЩЕНИЯ · СМОТРИ ЛОГ';
+   if(!ok)log.warn('VOICE TEST FAILED: '+String(voice.lastError||'unknown'));
+   lastAlert=ok?'КОМАНДА ВОСПРОИЗВЕДЕНИЯ ПРИНЯТА BMW':'ОШИБКА ГОЛОСА: '+String(voice.lastError||'неизвестная ошибка').slice(0,72);
    alertUntil=Date.now()+10000;renderSafe();
   });
  });
