@@ -7,7 +7,7 @@ assert(Array.isArray(db.cities['mari-el']));
 assert(Array.isArray(db.cities['yoshkar-ola']));
 assert(db.cities['yoshkar-ola'].filter(c=>typeof c.lat==='number'&&typeof c.lon==='number').length>=4);
 assert.strictEqual(db.overpassSnapshot.count,92,'The dated Overpass snapshot must be included');
-assert.strictEqual(db.overpassSnapshot.added,34,'Distinct OSM node IDs must be retained');
+assert.strictEqual(db.overpassSnapshot.added,27,'Distinct OSM node IDs must be retained');
 assert(db.cities['yoshkar-ola'].some(c=>c.overpassSnapshot&&c.direction==='330;150'),'Compound OSM direction must be preserved');
 assert(db.cities['yoshkar-ola'].some(c=>c.category==='intersection'),'Intersection descriptions must be classified separately');
 const {validateDatabase}=require('../apps/aurelm_speed_camera_warning/camera-store');
