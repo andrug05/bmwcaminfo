@@ -20,7 +20,7 @@ assert(mainSource.includes("function drawTabs(cv,active)"),'In-window tabs must 
 assert(mainSource.includes("function cycleView()"),'Tabs must switch views without opening another screen');
 assert(mainSource.includes("view='MY';renderSafe()"),'Saving a camera must return to My Cameras tab');
 assert(mainSource.includes("if(view==='MY'){if(localCameras.length){deletePending=true;renderSafe();}}"),'My Cameras tab must expose delete action');
-assert(mainSource.includes("if(view==='MY'){beginAddCamera();view='ADD';renderSafe();return;}"),'My Cameras tab must expose add action');
+assert(mainSource.includes("if(view==='MY'){deletePending=false;beginAddCamera();view='ADD';renderSafe();return;}"),'My Cameras tab must expose add action');
 assert(mainSource.includes("if(view==='ADD'){saveLocalCamera();return;}"),'Add tab must expose save action');
 const {LocalCameraStore}=require(path.join(base,'local-camera-store'));
 const os=require('os'),tmp=fs.mkdtempSync(path.join(os.tmpdir(),'local-cameras-'));
