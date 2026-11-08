@@ -92,7 +92,7 @@ mgu.run({async start(ctx){
     txt(cv,'Скорость '+speed+' км/ч',x+1190,y+81,20,C.muted);
   }
 }
-function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),660,39,Date.now()<alertUntil?16:18,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);drawAlertBanner(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);drawTabs(cv,'MAP');return ui.image('MAIN_GFX',cv);}
+function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),660,39,Date.now()<alertUntil?16:18,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);drawAlertBanner(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);drawTabs(cv,'MAP');drawActionLegend(cv,'MAP');return ui.image('MAIN_GFX',cv);}
  function render(){if(view==='ADD')return drawAddCamera();if(view==='MY')return drawMyCameras();return drawMainMap();}
  function renderSafe(){Promise.resolve().then(render).catch(e=>log.warn('map render: '+e));}
  function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix){
@@ -115,6 +115,7 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
  }
  function drawActionLegend(cv,mode){
   const items=mode==='ADD'?['Лимит −','Лимит +','Тип камеры','Направление','Сохранить','Следующая вкладка']:
+    mode==='MAP'?['Камера назад','Камера вперёд','Масштаб','Обновить базу','Проверка голоса','Следующая вкладка']:
     ['Предыдущая','Следующая','Удалить','Подтвердить','Добавить камеру','Следующая вкладка'];
   txt(cv,'КНОПКИ УПРАВЛЕНИЯ',30,482,12,C.muted);
   items.forEach((label,i)=>txt(cv,(i+1)+'. '+label,220+i*225,482,14,C.text));
