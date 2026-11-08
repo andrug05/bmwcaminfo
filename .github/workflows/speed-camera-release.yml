@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.7"
+        default: "0.7.8"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -31,7 +31,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.7' }}
+      APP_VERSION: ${{ inputs.version || '0.7.8' }}
       APP_ID: aurelm_speed_camera_warning
       VOICE_VERSION: 0.1.5
     steps:
@@ -186,16 +186,6 @@ jobs:
           python3 -m py_compile bmw-speed-camera-warning/tools/import_road_zones.py
           test -s upstream/apps/${APP_ID}/road-zones.json
           test -f upstream/apps/${APP_ID}/city-map.json
-          # Run in high-priority background to receive BMW GPS events behind native navigation.
-          python3 - <<'PY'
-          p='upstream/kit/tools/build.py'
-          s=open(p,encoding='utf-8').read()
-          old="'priority': 'PRIO_LOW',\n            'visibility': 'FOREGROUND', 'latencyClass': 'FOREGROUND', 'loggingId': spec['loggingId'],\n            'userLoginRequired': False, 'backgroundPriority': 200, 'someipManifest': 'manifest.json',"
-          new="'priority': 'PRIO_HIGHEST',\n            'visibility': 'BACKGROUND', 'latencyClass': 'HIGH_PRIO_BACKGROUND', 'loggingId': spec['loggingId'],\n            'userLoginRequired': False, 'backgroundPriority': 50, 'someipManifest': 'manifest.json',"
-          if old not in s:
-              raise SystemExit('Could not find expected OAP app settings in upstream build.py')
-          open(p,'w',encoding='utf-8').write(s.replace(old,new,1))
-          PY
           cd upstream
           python3 kit/tools/build.py "${APP_ID}"
           mkdir -p ../release
