@@ -30,6 +30,8 @@ function VoiceService() {
   this.ccAvailable = false;
   this.mpAvailable = false;
   this.connectionId = null;
+  this.previousConnections = [];
+  this.playerState = null;
 }
 
 VoiceService.prototype.init = async function () {
@@ -52,6 +54,11 @@ VoiceService.prototype.init = async function () {
   await cc.init();
   var mp = await someip.buildProxy(read('de_bmw_infotainment_entertainment_mediaplayer_MediaPlayer.json'), 'OapGenericMedia');
   await mp.init();
+  var self = this;
+  mp.subscribe({ name: 'playerState', onReceive: function (value) {
+    self.playerState = value;
+    log('MediaPlayer playerState: ' + JSON.stringify(value));
+  }});
   this.cc = cc;
   this.mp = mp;
   log('BMW SOME/IP proxies initialized');
@@ -89,6 +96,16 @@ VoiceService.prototype.play = async function (file) {
     await self.waitAvailable();
     var audio = path.join(ROOT, 'audio', file);
     if (!fs.existsSync(audio)) throw new Error('Voice asset missing: ' + audio);
+    try {
+      var existing = await self.cc.getValue('listOfMainConnections');
+      self.previousConnections = (Array.isArray(existing) ? existing : []).filter(function (c) {
+        return c && c.sinkID === SINK_ID && c.sourceID !== SRC_ID;
+      });
+      log('audio routes before voice: ' + JSON.stringify(self.previousConnections));
+    } catch (routeError) {
+      self.previousConnections = [];
+      log('could not inspect existing audio routes: ' + routeError.message);
+    }
     var connected = await self.cc.callMethod('connect', { sourceID: SRC_ID, sinkID: SINK_ID }, 7000);
     log('connect: ' + JSON.stringify(connected));
     if (!connected || (connected.amError !== 'E_OK' && connected.amError !== 'E_ALREADY_EXISTS')) {
@@ -119,20 +136,21 @@ VoiceService.prototype.release = async function () {
   var id = this.connectionId;
   this.connectionId = null;
   if (!this.mp || !this.cc) return;
-  // PAUSE the voice source rather than STOP: STOP can leave the head unit's
-  // previous media source stopped. Releasing our audio route lets AudioManager
-  // restore the stream that was active before the announcement.
-  try {
-    var paused = await this.mp.callMethod('sendButtonEvent', { button: 'PAUSE', action: 'PRESS' }, 3000);
-    log('voice PAUSE: ' + JSON.stringify(paused));
-  } catch (e) { log('voice PAUSE: ' + e.message); }
+  // Do not send PAUSE or STOP here. Those buttons are delivered to the generic
+  // MediaPlayer and can pause the user's music as well as the short voice item.
+  // Let the voice file finish, then release only our temporary AudioManager route.
   if (id !== null && id !== undefined && id !== -1) {
     try {
       var disconnected = await this.cc.callMethod('disconnect', { mainConnectionID: id }, 5000);
       log('audio route released: ' + JSON.stringify(disconnected));
     } catch (e2) { log('disconnect: ' + e2.message); }
   }
-  await sleep(400);
+  await sleep(700);
+  try {
+    var after = await this.cc.getValue('listOfMainConnections');
+    log('audio routes after voice: ' + JSON.stringify(after));
+  } catch (e3) { log('could not inspect audio routes after voice: ' + e3.message); }
+  this.previousConnections = [];
 };
 
 var voice = new VoiceService();
