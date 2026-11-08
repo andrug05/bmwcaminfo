@@ -13,7 +13,7 @@ const REFRESH_INTERVAL_MS=21600000,W=1600,H=520;
 const MAP={x:24,y:66,w:1120,h:420},P={x:1170,y:66,w:406,h:420};
 const C={bg:'#080d13',panel:'#101923',road:'#334252',edge:'#637487',text:'#e9f0f6',muted:'#91a2b5',blue:'#58b6ff',red:'#ff525e',green:'#5de0a1',yellow:'#ffd166',grid:'#172430'};
 mgu.run({async start(ctx){
- const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),index=0,zoom=.75,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
+ const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),index=0,zoom=.75,zoomIndex=1,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
  const store=new CameraStore({dataDir,bundled:bundledDatabase});let database=store.loadLocal().database;
  const localStore=new LocalCameraStore(dataDir);let localCameras=localStore.load(),addScreenActive=false,captureFixes=[],cameraDraft=null,captureStatus='Ожидание GPS...',cameraLimit=60,cameraType=0,cameraDirection='forward',gpsTrack=[];
  const gps=new BmwGps(),roadGuidance=new RoadGuidanceWarnings(roadZones.zones||[]),voice=new CameraVoiceAlerts({assetDir:__dirname,log:(m)=>log.warn(m)});let refreshInFlight=null,refreshBusy=false,refreshError=false,refreshStatus='База готова · '+store.source;
@@ -160,7 +160,7 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
  ui.onClick('BTN_CANCEL_CAMERA',()=>{addScreenActive=false;ui.open('MAIN');renderSafe();});
  ui.onVisible((n,v)=>{if(n==='ADD_CAMERA'&&v){addScreenActive=true;renderAddSafe();}else if(n==='ADD_CAMERA'&&!v)addScreenActive=false;if(n==='MAIN'&&v)renderSafe();});
  ui.onClick('BTN_CAM_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_CAM_NEXT',()=>{index=Math.min(Math.max(0,cameras().length-1),index+1);renderSafe();});
- ui.onClick('BTN_ZOOM_IN',()=>{zoom=Math.min(2.5,zoom*1.25);renderSafe();});ui.onClick('BTN_ZOOM_OUT',()=>{zoom=Math.max(.55,zoom/1.25);renderSafe();});ui.onClick('BTN_REFRESH',refresh);
+ ui.onClick('BTN_ZOOM',()=>{const steps=[.55,.75,1,1.25,1.6,2,2.5];zoomIndex=(zoomIndex+1)%steps.length;zoom=steps[zoomIndex];renderSafe();});ui.onClick('BTN_REFRESH',refresh);
  ui.onClick('BTN_VOICE_TEST',()=>{
   lastAlert='ПРОВЕРКА ГОЛОСОВОГО ОПОВЕЩЕНИЯ...';alertUntil=Date.now()+10000;renderSafe();
   voice.test().then(ok=>{
