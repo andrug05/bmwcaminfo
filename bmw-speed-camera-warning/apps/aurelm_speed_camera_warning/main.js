@@ -118,7 +118,7 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
     mode==='MAP'?['Камера назад','Камера вперёд','Масштаб','Обновить базу','Проверка голоса','Следующая вкладка']:
     ['Предыдущая','Следующая','Удалить','Подтвердить','Добавить камеру','Следующая вкладка'];
   txt(cv,'КНОПКИ УПРАВЛЕНИЯ',30,482,12,C.muted);
-  items.forEach((label,i)=>txt(cv,(i+1)+'. '+label,220+i*225,482,14,C.text));
+  items.forEach((label,i)=>txt(cv,label,220+i*225,482,14,C.text));
  }
  function cycleView(){
   if(view==='MAP'){view='MY';localCameraIndex=0;deletePending=false;addScreenActive=false;}
