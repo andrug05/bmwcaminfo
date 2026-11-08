@@ -120,8 +120,8 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
   items.forEach((label,i)=>txt(cv,(i+1)+'. '+label,220+i*225,482,14,C.text));
  }
  function cycleView(){
-  if(view==='MAP'){view='MY';addScreenActive=false;}
-  else if(view==='MY'){view='ADD';beginAddCamera();}
+  if(view==='MAP'){view='MY';localCameraIndex=0;deletePending=false;addScreenActive=false;}
+  else if(view==='MY'){view='ADD';deletePending=false;beginAddCamera();}
   else{view='MAP';addScreenActive=false;}
   renderSafe();
  }
@@ -185,7 +185,7 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
  ui.onClick('BTN_CAM_NEXT',()=>{if(view==='ADD'){cameraLimit=Math.min(130,cameraLimit+10);renderSafe();}else if(view==='MY'){deletePending=false;localCameraIndex=Math.min(Math.max(0,localCameras.length-1),localCameraIndex+1);renderSafe();}else{index=Math.min(Math.max(0,cameras().length-1),index+1);renderSafe();}});
  ui.onClick('BTN_ZOOM',()=>{if(view==='ADD'){cameraType=(cameraType+1)%CAMERA_TYPES.length;renderSafe();}else if(view==='MY'){if(localCameras.length){deletePending=true;renderSafe();}}else{const steps=[.55,.75,1,1.25,1.6,2,2.5];zoomIndex=(zoomIndex+1)%steps.length;zoom=steps[zoomIndex];renderSafe();}});
  ui.onClick('BTN_REFRESH',()=>{if(view==='ADD'){cameraDirection=cameraDirection==='forward'?'both':'forward';renderSafe();}else if(view==='MY'){removeSelectedCamera();}else refresh();});
- ui.onClick('BTN_VOICE_TEST',()=>{if(view==='ADD'){saveLocalCamera();return;}if(view==='MY'){beginAddCamera();view='ADD';renderSafe();return;}
+ ui.onClick('BTN_VOICE_TEST',()=>{if(view==='ADD'){saveLocalCamera();return;}if(view==='MY'){deletePending=false;beginAddCamera();view='ADD';renderSafe();return;}
   lastAlert='ПРОВЕРКА ГОЛОСОВОГО ОПОВЕЩЕНИЯ...';alertUntil=Date.now()+10000;renderSafe();
   voice.test().then(ok=>{
    if(!ok)log.warn('VOICE TEST FAILED: '+String(voice.lastError||'unknown'));
