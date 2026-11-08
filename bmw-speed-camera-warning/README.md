@@ -1,4 +1,4 @@
-# BMW Speed Camera Warning 0.6.0
+# BMW Speed Camera Warning 0.7.0
 
 Standalone BMW MGU ID7 app. Independent of Weather; Weather 0.2.7 is not used.
 
@@ -16,7 +16,7 @@ HelpRadar / SpeedCamOnline address-only rows are shown in the Yoshkar-Ola list b
 
 ## Updating and offline operation
 
-The GitHub build imports SpeedCams.world CSV, current OSM camera nodes and HelpRadar city listings, then stores the merged JSON in the repository and bundles it into the MGU app. The app checks the versioned JSON at startup, every six hours and manually. The database is cached locally; failed downloads keep the last good cache. Warnings use the local database without internet.
+The GitHub build imports SpeedCams.world CSV, current OSM camera nodes and HelpRadar city listings, then stores the merged JSON in the repository. A separate build step imports nearby OSM highway geometry around geocoded cameras into `road-zones.json`; only road geometry is used, never OSM `maxspeed` values. The app checks the versioned JSON at startup, every six hours and manually. The database is cached locally; failed downloads keep the last good cache. Warnings use the local database without internet.
 
 SpeedCams.world data is derived from OpenStreetMap. OSM source snapshot may lag current edits; live Overpass additions are merged during build. HelpRadar states that its list draws on SpeedCamOnline, OSM and visitor reports.
 
@@ -24,7 +24,7 @@ SpeedCams.world data is derived from OpenStreetMap. OSM source snapshot may lag 
 
 - Offline vector/schematic map, GPS marker, camera markers and source label.
 - Yoshkar-Ola road drawing is a simplified scheme from published route coordinate ranges, not a full OSM street map or navigation.
-- First camera warning: 500 m; at speed strictly above 90 km/h: 700 m; repeat warning: 200 m.
+- First road-matched camera warning: 500 m; at speed strictly above 90 km/h: 700 m; repeat warning: 200 m along the matched road.
 - Additional speeding alert: triggers near a camera only when GPS speed is at least 18 km/h above that camera's own recorded numeric `limit` (for example, limit 60 → alert at 78 km/h). Camera warnings are emitted only for cameras ahead of the vehicle in its current GPS course: minimum 8 km/h for a reliable course, within 35° of heading and within a 35 m lateral corridor (up to 15 m extra allowance for GPS accuracy). Cameras behind or well off the current direction are ignored. OSM road-segment speed limits are not imported or used; if a camera has no recorded limit, only the camera-presence warning is shown.
 - GPS warnings use fresh BMW GPS coordinates. If GST is unavailable, HDOP is used as a conservative accuracy estimate; missing RMC speed is treated as 0 km/h. Fixes with reported accuracy worse than 75 m are ignored.
 - When Yoshkar-Ola is selected, proximity monitoring also includes the regional Mari El camera list, so cameras outside the city boundary are not silently excluded.
@@ -45,3 +45,8 @@ Camera data from OpenStreetMap contributors is available under ODbL 1.0. SpeedCa
 - SpeedCamOnline Russia: https://speedcamonline.ru/map/Rus/1562/
 - Curated Yoshkar-Ola coordinates: https://www.driver-helper.ru/kamery-gibdd/joshkar_ola
 - 2026 new intersection installations: https://www.marpravda.ru/news/auto/v-yoshkar-ole-na-perekrestkakh-za-voditelyami-sledyat-2-novye-skorostnye-kamery/
+
+
+### Road matching (0.7.0)
+
+Road zones are generated at build time from OpenStreetMap highway geometry around each geocoded camera. Runtime matching uses the closest road projection, a strict lateral corridor, ambiguity rejection, one-way direction, vehicle heading, and along-road distance. Two fresh GPS fixes must confirm approach before the first alert. If no camera-specific road geometry exists, the app deliberately stays silent rather than falling back to all cameras in a radius. GPS accuracy worse than 15 m also suppresses road-confirmed warnings. This is conservative by design and may reduce coverage until the OSM road importer has a valid road match for a camera. The road importer does not read or use OSM speed limits.
