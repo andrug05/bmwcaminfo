@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.34"
+        default: "0.7.35"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -31,9 +31,9 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.34' }}
+      APP_VERSION: ${{ inputs.version || '0.7.35' }}
       APP_ID: aurelm_speed_camera_warning
-      VOICE_VERSION: 0.1.6
+      VOICE_VERSION: 0.1.7
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
@@ -169,8 +169,8 @@ jobs:
           synthesize "Внимание, впереди камера" /tmp/camera-500.mp3
           synthesize "Повторное предупреждение. Камера через двести метров" /tmp/camera-200.mp3
 
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.mp3 -af "volume=1.2,alimiter=limit=0.98" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.mp3 -af "volume=1.2,alimiter=limit=0.98" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.mp3 -af "volume=2.4,alimiter=limit=0.98" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.mp3 -af "volume=2.4,alimiter=limit=0.98" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
           test -s "${VOICE_DIR}/audio/camera-500.m4a"
           test -s "${VOICE_DIR}/audio/camera-200.m4a"
           node --check "${VOICE_DIR}/voice.js"
