@@ -33,7 +33,7 @@ jobs:
     env:
       APP_VERSION: ${{ inputs.version || '0.7.5' }}
       APP_ID: aurelm_speed_camera_warning
-      VOICE_VERSION: 0.1.0
+      VOICE_VERSION: 0.1.1
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
