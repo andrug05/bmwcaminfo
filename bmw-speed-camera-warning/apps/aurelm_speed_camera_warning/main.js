@@ -139,6 +139,17 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
   txt(cv,'Добавляйте камеру на стоянке. Текущая база камер не изменяется.',82,448,15,C.muted);
   return ui.image('ADD_CAMERA_GFX',cv);
  }
+ let localCameraIndex=0,deletePending=false;
+ function drawCameraMenu(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'УПРАВЛЕНИЕ КАМЕРАМИ',36,39,20,C.text);cv.roundRect(260,100,1080,310,18,C.panel);txt(cv,'Мои камеры',800,190,34,C.text,{align:'center'});txt(cv,'Добавляйте новые камеры или просматривайте и удаляйте сохранённые.',800,240,20,C.muted,{align:'center'});txt(cv,'Сохранено вручную: '+localCameras.length,800,300,24,C.green,{align:'center'});return ui.image('CAMERA_MENU_GFX',cv);}
+ function renderMenuSafe(){Promise.resolve().then(drawCameraMenu).catch(e=>log.warn('camera menu render: '+e));}
+ function drawMyCameras(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'МОИ КАМЕРЫ',36,39,20,C.text);cv.roundRect(48,72,W-96,420,16,C.panel);
+  if(!localCameras.length){txt(cv,'Пользовательских камер пока нет',800,220,28,C.muted,{align:'center'});txt(cv,'Добавленные вручную камеры появятся здесь',800,265,18,C.muted,{align:'center'});}
+  else{localCameraIndex=Math.max(0,Math.min(localCameraIndex,localCameras.length-1));const c=localCameras[localCameraIndex];txt(cv,(localCameraIndex+1)+' / '+localCameras.length,82,120,18,C.blue);txt(cv,c.type||c.name||'Камера',82,178,32,C.text);txt(cv,c.lat.toFixed(6)+' , '+c.lon.toFixed(6),82,225,22,C.green);txt(cv,'Ограничение: '+(c.limit===null?'не указано':c.limit+' км/ч'),82,270,20,C.text);txt(cv,'Направление: '+(c.direction==='both'?'Оба направления':'По направлению движения'),82,310,18,C.muted);txt(cv,c.road?'Дорожная привязка: есть':'Дорожная привязка: нет',82,350,18,c.road?C.green:C.yellow);txt(cv,'Источник: добавлена вручную',82,390,17,C.muted);}
+  if(deletePending){cv.roundRect(300,165,1000,190,18,'#35121a');cv.strokeRoundRect(300,165,1000,190,18,2,C.red);txt(cv,'УДАЛИТЬ ЭТУ КАМЕРУ?',800,225,30,C.text,{align:'center'});txt(cv,'Нажми «Подтвердить», чтобы удалить только эту локальную запись.',800,275,18,C.muted,{align:'center'});}
+  return ui.image('MY_CAMERAS_GFX',cv);
+ }
+ function renderMyCamerasSafe(){Promise.resolve().then(drawMyCameras).catch(e=>log.warn('my cameras render: '+e));}
+ function removeSelectedCamera(){if(!deletePending)return;const c=localCameras[localCameraIndex];if(!c){deletePending=false;renderMyCamerasSafe();return;}try{if(!localStore.remove(c.id))throw new Error('Камера не найдена в локальном хранилище');localCameras=localCameras.filter(x=>x.id!==c.id);delete roadGuidance.zones[c.id];roadGuidance.reset();deletePending=false;localCameraIndex=Math.max(0,Math.min(localCameraIndex,localCameras.length-1));index=0;lastAlert='Пользовательская камера удалена';alertUntil=Date.now()+8000;log.info('LOCAL_CAMERA_REMOVED id='+c.id);renderMyCamerasSafe();}catch(e){log.warn('LOCAL_CAMERA_REMOVE_FAILED '+e);deletePending=false;renderMyCamerasSafe();}}
  function saveLocalCamera(){
   if(!cameraDraft||!Number.isFinite(cameraDraft.lat)||!Number.isFinite(cameraDraft.lon))return;
   const duplicate=monitoringCameras().find(c=>Number.isFinite(c.lat)&&Number.isFinite(c.lon)&&Math.hypot((c.lat-cameraDraft.lat)*111320,(c.lon-cameraDraft.lon)*111320*Math.cos(cameraDraft.lat*Math.PI/180))<20);
@@ -152,14 +163,22 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
   log.info('LOCAL_CAMERA_ADDED id='+id+' roadGeometry='+(road?'yes':'no')+' accuracy='+cameraDraft.accuracyM);
   addScreenActive=false;ui.open('MAIN');renderSafe();
  }
- ui.onClick('BTN_ADD_CAMERA',()=>{beginAddCamera();ui.open('ADD_CAMERA');renderAddSafe();});
+ ui.onClick('BTN_CAMERA_MENU',()=>{ui.open('CAMERA_MENU');renderMenuSafe();});
+ ui.onClick('BTN_MENU_ADD',()=>{beginAddCamera();ui.open('ADD_CAMERA');renderAddSafe();});
+ ui.onClick('BTN_MENU_MANAGE',()=>{localCameraIndex=0;deletePending=false;ui.open('MY_CAMERAS');renderMyCamerasSafe();});
+ ui.onClick('BTN_MENU_BACK',()=>{ui.open('MAIN');renderSafe();});
+ ui.onClick('BTN_LOCAL_PREV',()=>{deletePending=false;localCameraIndex=Math.max(0,localCameraIndex-1);renderMyCamerasSafe();});
+ ui.onClick('BTN_LOCAL_NEXT',()=>{deletePending=false;localCameraIndex=Math.min(Math.max(0,localCameras.length-1),localCameraIndex+1);renderMyCamerasSafe();});
+ ui.onClick('BTN_LOCAL_DELETE',()=>{if(localCameras.length){deletePending=true;renderMyCamerasSafe();}});
+ ui.onClick('BTN_LOCAL_CONFIRM',removeSelectedCamera);
+ ui.onClick('BTN_LOCAL_BACK',()=>{deletePending=false;ui.open('CAMERA_MENU');renderMenuSafe();});
  ui.onClick('BTN_LIMIT_DOWN',()=>{cameraLimit=Math.max(20,cameraLimit-10);renderAddSafe();});
  ui.onClick('BTN_LIMIT_UP',()=>{cameraLimit=Math.min(130,cameraLimit+10);renderAddSafe();});
  ui.onClick('BTN_TYPE',()=>{cameraType=(cameraType+1)%CAMERA_TYPES.length;renderAddSafe();});
  ui.onClick('BTN_DIRECTION',()=>{cameraDirection=cameraDirection==='forward'?'both':'forward';renderAddSafe();});
  ui.onClick('BTN_SAVE_CAMERA',saveLocalCamera);
  ui.onClick('BTN_CANCEL_CAMERA',()=>{addScreenActive=false;ui.open('MAIN');renderSafe();});
- ui.onVisible((n,v)=>{if(n==='ADD_CAMERA'&&v){addScreenActive=true;renderAddSafe();}else if(n==='ADD_CAMERA'&&!v)addScreenActive=false;if(n==='MAIN'&&v)renderSafe();});
+ ui.onVisible((n,v)=>{if(n==='ADD_CAMERA'&&v){addScreenActive=true;renderAddSafe();}else if(n==='ADD_CAMERA'&&!v)addScreenActive=false;if(n==='CAMERA_MENU'&&v)renderMenuSafe();if(n==='MY_CAMERAS'&&v)renderMyCamerasSafe();if(n==='MAIN'&&v)renderSafe();});
  ui.onClick('BTN_CAM_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_CAM_NEXT',()=>{index=Math.min(Math.max(0,cameras().length-1),index+1);renderSafe();});
  ui.onClick('BTN_ZOOM',()=>{const steps=[.55,.75,1,1.25,1.6,2,2.5];zoomIndex=(zoomIndex+1)%steps.length;zoom=steps[zoomIndex];renderSafe();});ui.onClick('BTN_REFRESH',refresh);
  ui.onClick('BTN_VOICE_TEST',()=>{
@@ -172,6 +191,6 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
  });
  settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;roadGuidance.reset();renderSafe();}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
- renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);ctx.loop('ADD_CAMERA',1,drawAddCamera);
- log.info('Speed Camera Warning 0.7.20 started; road-matched camera alerts only; voice warnings through privileged BMW voice service at 500/700 m and 200 m; no nearby fallback');
+ renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);ctx.loop('ADD_CAMERA',1,drawAddCamera);ctx.loop('CAMERA_MENU',1,drawCameraMenu);ctx.loop('MY_CAMERAS',1,drawMyCameras);
+ log.info('Speed Camera Warning 0.7.21 started; road-matched camera alerts only; voice warnings through privileged BMW voice service at 500/700 m and 200 m; no nearby fallback');
 }});
