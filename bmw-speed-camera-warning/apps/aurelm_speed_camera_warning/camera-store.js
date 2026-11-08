@@ -39,6 +39,10 @@ function validateDatabase(value) {
                 sourceLabel: typeof camera.sourceLabel === 'string' ? camera.sourceLabel.slice(0, 100) : '',
                 sourceUrl: typeof camera.sourceUrl === 'string' && /^https:\/\//.test(camera.sourceUrl) ? camera.sourceUrl.slice(0, 300) : '',
                 osmId: typeof camera.osmId === 'string' ? camera.osmId.slice(0, 40) : '',
+                direction: typeof camera.direction === 'string' ? camera.direction.slice(0, 80) : '',
+                description: typeof camera.description === 'string' ? camera.description.slice(0, 500) : '',
+                category: typeof camera.category === 'string' ? camera.category.slice(0, 30) : '',
+                overpassSnapshot: camera.overpassSnapshot === true,
                 note: typeof camera.note === 'string' ? camera.note.slice(0, 300) : '' };
         });
     });
