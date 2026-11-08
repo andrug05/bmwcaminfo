@@ -33,7 +33,7 @@ jobs:
     env:
       APP_VERSION: ${{ inputs.version || '0.7.5' }}
       APP_ID: aurelm_speed_camera_warning
-      VOICE_VERSION: 0.1.3
+      VOICE_VERSION: 0.1.4
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
@@ -115,7 +115,7 @@ jobs:
       - name: Generate Cyrillic font atlases
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-ubuntu python3-pil espeak-ng ffmpeg jq
+          sudo apt-get install -y fonts-ubuntu python3-pil ffmpeg
           python3 - <<'PY'
           p='upstream/kit/tools/bake_fonts.py'
           s=open(p,encoding='utf-8').read()
@@ -131,43 +131,39 @@ jobs:
           cd ..
 
       - name: Generate Russian voice assets and pack privileged service
-        env:
-          YANDEX_SPEECHKIT_API_KEY: ${{ secrets.YANDEX_SPEECHKIT_API_KEY }}
         run: |
           set -euo pipefail
           VOICE_DIR="bmw-speed-camera-warning/native/bmwcaminfo-voice"
           mkdir -p "${VOICE_DIR}/audio"
+          python3 -m pip install --break-system-packages --disable-pip-version-check edge-tts
 
-          if [ -n "${YANDEX_SPEECHKIT_API_KEY:-}" ]; then
-            echo "Generating neural Russian female voice with Yandex SpeechKit (Jane)"
-            synthesize() {
-              local text="$1"
-              local output="$2"
-              jq -n --arg text "$text" '{
-                text: $text,
-                outputAudioSpec: {containerAudio: {containerAudioType: "WAV"}},
-                hints: [{voice: "jane"}, {role: "good"}],
-                loudnessNormalizationType: "LUFS"
-              }' > /tmp/tts-request.json
-              curl --fail --silent --show-error --retry 2 \
-                -H "Authorization: Api-Key ${YANDEX_SPEECHKIT_API_KEY}" \
-                -H "Content-Type: application/json" \
-                --data-binary @/tmp/tts-request.json \
-                "https://tts.api.cloud.yandex.net/tts/v3/utteranceSynthesis" \
-                > /tmp/tts-response.json
-              jq -er '.result.audioChunk.data' /tmp/tts-response.json | base64 --decode > "$output"
-              test -s "$output"
-            }
-            synthesize "Внимание, впереди камера" /tmp/camera-500.wav
-            synthesize "Повторное предупреждение. Камера через двести метров" /tmp/camera-200.wav
-          else
-            echo "::warning::YANDEX_SPEECHKIT_API_KEY is not configured; using the old eSpeak fallback. Add the repository Actions secret to enable the neural Alice-like voice."
-            espeak-ng -v ru+f5 -s 150 -p 55 -a 185 -w /tmp/camera-500.wav "Внимание, впереди камера"
-            espeak-ng -v ru+f5 -s 145 -p 55 -a 185 -w /tmp/camera-200.wav "Повторное предупреждение. Камера через двести метров"
-          fi
+          synthesize() {
+            local text="$1"
+            local output="$2"
+            local attempt
+            for attempt in 1 2 3; do
+              if timeout 90s edge-tts \
+                --voice "ru-RU-SvetlanaNeural" \
+                --rate="-5%" \
+                --volume="+12%" \
+                --text "$text" \
+                --write-media "$output"; then
+                test -s "$output"
+                return 0
+              fi
+              echo "Edge TTS attempt $attempt failed; retrying..."
+              sleep 3
+            done
+            echo "Microsoft Edge neural TTS failed after 3 attempts" >&2
+            return 1
+          }
 
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.wav -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.wav -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
+          echo "Generating Russian female neural voice: ru-RU-SvetlanaNeural"
+          synthesize "Внимание, впереди камера" /tmp/camera-500.mp3
+          synthesize "Повторное предупреждение. Камера через двести метров" /tmp/camera-200.mp3
+
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.mp3 -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.mp3 -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
           test -s "${VOICE_DIR}/audio/camera-500.m4a"
           test -s "${VOICE_DIR}/audio/camera-200.m4a"
           node --check "${VOICE_DIR}/voice.js"
@@ -227,7 +223,7 @@ jobs:
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --clobber
           else
-            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Uses Yandex SpeechKit neural female voice when YANDEX_SPEECHKIT_API_KEY is configured; otherwise uses the eSpeak fallback. Install this tool before BMW Speed Camera Warning 0.7.5."
+            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Uses Microsoft Edge neural Russian female voice ru-RU-SvetlanaNeural; audio is generated during CI and played offline in the vehicle. Install this tool before BMW Speed Camera Warning 0.7.5."
           fi
 
       - name: Publish standalone app
