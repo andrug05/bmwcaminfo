@@ -15,7 +15,7 @@ ENDPOINTS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.s
 UA = "BMW-Speed-Camera-Warning/0.7.0 (offline road geometry build)"
 ROAD_FILTER = '^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|living_street|road|track)$'
 RADIUS_M = 900
-ROAD_NEAR_CAMERA_M = 120
+ROAD_NEAR_CAMERA_M = RADIUS_M + 50
 CAMERA_SNAP_M = 30
 
 def fetch(endpoint, payload):
@@ -94,15 +94,24 @@ def main():
                 tags=way.get("tags") or {}
                 if tags.get("highway") not in ("motorway","trunk","primary","secondary","tertiary","unclassified","residential","service","living_street","road","track"):
                     continue
+                best_way=None
                 for pts in road_points(way,camera):
                     hit=project(pts)
                     if hit and hit["error"] <= ROAD_NEAR_CAMERA_M:
-                        candidates.append((hit["error"],way,pts,hit))
+                        item=(hit["error"],way,pts,hit)
+                        if best_way is None or item[0] < best_way[0]:
+                            best_way=item
+                if best_way:
+                    candidates.append(best_way)
             if not candidates:
                 continue
             candidates.sort(key=lambda x:x[0])
             main_road=next((x for x in candidates if x[0] <= CAMERA_SNAP_M),None)
             if not main_road:
+                continue
+            # If the camera position is equally close to two different roads,
+            # its road association is ambiguous. Do not guess at junctions.
+            if len(candidates)>1 and candidates[1][0]-candidates[0][0] < 8:
                 continue
             roads=[]; travel=[]
             main_id=str(main_road[1]["id"])
