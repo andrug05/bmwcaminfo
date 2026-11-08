@@ -1,8 +1,8 @@
 {
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
-  "description": "Вкладки карты, добавления и управления пользовательскими камерами в одном окне MGU; кнопки добавления и удаления доступны в разделе «Мои камеры».",
-  "version": "0.7.30",
+  "description": "Камеры скорости, пользовательские камеры и визуальные предупреждения на KOMBI/HUD через cluster-render.",
+  "version": "0.7.31",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
@@ -61,6 +61,30 @@
         [
           "sochi",
           "Сочи"
+        ]
+      ]
+    },
+    {
+      "key": "camera_display",
+      "label": "Вывод предупреждений",
+      "type": "choice",
+      "default": "kombi",
+      "options": [
+        [
+          "kombi",
+          "KOMBI"
+        ],
+        [
+          "hud",
+          "HUD (экспериментально)"
+        ],
+        [
+          "both",
+          "KOMBI + HUD"
+        ],
+        [
+          "off",
+          "Выкл."
         ]
       ]
     }
