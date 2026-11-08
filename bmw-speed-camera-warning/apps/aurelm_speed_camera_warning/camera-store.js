@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmwcaminfo/main/bmw-speed-camera-warning/data/camera-db.json';
+const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmw-weather-road-info/main/bmw-speed-camera-warning/data/camera-db.json';
 const MAX_BYTES = 1024 * 1024;
 const MAX_REDIRECTS = 3;
 
@@ -51,7 +51,7 @@ function getHttps(url, redirects) {
             reject(new Error('CAMERA_DB_URL_NOT_ALLOWED')); return;
         }
         const req = https.get(parsed, {
-            headers: { 'User-Agent': 'BMW-Speed-Camera-Warning/0.7.6', 'Accept': 'application/json' }
+            headers: { 'User-Agent': 'BMW-Speed-Camera-Warning/0.5.0', 'Accept': 'application/json' }
         }, (res) => {
             if ([301, 302, 303, 307, 308].indexOf(res.statusCode) >= 0) {
                 const location = res.headers.location;
@@ -81,20 +81,10 @@ class CameraStore {
         this.dataDir = o.dataDir || process.cwd();
         this.bundled = validateDatabase(o.bundled);
         this.cachePath = path.join(this.dataDir, 'camera-db-cache.json');
-        this.statusPath = path.join(this.dataDir, 'camera-db-status.json');
-        this.lastCheckAt = '';
-        this.lastSuccessAt = '';
-        this.lastError = '';
         this.current = this.bundled;
         this.source = 'bundle';
     }
     loadLocal() {
-        try {
-            const status = JSON.parse(fs.readFileSync(this.statusPath, 'utf8'));
-            this.lastCheckAt = typeof status.lastCheckAt === 'string' ? status.lastCheckAt : '';
-            this.lastSuccessAt = typeof status.lastSuccessAt === 'string' ? status.lastSuccessAt : '';
-            this.lastError = typeof status.lastError === 'string' ? status.lastError : '';
-        } catch (e) { /* first launch or no saved status */ }
         let cached = null;
         try { cached = validateDatabase(JSON.parse(fs.readFileSync(this.cachePath, 'utf8'))); }
         catch (e) { cached = null; }
@@ -108,21 +98,9 @@ class CameraStore {
         }
         return { database: this.current, source: this.source };
     }
-    saveStatus() {
-        try {
-            fs.mkdirSync(this.dataDir, { recursive: true });
-            const tmp = this.statusPath + '.tmp';
-            fs.writeFileSync(tmp, JSON.stringify({ lastCheckAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, lastError: this.lastError }), 'utf8');
-            fs.renameSync(tmp, this.statusPath);
-        } catch (e) { /* status display is best-effort; camera cache remains authoritative */ }
-    }
     async refresh() {
         try {
             const next = validateDatabase(JSON.parse(await getHttps(DATABASE_URL, 0)));
-            const checkedAt = new Date().toISOString();
-            this.lastCheckAt = checkedAt;
-            this.lastSuccessAt = checkedAt;
-            this.lastError = '';
             if (next.revision > this.current.revision) {
                 fs.mkdirSync(this.dataDir, { recursive: true });
                 const tmp = this.cachePath + '.tmp';
@@ -130,8 +108,7 @@ class CameraStore {
                 fs.renameSync(tmp, this.cachePath);
                 this.current = next;
                 this.source = 'download';
-                this.saveStatus();
-                return { updated: true, database: this.current, source: this.source, checkedAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, serverUpdatedAt: this.current.updatedAt };
+                return { updated: true, database: this.current, source: this.source };
             }
             if (this.source === 'bundle' && !fs.existsSync(this.cachePath)) {
                 fs.mkdirSync(this.dataDir, { recursive: true });
@@ -141,14 +118,10 @@ class CameraStore {
                 this.current = next;
                 this.source = 'cache';
             }
-            this.saveStatus();
-            return { updated: false, database: this.current, source: this.source, checkedAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, serverUpdatedAt: this.current.updatedAt };
+            return { updated: false, database: this.current, source: this.source };
         } catch (error) {
-            this.lastCheckAt = new Date().toISOString();
-            this.lastError = error && error.message ? error.message : 'CAMERA_DB_UPDATE_FAILED';
-            this.saveStatus();
             return { updated: false, database: this.current, source: this.source,
-                error: this.lastError, checkedAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, serverUpdatedAt: this.current.updatedAt };
+                error: error && error.message ? error.message : 'CAMERA_DB_UPDATE_FAILED' };
         }
     }
 }
