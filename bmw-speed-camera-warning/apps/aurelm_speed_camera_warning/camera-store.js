@@ -98,9 +98,13 @@ class CameraStore {
         }
         return { database: this.current, source: this.source };
     }
-    async refresh() {
+    async refresh(onStatus) {
+        const status = typeof onStatus === 'function' ? onStatus : function () {};
         try {
-            const next = validateDatabase(JSON.parse(await getHttps(DATABASE_URL, 0)));
+            status('Загрузка базы камер...');
+            const body = await getHttps(DATABASE_URL, 0);
+            status('Проверка полученной базы...');
+            const next = validateDatabase(JSON.parse(body));
             if (next.revision > this.current.revision) {
                 fs.mkdirSync(this.dataDir, { recursive: true });
                 const tmp = this.cachePath + '.tmp';
