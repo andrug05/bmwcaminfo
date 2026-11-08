@@ -7,6 +7,11 @@ on:
         description: "Speed Camera Warning version"
         required: true
         default: "0.7.0"
+      refresh_data:
+        description: "Force refresh camera and OSM data"
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: "17 3 * * 1"
   push:
@@ -35,7 +40,21 @@ jobs:
           repository: aurelmarius/bmw-games
           path: upstream
 
+      - name: Restore generated camera and map data cache
+        id: data_cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            bmw-speed-camera-warning/data/camera-db.json
+            bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/camera-db.json
+            bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/road-zones.json
+            bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/city-map.json
+          key: speed-camera-data-v1-${{ github.run_id }}
+          restore-keys: |
+            speed-camera-data-v1-
+
       - name: Import regional camera sources
+        if: steps.data_cache.outputs.cache-hit != 'true' || inputs.refresh_data == true || github.event_name == 'schedule'
         run: |
           python3 bmw-speed-camera-warning/tools/import_camera_sources.py
           # Imported databases are consumed directly by this build.
@@ -43,14 +62,27 @@ jobs:
           # and create rebase conflicts in camera-db.json.
 
       - name: Import offline camera road geometry
+        if: steps.data_cache.outputs.cache-hit != 'true' || inputs.refresh_data == true || github.event_name == 'schedule'
         run: |
           python3 bmw-speed-camera-warning/tools/import_road_zones.py
           # Generated geometry is included in the release without committing from CI.
 
       - name: Import offline Yoshkar-Ola street geometry
+        if: steps.data_cache.outputs.cache-hit != 'true' || inputs.refresh_data == true || github.event_name == 'schedule'
         run: |
           python3 bmw-speed-camera-warning/tools/import_city_roads.py
           # Generated geometry is included in the release without committing from CI.
+
+      - name: Save generated camera and map data cache
+        if: steps.data_cache.outputs.cache-hit != 'true' || inputs.refresh_data == true || github.event_name == 'schedule'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            bmw-speed-camera-warning/data/camera-db.json
+            bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/camera-db.json
+            bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/road-zones.json
+            bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/city-map.json
+          key: speed-camera-data-v1-${{ github.run_id }}
 
       - name: Prepare standalone app
         run: |
@@ -86,11 +118,9 @@ jobs:
         run: |
           node --check upstream/apps/${APP_ID}/main.js
           node --check upstream/apps/${APP_ID}/gps.js
-          node --check upstream/apps/${APP_ID}/gps.js
           node --check upstream/apps/${APP_ID}/camera-store.js
           node --check upstream/apps/${APP_ID}/proximity.js
           node --check upstream/apps/${APP_ID}/road-guidance.js
-          node --check upstream/apps/${APP_ID}/main.js
           node bmw-speed-camera-warning/tests/readout-config.test.js
           node bmw-speed-camera-warning/tests/road-guidance.test.js
           python3 -m py_compile bmw-speed-camera-warning/tools/import_road_zones.py
