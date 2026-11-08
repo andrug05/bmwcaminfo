@@ -96,8 +96,15 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
  async function refresh(){if(refreshInFlight)return refreshInFlight;refreshInFlight=store.refresh().then(r=>{database=r.database;if(r.updated){index=0;roadGuidance.reset();}renderSafe();return r;}).catch(e=>{log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshInFlight=null;return r;});return refreshInFlight;}
  ui.onClick('BTN_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_NEXT',()=>{index=Math.min(cameras().length-1,index+1);renderSafe();});
  ui.onClick('BTN_ZOOM_IN',()=>{zoom=Math.min(2.5,zoom*1.25);renderSafe();});ui.onClick('BTN_ZOOM_OUT',()=>{zoom=Math.max(.55,zoom/1.25);renderSafe();});ui.onClick('BTN_REFRESH',refresh);
+ ui.onClick('BTN_VOICE_TEST',()=>{
+  lastAlert='ПРОВЕРКА ГОЛОСОВОГО ОПОВЕЩЕНИЯ...';alertUntil=Date.now()+10000;renderSafe();
+  voice.test().then(ok=>{
+   lastAlert=ok?'ГОЛОСОВОЕ ОПОВЕЩЕНИЕ: УСПЕШНО':'ОШИБКА ГОЛОСОВОГО ОПОВЕЩЕНИЯ · СМОТРИ ЛОГ';
+   alertUntil=Date.now()+10000;renderSafe();
+  });
+ });
  settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;roadGuidance.reset();renderSafe();}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
  renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);
- log.info('Speed Camera Warning 0.7.2 started; road-matched camera alerts only; voice warnings through BMW MediaPlayer at 500/700 m and 200 m; no nearby fallback');
+ log.info('Speed Camera Warning 0.7.3 started; road-matched camera alerts only; voice warnings through BMW MediaPlayer at 500/700 m and 200 m; no nearby fallback');
 }});
