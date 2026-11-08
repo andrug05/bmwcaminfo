@@ -51,9 +51,10 @@ function getHttps(requestUrl, redirects) {
         if (parsed.protocol !== 'https:' || parsed.hostname !== 'raw.githubusercontent.com') {
             reject(new Error('CAMERA_DB_URL_NOT_ALLOWED')); return;
         }
-        const req = https.get(requestUrl, {
-            headers: { 'User-Agent': 'BMW-Speed-Camera-Warning/0.7.13', 'Accept': 'application/json' }
-        }, (res) => {
+        // Use the two-argument overload for compatibility with the MGU Node.js runtime.
+        // Some MGU builds do not support https.get(url, options, callback) and treat
+        // the options object as an event listener.
+        const req = https.get(requestUrl, (res) => {
             if ([301, 302, 303, 307, 308].indexOf(res.statusCode) >= 0) {
                 const location = res.headers.location;
                 res.resume();
