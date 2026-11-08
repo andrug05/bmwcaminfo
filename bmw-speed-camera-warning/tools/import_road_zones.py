@@ -11,16 +11,16 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "apps", "aurelm_speed_camera_warning")
 DB_PATH = os.path.join(APP, "camera-db.json")
 OUT_PATH = os.path.join(APP, "road-zones.json")
-ENDPOINTS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+ENDPOINTS = ["https://overpass.kumi.systems/api/interpreter", "https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter"]
 UA = "BMW-Speed-Camera-Warning/0.7.0 (offline road geometry build)"
 ROAD_FILTER = '^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|living_street|road|track)$'
-RADIUS_M = 900
+RADIUS_M = 800
 ROAD_NEAR_CAMERA_M = RADIUS_M + 50
 CAMERA_SNAP_M = 30
 
 def fetch(endpoint, payload):
     req = urllib.request.Request(endpoint, data=payload, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=100) as response:
+    with urllib.request.urlopen(req, timeout=30) as response:
         return json.loads(response.read().decode("utf-8"))
 
 def local(lon, lat, origin):
@@ -72,21 +72,25 @@ def main():
                 cameras.setdefault(camera["id"], camera)
     items = list(cameras.values())
     zones = []
-    for start in range(0, len(items), 6):
-        batch = items[start:start+6]
+    failed = []
+    for start in range(0, len(items), 2):
+        batch = items[start:start+2]
         clauses = []
         for c in batch:
             clauses.append('way["highway"~"%s"](around:%d,%.7f,%.7f);' % (ROAD_FILTER,RADIUS_M,c["lat"],c["lon"]))
-        query = "[out:json][timeout:90];(" + "".join(clauses) + ");out body geom;"
+        query = "[out:json][timeout:25];(" + "".join(clauses) + ");out body geom;"
         payload = urllib.parse.urlencode({"data":query}).encode()
         result = None; last_error = None
         for endpoint in ENDPOINTS:
             try:
                 result = fetch(endpoint,payload); last_error=None; break
             except Exception as exc:
-                last_error=exc; time.sleep(2)
+                last_error=exc
         if result is None:
-            raise RuntimeError("Overpass road geometry request failed: "+str(last_error))
+            failed.extend(c["id"] for c in batch)
+            print("Skipping road geometry batch",start+1,"-",min(start+len(batch),len(items)),":",last_error,file=sys.stderr)
+            time.sleep(0.5)
+            continue
         ways = result.get("elements", [])
         for camera in batch:
             candidates=[]
@@ -133,12 +137,13 @@ def main():
                         travel.append(round((forward+180)%360,1))
             if roads and travel:
                 zones.append({"id":camera["id"],"lat":camera["lat"],"lon":camera["lon"],"roads":roads,"travel":travel})
-        print("Road geometry:", min(start+len(batch),len(items)), "/",len(items), "cameras; zones:",len(zones))
-        time.sleep(1)
-    if not zones:
-        raise RuntimeError("No camera road zones were built; refusing to publish an empty geometry file")
+        print("Road geometry:", min(start+len(batch),len(items)), "/",len(items), "cameras; zones:",len(zones), "failed:",len(failed))
+        time.sleep(0.5)
+    if len(zones) < max(1, int(len(items)*0.20)):
+        raise RuntimeError("Too few road-confirmed camera zones (%d/%d); refusing to publish a low-coverage geometry file" % (len(zones),len(items)))
     payload={"schemaVersion":1,"region":"RU-ME","source":"OpenStreetMap contributors (ODbL 1.0)",
-        "databaseRevision":db.get("revision"),"radiusM":RADIUS_M,"zones":zones}
+        "databaseRevision":db.get("revision"),"radiusM":RADIUS_M,"cameraCount":len(items),
+        "zoneCount":len(zones),"failedCameraIds":failed,"zones":zones}
     encoded=json.dumps(payload,ensure_ascii=False,separators=(",",":"))
     if len(encoded.encode("utf-8")) > 20*1024*1024:
         raise RuntimeError("Road geometry exceeds the 20 MiB safety limit")
