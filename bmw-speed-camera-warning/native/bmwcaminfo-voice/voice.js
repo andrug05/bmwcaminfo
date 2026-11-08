@@ -27,6 +27,8 @@ function VoiceService() {
   this.queue = Promise.resolve();
   this.ready = false;
   this.lastError = null;
+  this.ccAvailable = false;
+  this.mpAvailable = false;
   this.connectionId = null;
 }
 
@@ -57,12 +59,27 @@ VoiceService.prototype.init = async function () {
 
 VoiceService.prototype.waitAvailable = async function () {
   await this.init();
-  var deadline = Date.now() + 15000;
-  while (!(await this.cc.isAvailable())) {
-    if (Date.now() >= deadline) throw new Error('BMW CommandControl unavailable after 15 seconds');
-    await sleep(250);
+  var deadline = Date.now() + 60000;
+  while (Date.now() < deadline) {
+    try {
+      this.ccAvailable = await this.cc.isAvailable();
+      this.mpAvailable = await this.mp.isAvailable();
+    } catch (error) {
+      this.ccAvailable = false;
+      this.mpAvailable = false;
+      this.lastError = error && error.message ? error.message : String(error);
+    }
+    if (this.ccAvailable && this.mpAvailable) {
+      this.ready = true;
+      this.lastError = null;
+      log('BMW services available: CommandControl=true MediaPlayer=true');
+      return;
+    }
+    await sleep(500);
   }
-  this.ready = true;
+  this.ready = false;
+  throw new Error('BMW audio services unavailable after 60 seconds (CommandControl=' +
+    this.ccAvailable + ', MediaPlayer=' + this.mpAvailable + ')');
 };
 
 VoiceService.prototype.play = async function (file) {
@@ -139,7 +156,7 @@ var server = net.createServer(function (socket) {
         continue;
       }
       if (request.action === 'status') {
-        reply(socket, { ok: true, ready: voice.ready, lastError: voice.lastError });
+        reply(socket, { ok: true, ready: voice.ready, ccAvailable: voice.ccAvailable, mpAvailable: voice.mpAvailable, lastError: voice.lastError });
       } else if (request.action === 'play' && ALLOWED[request.file]) {
         voice.play(request.file).then(function (result) { reply(socket, result); });
       } else {
