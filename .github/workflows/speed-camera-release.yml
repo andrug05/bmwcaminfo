@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.2"
+        default: "0.7.3"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -31,7 +31,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.2' }}
+      APP_VERSION: ${{ inputs.version || '0.7.3' }}
       APP_ID: aurelm_speed_camera_warning
     steps:
       - uses: actions/checkout@v5
@@ -192,5 +192,5 @@ jobs:
               "release/${APP_ID}@${APP_VERSION}.mgu" \
               --repo "$GITHUB_REPOSITORY" \
               --title "BMW Speed Camera Warning ${APP_VERSION}" \
-              --notes "Standalone offline BMW MGU ID7 speed camera database; road-geometry-matched camera-ahead warnings only; GPS accuracy must be <=15 m; no nearby fallback, no OSM road speed limits, camera-record speed limits only. No OSM road speed-limit detection. Voice output disabled."
+              --notes "Standalone offline BMW MGU ID7 speed camera database; road-geometry-matched camera-ahead warnings only; GPS accuracy must be <=15 m; no nearby fallback, no OSM road speed limits, camera-record speed limits only. No OSM road speed-limit detection. Voice warnings use BMW MediaPlayer; the app includes a manual voice test button."
           fi
