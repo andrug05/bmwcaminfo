@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.6.0"
+        default: "0.7.0"
   schedule:
     - cron: "17 3 * * 1"
   push:
@@ -26,7 +26,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.6.0' }}
+      APP_VERSION: ${{ inputs.version || '0.7.0' }}
       APP_ID: aurelm_speed_camera_warning
     steps:
       - uses: actions/checkout@v5
@@ -43,6 +43,19 @@ jobs:
           git add bmw-speed-camera-warning/data/camera-db.json bmw-speed-camera-warning/apps/${APP_ID}/camera-db.json
           if ! git diff --cached --quiet; then
             git commit -m "Update regional camera database [skip ci]"
+            git fetch origin main
+            git rebase origin/main
+            git push
+          fi
+
+      - name: Import offline camera road geometry
+        run: |
+          python3 bmw-speed-camera-warning/tools/import_road_zones.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bmw-speed-camera-warning/apps/${APP_ID}/road-zones.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update offline camera road geometry [skip ci]"
             git fetch origin main
             git rebase origin/main
             git push
@@ -98,8 +111,12 @@ jobs:
           node --check upstream/apps/${APP_ID}/gps.js
           node --check upstream/apps/${APP_ID}/camera-store.js
           node --check upstream/apps/${APP_ID}/proximity.js
+          node --check upstream/apps/${APP_ID}/road-guidance.js
           node --check upstream/apps/${APP_ID}/main.js
           node bmw-speed-camera-warning/tests/readout-config.test.js
+          node bmw-speed-camera-warning/tests/road-guidance.test.js
+          python3 -m py_compile bmw-speed-camera-warning/tools/import_road_zones.py
+          test -s upstream/apps/${APP_ID}/road-zones.json
           test -f upstream/apps/${APP_ID}/city-map.json
           # Run in high-priority background to receive BMW GPS events behind native navigation.
           python3 - <<'PY'
@@ -147,5 +164,5 @@ jobs:
               "release/${APP_ID}@${APP_VERSION}.mgu" \
               --repo "$GITHUB_REPOSITORY" \
               --title "BMW Speed Camera Warning ${APP_VERSION}" \
-              --notes "Standalone offline BMW MGU ID7 speed camera database; direction-filtered camera-ahead warnings and optional camera-record speed limits. No OSM road speed-limit detection. Voice output disabled."
+              --notes "Standalone offline BMW MGU ID7 speed camera database; road-geometry-matched camera-ahead warnings only; GPS accuracy must be <=15 m; no nearby fallback, no OSM road speed limits, camera-record speed limits only. No OSM road speed-limit detection. Voice output disabled."
           fi
