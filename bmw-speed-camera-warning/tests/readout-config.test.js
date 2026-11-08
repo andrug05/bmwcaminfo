@@ -11,8 +11,11 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.7.20');assert.strictEqual(app.screens[0].kind,'canvas');
-assert(app.screens[0].buttons.some(b=>b[0]==='BTN_ADD_CAMERA'),'Add-camera button must be present');
+assert.strictEqual(app.version,'0.7.21');assert.strictEqual(app.screens[0].kind,'canvas');
+assert(app.screens[0].buttons.some(b=>b[0]==='BTN_CAMERA_MENU'),'Camera management button must be present');
+assert(app.screens.some(x=>x.name==='CAMERA_MENU'&&x.buttons.some(b=>b[0]==='BTN_MENU_MANAGE')),'Camera management menu must be present');
+const manageScreen=app.screens.find(x=>x.name==='MY_CAMERAS');
+for(const id of ['BTN_LOCAL_PREV','BTN_LOCAL_NEXT','BTN_LOCAL_DELETE','BTN_LOCAL_CONFIRM','BTN_LOCAL_BACK'])assert(manageScreen.buttons.some(b=>b[0]===id),'Missing camera management control '+id);
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_ZOOM'),'Single zoom-cycle button must be present');
 assert.strictEqual(app.screens[0].buttons.length,6,'Main screen must fit six HMI buttons');
 assert(app.screens.some(x=>x.name==='ADD_CAMERA'&&x.kind==='canvas'),'Add-camera screen must be present');
@@ -23,7 +26,9 @@ const os=require('os'),tmp=fs.mkdtempSync(path.join(os.tmpdir(),'local-cameras-'
 try{const local=new LocalCameraStore(tmp);local.add({id:'local-test-1234',lat:56.63,lon:47.92,limit:60,type:'Камера скорости',direction:'both',road:null});
 const reloaded=new LocalCameraStore(tmp).load();assert.strictEqual(reloaded.length,1);assert.strictEqual(reloaded[0].limit,60);assert.strictEqual(reloaded[0].source,'local-user');
 local.add({id:'local-test-5678',lat:56.631,lon:47.921,limit:null,type:'Контроль светофора',direction:'forward',road:{pts:[[-100,0],[0,0]],camM:100}});
-assert.strictEqual(new LocalCameraStore(tmp).load()[1].limit,null);}
+assert.strictEqual(new LocalCameraStore(tmp).load()[1].limit,null);
+assert.strictEqual(local.remove('local-test-1234'),true);assert.strictEqual(new LocalCameraStore(tmp).load().length,1);
+assert.strictEqual(local.remove('local-test-1234'),false);}
 finally{fs.rmSync(tmp,{recursive:true,force:true});}
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_VOICE_TEST'),'Voice test button must be present');
