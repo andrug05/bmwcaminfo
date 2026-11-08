@@ -37,7 +37,7 @@ assert.strictEqual(w.update(Object.assign(fix(-300,500000,36),{accuracyM:20}),[c
 const oneWay={id:camera.id,lat:camera.lat,lon:camera.lon,travel:[0],roads:[
  {id:'oneway',pts:[[0,-1000],[0,1000]],camM:1000,dir:1}
 ]};
-assert.strictEqual(candidate(oneWay,fix(-300,600000,36),500,null),null,'One-way geometry must reject travel against its direction');
+assert.strictEqual(candidate(oneWay,Object.assign(fix(300,600000,36),{headingDeg:180}),500,null),null,'One-way geometry must reject travel against its direction');
 
 w=new RoadGuidanceWarnings([zone]);
 let speeding=w.update(fix(-300,700000,78),[camera],700000);
