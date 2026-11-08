@@ -199,6 +199,8 @@ jobs:
           node --check upstream/apps/${APP_ID}/proximity.js
           node --check upstream/apps/${APP_ID}/road-guidance.js
           node --check upstream/apps/${APP_ID}/voice-alert.js
+          node --check upstream/apps/${APP_ID}/cluster-output.js
+          node --check upstream/apps/${APP_ID}/cluster_render_client.js
           node --check bmw-speed-camera-warning/native/bmwcaminfo-voice/voice.js
           test -s release/bmwcaminfo-voice@${VOICE_VERSION}.tgz
           node bmw-speed-camera-warning/tests/readout-config.test.js
