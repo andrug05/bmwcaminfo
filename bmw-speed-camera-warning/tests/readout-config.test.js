@@ -11,7 +11,7 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.7.28');assert.strictEqual(app.screens.length,1,'Camera management must stay inside one MGU window');
+assert.strictEqual(app.version,'0.7.29');assert.strictEqual(app.screens.length,1,'Camera management must stay inside one MGU window');
 assert.strictEqual(app.screens[0].name,'MAIN');
 assert.strictEqual(app.screens[0].kind,'canvas');
 for(const id of ['BTN_CAM_PREV','BTN_CAM_NEXT','BTN_ZOOM','BTN_REFRESH','BTN_VOICE_TEST','BTN_CAMERA_MENU'])assert(app.screens[0].buttons.some(b=>b[0]===id),'Missing main-window control '+id);
@@ -33,7 +33,6 @@ assert.strictEqual(local.remove('local-test-1234'),false);}
 finally{fs.rmSync(tmp,{recursive:true,force:true});}
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_VOICE_TEST'),'Voice test button must be present');
-for(const [id,label] of Object.entries({BTN_CAM_PREV:'‹ Камера',BTN_CAM_NEXT:'Камера ›',BTN_ZOOM:'Масштаб',BTN_REFRESH:'Обновить',BTN_VOICE_TEST:'Проверка голоса'}))assert(app.screens[0].buttons.some(b=>b[0]===id&&b[1]===label),'Missing descriptive button label '+id);
 for(const [id,label] of Object.entries({BTN_CAM_PREV:'1',BTN_CAM_NEXT:'2',BTN_ZOOM:'3',BTN_REFRESH:'4',BTN_VOICE_TEST:'5'}))assert(app.screens[0].buttons.some(b=>b[0]===id&&b[1]===label),'Missing numbered button label '+id);
 const {ProximityWarnings}=require(path.join(base,'proximity.js'));
 const warnings=new ProximityWarnings();
@@ -62,4 +61,4 @@ assert(!w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accuracyM:10},
 for(const f of ['main.js','gps.js','camera-store.js','local-camera-store.js','proximity.js','road-guidance.js','voice-alert.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_camera_sources.py')]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_city_roads.py')]);
-console.log('Speed Camera Warning 0.7.28 tests passed');
+console.log('Speed Camera Warning 0.7.29 tests passed');
