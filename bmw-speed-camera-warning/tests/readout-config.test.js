@@ -11,7 +11,7 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.7.8');assert.strictEqual(app.screens[0].kind,'canvas');
+assert.strictEqual(app.version,'0.7.5');assert.strictEqual(app.screens[0].kind,'canvas');
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_VOICE_TEST'),'Voice test button must be present');
 const {ProximityWarnings}=require(path.join(base,'proximity.js'));
@@ -41,4 +41,4 @@ assert(!w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accuracyM:10},
 for(const f of ['main.js','gps.js','camera-store.js','proximity.js','road-guidance.js','voice-alert.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_camera_sources.py')]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_city_roads.py')]);
-console.log('Speed Camera Warning 0.7.8 base tests passed');
+console.log('Speed Camera Warning 0.7.6 rollback base tests passed');
