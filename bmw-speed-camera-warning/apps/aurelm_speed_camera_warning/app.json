@@ -13,6 +13,14 @@
       "title": "Карта камер",
       "buttons": [
         [
+          "BTN_PREV",
+          "←"
+        ],
+        [
+          "BTN_NEXT",
+          "→"
+        ],
+        [
           "BTN_ZOOM_OUT",
           "-"
         ],
