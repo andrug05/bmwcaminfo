@@ -119,14 +119,20 @@ VoiceService.prototype.release = async function () {
   var id = this.connectionId;
   this.connectionId = null;
   if (!this.mp || !this.cc) return;
+  // PAUSE the voice source rather than STOP: STOP can leave the head unit's
+  // previous media source stopped. Releasing our audio route lets AudioManager
+  // restore the stream that was active before the announcement.
   try {
-    await this.mp.callMethod('sendButtonEvent', { button: 'STOP', action: 'PRESS' }, 3000);
-  } catch (e) { log('STOP: ' + e.message); }
+    var paused = await this.mp.callMethod('sendButtonEvent', { button: 'PAUSE', action: 'PRESS' }, 3000);
+    log('voice PAUSE: ' + JSON.stringify(paused));
+  } catch (e) { log('voice PAUSE: ' + e.message); }
   if (id !== null && id !== undefined && id !== -1) {
     try {
-      await this.cc.callMethod('disconnect', { mainConnectionID: id }, 5000);
+      var disconnected = await this.cc.callMethod('disconnect', { mainConnectionID: id }, 5000);
+      log('audio route released: ' + JSON.stringify(disconnected));
     } catch (e2) { log('disconnect: ' + e2.message); }
   }
+  await sleep(400);
 };
 
 var voice = new VoiceService();

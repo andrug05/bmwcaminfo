@@ -33,7 +33,7 @@ jobs:
     env:
       APP_VERSION: ${{ inputs.version || '0.7.5' }}
       APP_ID: aurelm_speed_camera_warning
-      VOICE_VERSION: 0.1.1
+      VOICE_VERSION: 0.1.2
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
@@ -134,9 +134,9 @@ jobs:
         run: |
           VOICE_DIR="bmw-speed-camera-warning/native/bmwcaminfo-voice"
           mkdir -p "${VOICE_DIR}/audio"
-          espeak-ng -v ru -s 155 -a 170 -w /tmp/camera-500.wav "Внимание, впереди камера"
-          espeak-ng -v ru -s 150 -a 170 -w /tmp/camera-200.wav "Повторное предупреждение. Камера через двести метров"
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.wav -c:a aac -b:a 96k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
+          espeak-ng -v ru+f5 -s 150 -p 55 -a 185 -w /tmp/camera-500.wav "Внимание, впереди камера"
+          espeak-ng -v ru+f5 -s 145 -p 55 -a 185 -w /tmp/camera-200.wav "Повторное предупреждение. Камера через двести метров"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.wav -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
           ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.wav -c:a aac -b:a 96k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
           test -s "${VOICE_DIR}/audio/camera-500.m4a"
           test -s "${VOICE_DIR}/audio/camera-200.m4a"

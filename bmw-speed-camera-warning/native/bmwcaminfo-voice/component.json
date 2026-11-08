@@ -1,7 +1,7 @@
 {
   "id": "bmwcaminfo-voice",
   "kind": "tool",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "title": "BMW Camera Voice Service",
   "description": "Privileged BMW MediaPlayer voice service for BMW Speed Camera Warning",
