@@ -11,7 +11,7 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.7.5');assert.strictEqual(app.screens[0].kind,'canvas');
+assert.strictEqual(app.version,'0.7.18');assert.strictEqual(app.screens[0].kind,'canvas');
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_VOICE_TEST'),'Voice test button must be present');
 const {ProximityWarnings}=require(path.join(base,'proximity.js'));
