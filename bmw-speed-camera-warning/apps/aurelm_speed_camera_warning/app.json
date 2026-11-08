@@ -21,12 +21,8 @@
           "Вперёд >"
         ],
         [
-          "BTN_ZOOM_OUT",
-          "-"
-        ],
-        [
-          "BTN_ZOOM_IN",
-          "+"
+          "BTN_ZOOM",
+          "Масштаб"
         ],
         [
           "BTN_REFRESH",
