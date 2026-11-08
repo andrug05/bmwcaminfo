@@ -20,7 +20,7 @@ CAMERA_SNAP_M = 30
 
 def fetch(endpoint, payload):
     req = urllib.request.Request(endpoint, data=payload, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=30) as response:
+    with urllib.request.urlopen(req, timeout=18) as response:
         return json.loads(response.read().decode("utf-8"))
 
 def local(lon, lat, origin):
@@ -73,12 +73,12 @@ def main():
     items = list(cameras.values())
     zones = []
     failed = []
-    for start in range(0, len(items), 2):
-        batch = items[start:start+2]
+    for start in range(0, len(items), 8):
+        batch = items[start:start+8]
         clauses = []
         for c in batch:
             clauses.append('way["highway"~"%s"](around:%d,%.7f,%.7f);' % (ROAD_FILTER,RADIUS_M,c["lat"],c["lon"]))
-        query = "[out:json][timeout:25];(" + "".join(clauses) + ");out body geom;"
+        query = "[out:json][timeout:15];(" + "".join(clauses) + ");out tags geom;"
         payload = urllib.parse.urlencode({"data":query}).encode()
         result = None; last_error = None
         for endpoint in ENDPOINTS:
@@ -138,7 +138,17 @@ def main():
             if roads and travel:
                 zones.append({"id":camera["id"],"lat":camera["lat"],"lon":camera["lon"],"roads":roads,"travel":travel})
         print("Road geometry:", min(start+len(batch),len(items)), "/",len(items), "cameras; zones:",len(zones), "failed:",len(failed))
-        time.sleep(0.5)
+        # Persist successful batches; final coverage gate still blocks weak releases.
+        checkpoint={
+            "schemaVersion":1,"region":"RU-ME",
+            "source":"OpenStreetMap contributors (ODbL 1.0)",
+            "databaseRevision":db.get("revision"),"radiusM":RADIUS_M,
+            "cameraCount":len(items),"zoneCount":len(zones),
+            "failedCameraIds":failed,"zones":zones
+        }
+        with open(OUT_PATH,"w",encoding="utf-8") as f:
+            json.dump(checkpoint,f,ensure_ascii=False,separators=(",",":"))
+        time.sleep(0.2)
     if len(zones) < max(1, int(len(items)*0.20)):
         raise RuntimeError("Too few road-confirmed camera zones (%d/%d); refusing to publish a low-coverage geometry file" % (len(zones),len(items)))
     payload={"schemaVersion":1,"region":"RU-ME","source":"OpenStreetMap contributors (ODbL 1.0)",
