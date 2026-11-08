@@ -1,0 +1,1634 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2026-11-08T22:29:21Z",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "node/631892660",
+      "properties": {
+        "@id": "node/631892660",
+        "description": "Комплекс видеофиксации, размещенный в определенном месте для фиксации нарушений ПДД. Это порталы, а так же размещенные на столбах, или иных сооружениях и конструкциях устройства.",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9086887,
+          56.6380821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/845824291",
+      "properties": {
+        "@id": "node/845824291",
+        "direction": "90",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8683269,
+          56.6506069
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1054577737",
+      "properties": {
+        "@id": "node/1054577737",
+        "direction": "160",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.952237,
+          56.6276106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1422979945",
+      "properties": {
+        "@id": "node/1422979945",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8215675,
+          56.6265855
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1864944657",
+      "properties": {
+        "@id": "node/1864944657",
+        "highway": "speed_camera"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9215804,
+          56.625958
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1902207922",
+      "properties": {
+        "@id": "node/1902207922",
+        "direction": "250",
+        "highway": "speed_camera",
+        "maxspeed": "60",
+        "ref": "АТОМ ИС 2414201"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8457928,
+          56.6288956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1902207927",
+      "properties": {
+        "@id": "node/1902207927",
+        "direction": "310",
+        "highway": "speed_camera",
+        "maxspeed": "60",
+        "ref": "АТОМ ИС 2414201"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8458312,
+          56.6289913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9132381216",
+      "properties": {
+        "@id": "node/9132381216",
+        "direction": "230",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.839833,
+          56.6263668
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9330519119",
+      "properties": {
+        "@id": "node/9330519119",
+        "direction": "25",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8719987,
+          56.641075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9786493730",
+      "properties": {
+        "@id": "node/9786493730",
+        "direction": "60",
+        "highway": "speed_camera",
+        "maxspeed": "60",
+        "ref": "АТОМ ИС 2414201"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8459959,
+          56.6289818
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933787",
+      "properties": {
+        "@id": "node/11754933787",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8819016,
+          56.6527136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933788",
+      "properties": {
+        "@id": "node/11754933788",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8819159,
+          56.6527396
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933789",
+      "properties": {
+        "@id": "node/11754933789",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.890031,
+          56.6511207
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933790",
+      "properties": {
+        "@id": "node/11754933790",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8901519,
+          56.6511284
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933795",
+      "properties": {
+        "@id": "node/11754933795",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "140",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9083273,
+          56.6458379
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933796",
+      "properties": {
+        "@id": "node/11754933796",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "320",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9083416,
+          56.6457116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933797",
+      "properties": {
+        "@id": "node/11754933797",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "255",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9206014,
+          56.6433254
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933798",
+      "properties": {
+        "@id": "node/11754933798",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "70",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9206837,
+          56.6433401
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933799",
+      "properties": {
+        "@id": "node/11754933799",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "45",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9130851,
+          56.6373886
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933800",
+      "properties": {
+        "@id": "node/11754933800",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "130",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9134842,
+          56.6371091
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933801",
+      "properties": {
+        "@id": "node/11754933801",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "190",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9127459,
+          56.6369007
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933802",
+      "properties": {
+        "@id": "node/11754933802",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "310",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9124767,
+          56.6371668
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933803",
+      "properties": {
+        "@id": "node/11754933803",
+        "description": "Комплекс видеофиксации, размещенный в определенном месте для фиксации нарушений ПДД. Это порталы, а так же размещенные на столбах, или иных сооружениях и конструкциях устройства.",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.908586,
+          56.6379468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933804",
+      "properties": {
+        "@id": "node/11754933804",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "130",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8250531,
+          56.6587961
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933805",
+      "properties": {
+        "@id": "node/11754933805",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "310",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8250146,
+          56.6588084
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11754933806",
+      "properties": {
+        "@id": "node/11754933806",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "180",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8307995,
+          56.6485325
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936909",
+      "properties": {
+        "@id": "node/11782936909",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8748527,
+          56.6448944
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936910",
+      "properties": {
+        "@id": "node/11782936910",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "200",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8744816,
+          56.6447648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936911",
+      "properties": {
+        "@id": "node/11782936911",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "300",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8740871,
+          56.6450085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936912",
+      "properties": {
+        "@id": "node/11782936912",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "10",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8746427,
+          56.6450868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936913",
+      "properties": {
+        "@id": "node/11782936913",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "20",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8895658,
+          56.6419573
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936914",
+      "properties": {
+        "@id": "node/11782936914",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "100",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.889504,
+          56.641856
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936915",
+      "properties": {
+        "@id": "node/11782936915",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8892817,
+          56.6418215
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936916",
+      "properties": {
+        "@id": "node/11782936916",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "200",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.88942,
+          56.641724
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936917",
+      "properties": {
+        "@id": "node/11782936917",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "200",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8919354,
+          56.6455997
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936918",
+      "properties": {
+        "@id": "node/11782936918",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.892105,
+          56.6456791
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936919",
+      "properties": {
+        "@id": "node/11782936919",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8918827,
+          56.6457228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936920",
+      "properties": {
+        "@id": "node/11782936920",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "20",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8920477,
+          56.6457753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936921",
+      "properties": {
+        "@id": "node/11782936921",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9005145,
+          56.6395279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936922",
+      "properties": {
+        "@id": "node/11782936922",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "25",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9009533,
+          56.6397364
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936923",
+      "properties": {
+        "@id": "node/11782936923",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9011124,
+          56.6395361
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936924",
+      "properties": {
+        "@id": "node/11782936924",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "200",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.90068,
+          56.6393424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936925",
+      "properties": {
+        "@id": "node/11782936925",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8945022,
+          56.6385714
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936926",
+      "properties": {
+        "@id": "node/11782936926",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "25",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.895025,
+          56.6386652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936927",
+      "properties": {
+        "@id": "node/11782936927",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8952512,
+          56.638486
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11782936928",
+      "properties": {
+        "@id": "node/11782936928",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "200",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8948014,
+          56.638329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475335",
+      "properties": {
+        "@id": "node/11930475335",
+        "direction": "235",
+        "highway": "speed_camera",
+        "maxspeed": "60",
+        "ref": "Кордон-М2 MD2417"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8539149,
+          56.6432469
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475336",
+      "properties": {
+        "@id": "node/11930475336",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "40",
+        "ref": "Кордон MD1739-KD2305"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8571083,
+          56.6410806
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475337",
+      "properties": {
+        "@id": "node/11930475337",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "330;150",
+        "highway": "speed_camera",
+        "maxspeed": "40",
+        "ref": "Кордон-М2 MD2360;СКАТ-ПП 2105017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8354551,
+          56.6365466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475338",
+      "properties": {
+        "@id": "node/11930475338",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "230",
+        "highway": "speed_camera",
+        "maxspeed": "40",
+        "ref": "Кордон-М2 MD2063"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8609704,
+          56.6252945
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475339",
+      "properties": {
+        "@id": "node/11930475339",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "330",
+        "highway": "speed_camera",
+        "maxspeed": "40",
+        "ref": "СКАТ-ПП 2105017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8639431,
+          56.6158328
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475340",
+      "properties": {
+        "@id": "node/11930475340",
+        "direction": "310",
+        "highway": "speed_camera",
+        "maxspeed": "40",
+        "ref": "АТОМ ИС 2316221"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8705415,
+          56.612905
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475342",
+      "properties": {
+        "@id": "node/11930475342",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "55",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8467942,
+          56.6201613
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11930475343",
+      "properties": {
+        "@id": "node/11930475343",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "55",
+        "highway": "speed_camera",
+        "maxspeed": "40",
+        "ref": "Кордон-М2 MD2063"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8610589,
+          56.6253319
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12069748801",
+      "properties": {
+        "@id": "node/12069748801",
+        "direction": "90",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8028412,
+          56.6391612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12146084614",
+      "properties": {
+        "@id": "node/12146084614",
+        "direction": "270",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8676389,
+          56.6504441
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12146084615",
+      "properties": {
+        "@id": "node/12146084615",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8755129,
+          56.6393449
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12146084616",
+      "properties": {
+        "@id": "node/12146084616",
+        "direction": "120",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.879194,
+          56.6388651
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12146084617",
+      "properties": {
+        "@id": "node/12146084617",
+        "direction": "45",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8668271,
+          56.6376895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12146084618",
+      "properties": {
+        "@id": "node/12146084618",
+        "direction": "45",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8607273,
+          56.6351506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12146096593",
+      "properties": {
+        "@id": "node/12146096593",
+        "direction": "355",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8031491,
+          56.6359262
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12146116954",
+      "properties": {
+        "@id": "node/12146116954",
+        "direction": "90",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8310718,
+          56.6255901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147242300",
+      "properties": {
+        "@id": "node/12147242300",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8834526,
+          56.6473801
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147272257",
+      "properties": {
+        "@id": "node/12147272257",
+        "direction": "350",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9521465,
+          56.6277903
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147272258",
+      "properties": {
+        "@id": "node/12147272258",
+        "direction": "325",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9604262,
+          56.6137028
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147272259",
+      "properties": {
+        "@id": "node/12147272259",
+        "direction": "145",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9605205,
+          56.6136246
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147272260",
+      "properties": {
+        "@id": "node/12147272260",
+        "direction": "340",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9718761,
+          56.5991951
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293049",
+      "properties": {
+        "@id": "node/12147293049",
+        "direction": "290",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9198954,
+          56.6402224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293050",
+      "properties": {
+        "@id": "node/12147293050",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9200203,
+          56.6401988
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293051",
+      "properties": {
+        "@id": "node/12147293051",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9293813,
+          56.6384538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293052",
+      "properties": {
+        "@id": "node/12147293052",
+        "direction": "25",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9292665,
+          56.6311201
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293053",
+      "properties": {
+        "@id": "node/12147293053",
+        "direction": "200",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9295602,
+          56.6311496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293054",
+      "properties": {
+        "@id": "node/12147293054",
+        "direction": "100",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.9066977,
+          56.6270982
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293055",
+      "properties": {
+        "@id": "node/12147293055",
+        "direction": "55",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8906568,
+          56.6237876
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293056",
+      "properties": {
+        "@id": "node/12147293056",
+        "direction": "300",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8976615,
+          56.6183197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293057",
+      "properties": {
+        "@id": "node/12147293057",
+        "direction": "120",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8977899,
+          56.6182825
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147293058",
+      "properties": {
+        "@id": "node/12147293058",
+        "direction": "85",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8396635,
+          56.6405557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147294601",
+      "properties": {
+        "@id": "node/12147294601",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8836203,
+          56.6473471
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147294602",
+      "properties": {
+        "@id": "node/12147294602",
+        "direction": "110",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8846835,
+          56.6471394
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147366174",
+      "properties": {
+        "@id": "node/12147366174",
+        "direction": "25",
+        "highway": "speed_camera",
+        "maxspeed": "50"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8303306,
+          56.5976616
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12147366175",
+      "properties": {
+        "@id": "node/12147366175",
+        "direction": "160",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8831582,
+          56.6020731
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12151219362",
+      "properties": {
+        "@id": "node/12151219362",
+        "direction": "90",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.7761163,
+          56.638151
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12151219363",
+      "properties": {
+        "@id": "node/12151219363",
+        "direction": "270",
+        "highway": "speed_camera",
+        "maxspeed": "50"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.7606268,
+          56.6375599
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12234262263",
+      "properties": {
+        "@id": "node/12234262263",
+        "camera:direction": "270",
+        "camera:mount": "post",
+        "camera:type": "fixed",
+        "direction": "270",
+        "highway": "speed_camera",
+        "maxspeed": "60",
+        "surveillance": "traffic",
+        "surveillance:zone": "traffic"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8643252,
+          56.653202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12288415982",
+      "properties": {
+        "@id": "node/12288415982",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "0",
+        "highway": "speed_camera",
+        "maxspeed": "40"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8307775,
+          56.6487218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12289792264",
+      "properties": {
+        "@id": "node/12289792264",
+        "direction": "150",
+        "highway": "speed_camera",
+        "maxspeed": "60",
+        "ref": "АТОМ ИС 2414201"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8459895,
+          56.6288763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12580937790",
+      "properties": {
+        "@id": "node/12580937790",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "200",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8872474,
+          56.6384551
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12580937800",
+      "properties": {
+        "@id": "node/12580937800",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "direction": "30",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8871914,
+          56.6383709
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/13043290816",
+      "properties": {
+        "@id": "node/13043290816",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "270",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8946223,
+          56.6502337
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/13043290817",
+      "properties": {
+        "@id": "node/13043290817",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "125",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8951259,
+          56.6501371
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/13043290821",
+      "properties": {
+        "@id": "node/13043290821",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "35",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8949734,
+          56.6503398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/13043290862",
+      "properties": {
+        "@id": "node/13043290862",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "direction": "190",
+        "highway": "speed_camera",
+        "maxspeed": "60"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.8946961,
+          56.649908
+        ]
+      }
+    }
+  ]
+}
