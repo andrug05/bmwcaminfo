@@ -152,7 +152,7 @@ var server = net.createServer(function (socket) {
 try { fs.unlinkSync(SOCKET); } catch (e) {}
 server.listen(SOCKET, function () {
   try { fs.chownSync(SOCKET, 0, 12202); } catch (e) { log('socket chown: ' + e.message); }
-  try { fs.chmodSync(SOCKET, 0660); } catch (e2) { log('socket chmod: ' + e2.message); }
+  try { fs.chmodSync(SOCKET, 0o660); } catch (e2) { log('socket chmod: ' + e2.message); }
   log('control socket ready: ' + SOCKET);
 });
 
