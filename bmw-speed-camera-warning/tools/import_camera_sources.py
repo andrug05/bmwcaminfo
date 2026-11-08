@@ -133,7 +133,7 @@ def osm_snapshot_nodes():
         if limit is not None and not (5 <= limit <= 250): limit = None
         description = str(props.get("description") or "").strip()[:500]
         lower = description.lower()
-        if re.search(r"светофор|перекр[её]ст|стоп[\\s-]*линия|выезд за стоп", lower):
+        if re.search(r"светофор|перекр[её]ст|стоп[\s-]*линия|выезд за стоп", lower):
             category, kind = "intersection", "Камера на перекрёстке"
         elif re.search(r"скорост|скоростн|радар|speed|автоматическ.*контрол", lower):
             category, kind = "speed", "Камера контроля скорости"
