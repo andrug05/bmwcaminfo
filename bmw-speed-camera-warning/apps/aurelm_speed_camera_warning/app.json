@@ -2,7 +2,7 @@
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
   "description": "Вкладки карты, добавления и управления пользовательскими камерами в одном окне MGU; кнопки добавления и удаления доступны в разделе «Мои камеры».",
-  "version": "0.7.26",
+  "version": "0.7.27",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
@@ -14,23 +14,23 @@
       "buttons": [
         [
           "BTN_CAM_PREV",
-          "− / Назад"
+          "‹ Камера"
         ],
         [
           "BTN_CAM_NEXT",
-          "+ / Далее"
+          "Камера ›"
         ],
         [
           "BTN_ZOOM",
-          "Тип / Масштаб"
+          "Масштаб"
         ],
         [
           "BTN_REFRESH",
-          "Направл. / Обновить"
+          "Обновить"
         ],
         [
           "BTN_VOICE_TEST",
-          "Сохранить / Голос"
+          "Проверка голоса"
         ],
         [
           "BTN_CAMERA_MENU",
