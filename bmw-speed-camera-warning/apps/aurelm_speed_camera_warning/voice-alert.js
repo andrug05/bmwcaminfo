@@ -1,112 +1,81 @@
 'use strict';
-const fs = require('fs');
-const path = require('path');
+const net = require('net');
 
-const SOURCE_ID = 1046;
-const SINK_ID = 1024;
-const LANGUAGE_CODE = 7695972;
-const PLAY_TIMEOUT_MS = 5500;
+const SOCKET = '/run/bmwcaminfo-voice/ctl.sock';
+const FILES = {
+  1: 'camera-500.m4a',
+  2: 'camera-200.m4a'
+};
 
-/*
- * Spoken camera warnings use BMW's MediaPlayer over SOME/IP. This is the same
- * public head-unit path used by RideTube (source 1046 -> sink 1024), not the
- * browser Web Speech API, which is unavailable in the MGU app runtime.
- */
 class CameraVoiceAlerts {
-    constructor(options) {
-        this.assetDir = options.assetDir;
-        this.log = options.log || function () {};
-        this.queue = Promise.resolve();
-        this.cc = null;
-        this.mp = null;
-        this.connectionId = null;
-        this.busy = false;
-        this.lastError = null;
-    }
+  constructor(options) {
+    this.log = options.log || function () {};
+    this.queue = Promise.resolve();
+    this.lastError = null;
+  }
 
-    _say(file) {
-        const task = this.queue.then(() => this._play(file)).then(() => {
-            this.lastError = null;
-            return true;
-        });
-        this.queue = task.catch((e) => {
-            this.lastError = e && e.message ? e.message : String(e);
-            this.log('VOICE_TEST_OR_ALERT_FAILED: ' + (e && e.stack || e));
-            return false;
-        });
-        return this.queue;
-    }
+  camera(stage) {
+    return this._send(stage === 2 ? FILES[2] : FILES[1]);
+  }
 
-    camera(stage) {
-        return this._say(stage === 2 ? 'camera-200.m4a' : 'camera-500.m4a');
-    }
+  test() {
+    return this._send(FILES[1]);
+  }
 
-    test() {
-        return this._say('camera-500.m4a');
-    }
+  _send(file) {
+    const task = this.queue.then(() => this._request(file)).then((result) => {
+      if (!result || result.ok !== true) {
+        throw new Error(result && result.error ? result.error : 'BMW voice service rejected the request');
+      }
+      this.lastError = null;
+      this.log('BMW voice service: ' + (result.message || 'playback accepted'));
+      return true;
+    });
+    this.queue = task.catch((error) => {
+      this.lastError = error && error.message ? error.message : String(error);
+      this.log('BMW VOICE SERVICE ERROR: ' + this.lastError);
+      return false;
+    });
+    return this.queue;
+  }
 
-    async _init() {
-        if (this.cc && this.mp) return;
-        const someip = require('/usr/lib/someip.node');
-        const roots = ['/usr/lib/oap-mainapp/src-gen', '/usr/lib/oap-mainapp21/src-gen'];
-        let srcGen = null;
-        for (let i = 0; i < roots.length; i++) {
-            if (fs.existsSync(path.join(roots[i], 'org_genivi_am_commandinterface_CommandControl.json')) &&
-                fs.existsSync(path.join(roots[i], 'de_bmw_infotainment_entertainment_mediaplayer_MediaPlayer.json'))) {
-                srcGen = roots[i];
-                break;
-            }
-        }
-        if (!srcGen) throw new Error('BMW MediaPlayer SOME/IP definitions not found');
-        const read = (name) => JSON.parse(fs.readFileSync(path.join(srcGen, name), 'utf8'));
-        const cc = await someip.buildProxy(read('org_genivi_am_commandinterface_CommandControl.json'), '1');
-        await cc.init();
-        const mp = await someip.buildProxy(read('de_bmw_infotainment_entertainment_mediaplayer_MediaPlayer.json'), 'OapGenericMedia');
-        await mp.init();
-        this.cc = cc;
-        this.mp = mp;
-    }
-
-    async _play(file) {
-        await this._init();
-        const deadline = Date.now() + 5000;
-        while (!(await this.cc.isAvailable())) {
-            if (Date.now() >= deadline) throw new Error('BMW CommandControl is not available');
-            await new Promise((resolve) => setTimeout(resolve, 100));
-        }
-        const audioPath = path.join(this.assetDir, 'audio', file);
-        if (!fs.existsSync(audioPath)) throw new Error('voice file missing: ' + audioPath);
-        const connected = await this.cc.callMethod('connect', { sourceID: SOURCE_ID, sinkID: SINK_ID }, 5000);
-        this.log('BMW MediaPlayer connect response: ' + JSON.stringify(connected));
-        if (!connected || (connected.amError !== 'E_OK' && connected.amError !== 'E_ALREADY_EXISTS')) {
-            throw new Error('BMW audio connect failed: ' + JSON.stringify(connected));
-        }
-        this.connectionId = connected.mainConnectionID;
-        try {
-            const result = await this.mp.callMethod('playFile', { path: audioPath, languageCode: LANGUAGE_CODE }, 5000);
-            this.log('BMW MediaPlayer playFile response: ' + JSON.stringify(result));
-            if (!result || result.EntError !== 'OK') throw new Error('BMW playFile failed: ' + JSON.stringify(result));
-            await new Promise((resolve) => setTimeout(resolve, PLAY_TIMEOUT_MS));
-        } finally {
-            await this._release();
-        }
-    }
-
-    async _release() {
-        if (this.connectionId === null || this.connectionId === undefined) return;
-        const id = this.connectionId;
-        this.connectionId = null;
-        try {
-            await this.mp.callMethod('sendButtonEvent', { button: 'STOP', action: 'PRESS' }, 3000);
-        } catch (e) {
-            this.log('voice STOP: ' + e.message);
-        }
-        try {
-            if (id !== -1) await this.cc.callMethod('disconnect', { mainConnectionID: id }, 5000);
-        } catch (e) {
-            this.log('voice disconnect: ' + e.message);
-        }
-    }
+  _request(file) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      let buffer = '';
+      const socket = net.createConnection(SOCKET);
+      const finish = (error, result) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        try { socket.destroy(); } catch (e) {}
+        if (error) reject(error);
+        else resolve(result);
+      };
+      const timer = setTimeout(() => finish(new Error('BMW voice service timeout (20 s)')), 20000);
+      socket.setEncoding('utf8');
+      socket.on('connect', () => {
+        socket.write(JSON.stringify({ action: 'play', file: file }) + '\n');
+      });
+      socket.on('data', (chunk) => {
+        buffer += chunk;
+        const end = buffer.indexOf('\n');
+        if (end < 0) return;
+        let result;
+        try { result = JSON.parse(buffer.slice(0, end)); }
+        catch (error) { finish(new Error('Invalid response from BMW voice service')); return; }
+        finish(null, result);
+      });
+      socket.on('error', (error) => {
+        if (error && error.code === 'ENOENT') finish(new Error('BMW voice service is not installed or not running'));
+        else if (error && error.code === 'EACCES') finish(new Error('Access denied to BMW voice service socket'));
+        else finish(new Error('BMW voice service connection failed: ' + (error.message || error)));
+      });
+      socket.on('close', () => {
+        if (!settled) finish(new Error('BMW voice service closed connection without a response'));
+      });
+    });
+  }
 }
 
 module.exports = { CameraVoiceAlerts };
