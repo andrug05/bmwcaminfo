@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmw-weather-road-info/main/bmw-speed-camera-warning/data/camera-db.json';
+const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmwcaminfo/main/bmw-speed-camera-warning/data/camera-db.json';
 const MAX_BYTES = 1024 * 1024;
 const MAX_REDIRECTS = 3;
 
@@ -51,7 +51,7 @@ function getHttps(url, redirects) {
             reject(new Error('CAMERA_DB_URL_NOT_ALLOWED')); return;
         }
         const req = https.get(parsed, {
-            headers: { 'User-Agent': 'BMW-Speed-Camera-Warning/0.5.0', 'Accept': 'application/json' }
+            headers: { 'User-Agent': 'BMW-Speed-Camera-Warning/0.7.6', 'Accept': 'application/json' }
         }, (res) => {
             if ([301, 302, 303, 307, 308].indexOf(res.statusCode) >= 0) {
                 const location = res.headers.location;
