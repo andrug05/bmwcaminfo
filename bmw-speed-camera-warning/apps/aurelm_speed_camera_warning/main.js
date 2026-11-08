@@ -63,7 +63,7 @@ mgu.run({async start(ctx){
  async function refresh(){if(refreshInFlight)return refreshInFlight;refreshInFlight=store.refresh().then(r=>{database=r.database;if(r.updated){index=0;roadGuidance.reset();}renderSafe();return r;}).catch(e=>{log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshInFlight=null;return r;});return refreshInFlight;}
  ui.onClick('BTN_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_NEXT',()=>{index=Math.min(cameras().length-1,index+1);renderSafe();});
  ui.onClick('BTN_ZOOM_IN',()=>{zoom=Math.min(2.5,zoom*1.25);renderSafe();});ui.onClick('BTN_ZOOM_OUT',()=>{zoom=Math.max(.55,zoom/1.25);renderSafe();});ui.onClick('BTN_REFRESH',refresh);
- settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;proximity.reset();renderSafe();}});
+ settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;roadGuidance.reset();renderSafe();}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
  renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);
  log.info('Speed Camera Warning 0.7.0 started; OSM road-matched camera approach only; no nearby fallback; camera-record speed limits only; no OSM road maxspeed; visual alert banner; audio not enabled');
