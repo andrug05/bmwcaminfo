@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const dns = require('dns');
+const net = require('net');
 const urlModule = require('url');
 const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmwcaminfo/main/bmw-speed-camera-warning/data/camera-db.json';
 const DATABASE_API_URL = 'https://api.github.com/repos/andrug05/bmwcaminfo/contents/bmw-speed-camera-warning/data/camera-db.json?ref=main';
@@ -49,22 +51,51 @@ function validateDatabase(value) {
     return { schemaVersion: 1, revision: value.revision,
         updatedAt: typeof value.updatedAt === 'string' ? value.updatedAt : '', cities };
 }
-function getHttps(requestUrl, redirects) {
+function uplinkLookup(dataDir) {
+    const leasePath = path.join(dataDir, 'uplink.json');
+    let lease;
+    try { lease = JSON.parse(fs.readFileSync(leasePath, 'utf8')); }
+    catch (e) { throw new Error('CAMERA_DB_UPLINK_LEASE_MISSING'); }
+    const servers = Array.isArray(lease.dns) ? lease.dns.filter((ip) => typeof ip === 'string' && net.isIP(ip)) : [];
+    if (!servers.length || !lease.interface || !lease.ip) throw new Error('CAMERA_DB_UPLINK_OFFLINE');
+    const resolver = new dns.Resolver();
+    resolver.setServers(servers);
+    return function lookup(hostname, options, callback) {
+        if (typeof options === 'function') { callback = options; options = {}; }
+        resolver.resolve4(hostname, (error, addresses) => {
+            if (error || !addresses || !addresses.length) {
+                callback(error || new Error('CAMERA_DB_DNS_NO_ADDRESS'));
+                return;
+            }
+            if (options && options.all) callback(null, addresses.map((address) => ({ address, family: 4 })));
+            else callback(null, addresses[0], 4);
+        });
+    };
+}
+function getHttps(requestUrl, redirects, dataDir) {
     return new Promise((resolve, reject) => {
         let parsed;
         try { parsed = urlModule.parse(requestUrl); } catch (e) { reject(e); return; }
         if (parsed.protocol !== 'https:' || ['raw.githubusercontent.com', 'api.github.com'].indexOf(parsed.hostname) < 0) {
             reject(new Error('CAMERA_DB_URL_NOT_ALLOWED')); return;
         }
-        // Use the two-argument overload for compatibility with the MGU Node.js runtime.
-        // Some MGU builds do not support https.get(url, options, callback) and treat
-        // the options object as an event listener.
-        const req = https.get(requestUrl, (res) => {
+        let lookup;
+        try { lookup = uplinkLookup(dataDir); }
+        catch (e) { reject(e); return; }
+        // Use the options-object overload (Node 8 compatible) to route DNS through
+        // the per-app mgu-uplink lease instead of the head unit's offline resolver.
+        const req = https.get({
+            protocol: 'https:',
+            hostname: parsed.hostname,
+            port: parsed.port || 443,
+            path: parsed.path || '/',
+            lookup
+        }, (res) => {
             if ([301, 302, 303, 307, 308].indexOf(res.statusCode) >= 0) {
                 const location = res.headers.location;
                 res.resume();
                 if (!location || redirects >= MAX_REDIRECTS) { reject(new Error('CAMERA_DB_REDIRECT_LIMIT')); return; }
-                getHttps(urlModule.resolve(requestUrl, location), redirects + 1).then(resolve, reject);
+                getHttps(urlModule.resolve(requestUrl, location), redirects + 1, dataDir).then(resolve, reject);
                 return;
             }
             if (res.statusCode !== 200) { res.resume(); reject(new Error('CAMERA_DB_HTTP_' + res.statusCode)); return; }
@@ -86,10 +117,10 @@ function isTemporaryNetworkError(error) {
     return !!error && ['EAI_AGAIN', 'ETIMEDOUT', 'ECONNRESET', 'EHOSTUNREACH'].indexOf(error.code) >= 0;
 }
 function wait(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
-async function getWithRetry(requestUrl, attempts) {
+async function getWithRetry(requestUrl, attempts, dataDir) {
     let lastError;
     for (let i = 0; i < attempts; i++) {
-        try { return await getHttps(requestUrl, 0); }
+        try { return await getHttps(requestUrl, 0, dataDir); }
         catch (error) {
             lastError = error;
             if (!isTemporaryNetworkError(error) || i === attempts - 1) throw error;
@@ -98,12 +129,12 @@ async function getWithRetry(requestUrl, attempts) {
     }
     throw lastError || new Error('CAMERA_DB_DOWNLOAD_FAILED');
 }
-async function downloadDatabaseBody() {
+async function downloadDatabaseBody(dataDir) {
     try {
-        return await getWithRetry(DATABASE_URL, 3);
+        return await getWithRetry(DATABASE_URL, 3, dataDir);
     } catch (rawError) {
         try {
-            const apiBody = await getWithRetry(DATABASE_API_URL, 2);
+            const apiBody = await getWithRetry(DATABASE_API_URL, 2, dataDir);
             const payload = JSON.parse(apiBody);
             if (!payload || payload.encoding !== 'base64' || typeof payload.content !== 'string') {
                 throw new Error('CAMERA_DB_API_RESPONSE_INVALID');
@@ -142,7 +173,7 @@ class CameraStore {
         const status = typeof onStatus === 'function' ? onStatus : function () {};
         try {
             status('Загрузка базы камер...');
-            const body = await downloadDatabaseBody();
+            const body = await downloadDatabaseBody(this.dataDir);
             status('Проверка полученной базы...');
             const next = validateDatabase(JSON.parse(body));
             if (next.revision > this.current.revision) {
