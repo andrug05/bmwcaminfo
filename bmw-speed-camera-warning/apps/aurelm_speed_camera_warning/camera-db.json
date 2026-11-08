@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 12,
-  "updatedAt": "2026-11-08T00:55:56.523760+00:00",
+  "revision": 13,
+  "updatedAt": "2026-11-08T22:29:21Z",
   "attribution": "© OpenStreetMap contributors; ODbL 1.0. SpeedCams.world data is derived from OpenStreetMap.",
   "cities": {
     "mari-el": [
@@ -242,7 +242,7 @@
       {
         "id": "scw-11754933804",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 60,
         "lat": 56.658796,
         "lon": 47.825053,
@@ -250,7 +250,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933804",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "130",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933804"
       },
       {
         "id": "scw-11754933806",
@@ -523,7 +528,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12069748801",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "90",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12069748801"
       },
       {
         "id": "scw-12146084614",
@@ -601,7 +611,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12146096593",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "355",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12146096593"
       },
       {
         "id": "scw-12146116954",
@@ -705,7 +720,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147272260",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "340",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147272260"
       },
       {
         "id": "scw-12147293049",
@@ -822,7 +842,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147366174",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "25",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147366174"
       },
       {
         "id": "scw-12147366175",
@@ -848,7 +873,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12151219362",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "90",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12151219362"
       },
       {
         "id": "scw-12151219363",
@@ -861,7 +891,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12151219363",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "270",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12151219363"
       },
       {
         "id": "scw-12234262263",
@@ -954,7 +989,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "631892660",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "110",
+        "description": "Комплекс видеофиксации, размещенный в определенном месте для фиксации нарушений ПДД. Это порталы, а так же размещенные на столбах, или иных сооружениях и конструкциях устройства.",
+        "category": "other",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/631892660"
       },
       {
         "id": "scw-845824291",
@@ -967,7 +1007,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "845824291",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "90",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/845824291"
       },
       {
         "id": "scw-1054577737",
@@ -980,7 +1025,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "1054577737",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "160",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/1054577737"
       },
       {
         "id": "scw-1422979945",
@@ -993,7 +1043,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "1422979945",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "110",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/1422979945"
       },
       {
         "id": "scw-1864944657",
@@ -1006,7 +1061,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "1864944657",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": null,
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/1864944657"
       },
       {
         "id": "scw-1902207922",
@@ -1019,7 +1079,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "1902207922",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "250",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/1902207922"
       },
       {
         "id": "scw-9132381216",
@@ -1032,7 +1097,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "9132381216",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "230",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/9132381216"
       },
       {
         "id": "scw-9330519119",
@@ -1045,12 +1115,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "9330519119",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "25",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/9330519119"
       },
       {
         "id": "scw-11754933787",
         "name": "Speed camera 40 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 40,
         "lat": 56.652714,
         "lon": 47.881902,
@@ -1058,12 +1133,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933787",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "290",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933787"
       },
       {
         "id": "scw-11754933789",
         "name": "Speed camera 40 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 40,
         "lat": 56.651121,
         "lon": 47.890031,
@@ -1071,12 +1151,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933789",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "290",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933789"
       },
       {
         "id": "scw-11754933795",
         "name": "Speed camera 40 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 40,
         "lat": 56.645838,
         "lon": 47.908327,
@@ -1084,12 +1169,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933795",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "140",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933795"
       },
       {
         "id": "scw-11754933797",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 60,
         "lat": 56.643325,
         "lon": 47.920601,
@@ -1097,12 +1187,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933797",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "255",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933797"
       },
       {
         "id": "scw-11754933799",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.637389,
         "lon": 47.913085,
@@ -1110,12 +1205,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933799",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "45",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933799"
       },
       {
         "id": "scw-11754933800",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.637109,
         "lon": 47.913484,
@@ -1123,12 +1223,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933800",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "130",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933800"
       },
       {
         "id": "scw-11754933801",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.636901,
         "lon": 47.912746,
@@ -1136,12 +1241,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933801",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "190",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933801"
       },
       {
         "id": "scw-11754933802",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.637167,
         "lon": 47.912477,
@@ -1149,12 +1259,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933802",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "310",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933802"
       },
       {
         "id": "scw-11754933806",
         "name": "Speed camera 40 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 40,
         "lat": 56.648532,
         "lon": 47.8308,
@@ -1162,12 +1277,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11754933806",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "180",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11754933806"
       },
       {
         "id": "scw-11782936909",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.644894,
         "lon": 47.874853,
@@ -1175,12 +1295,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936909",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "110",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936909"
       },
       {
         "id": "scw-11782936910",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.644765,
         "lon": 47.874482,
@@ -1188,12 +1313,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936910",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "200",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936910"
       },
       {
         "id": "scw-11782936911",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.645009,
         "lon": 47.874087,
@@ -1201,12 +1331,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936911",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "300",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936911"
       },
       {
         "id": "scw-11782936912",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.645087,
         "lon": 47.874643,
@@ -1214,12 +1349,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936912",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "10",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936912"
       },
       {
         "id": "scw-11782936913",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.641957,
         "lon": 47.889566,
@@ -1227,12 +1367,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936913",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "20",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936913"
       },
       {
         "id": "scw-11782936916",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.641724,
         "lon": 47.889421,
@@ -1240,12 +1385,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936916",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "200",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936916"
       },
       {
         "id": "scw-11782936917",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.6456,
         "lon": 47.891936,
@@ -1253,12 +1403,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936917",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "200",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936917"
       },
       {
         "id": "scw-11782936921",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.639528,
         "lon": 47.900515,
@@ -1266,12 +1421,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936921",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "290",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936921"
       },
       {
         "id": "scw-11782936922",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.639736,
         "lon": 47.900953,
@@ -1279,12 +1439,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936922",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "25",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936922"
       },
       {
         "id": "scw-11782936925",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.638571,
         "lon": 47.894502,
@@ -1292,12 +1457,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936925",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "290",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936925"
       },
       {
         "id": "scw-11782936926",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.638665,
         "lon": 47.895025,
@@ -1305,12 +1475,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936926",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "25",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936926"
       },
       {
         "id": "scw-11782936928",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.638329,
         "lon": 47.894801,
@@ -1318,7 +1493,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11782936928",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "200",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11782936928"
       },
       {
         "id": "scw-11930475335",
@@ -1331,7 +1511,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11930475335",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "235",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11930475335"
       },
       {
         "id": "scw-11930475336",
@@ -1344,12 +1529,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11930475336",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "290",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11930475336"
       },
       {
         "id": "scw-11930475337",
         "name": "Speed camera 40 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 40,
         "lat": 56.636547,
         "lon": 47.835455,
@@ -1357,12 +1547,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11930475337",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "330;150",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11930475337"
       },
       {
         "id": "scw-11930475338",
         "name": "Speed camera 40 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 40,
         "lat": 56.625294,
         "lon": 47.86097,
@@ -1370,12 +1565,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11930475338",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "230",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11930475338"
       },
       {
         "id": "scw-11930475339",
         "name": "Speed camera 40 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 40,
         "lat": 56.615833,
         "lon": 47.863943,
@@ -1383,7 +1583,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11930475339",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "330",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11930475339"
       },
       {
         "id": "scw-11930475340",
@@ -1396,12 +1601,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11930475340",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "310",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11930475340"
       },
       {
         "id": "scw-11930475342",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 60,
         "lat": 56.620161,
         "lon": 47.846794,
@@ -1409,7 +1619,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "11930475342",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "55",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/11930475342"
       },
       {
         "id": "scw-12146084614",
@@ -1422,7 +1637,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12146084614",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "270",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12146084614"
       },
       {
         "id": "scw-12146084615",
@@ -1435,7 +1655,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12146084615",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": null,
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12146084615"
       },
       {
         "id": "scw-12146084616",
@@ -1448,7 +1673,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12146084616",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "120",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12146084616"
       },
       {
         "id": "scw-12146084617",
@@ -1461,7 +1691,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12146084617",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "45",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12146084617"
       },
       {
         "id": "scw-12146084618",
@@ -1474,7 +1709,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12146084618",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "45",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12146084618"
       },
       {
         "id": "scw-12146116954",
@@ -1487,7 +1727,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12146116954",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "90",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12146116954"
       },
       {
         "id": "scw-12147242300",
@@ -1500,7 +1745,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147242300",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "290",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147242300"
       },
       {
         "id": "scw-12147272258",
@@ -1513,7 +1763,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147272258",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "325",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147272258"
       },
       {
         "id": "scw-12147293049",
@@ -1526,7 +1781,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147293049",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "290",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147293049"
       },
       {
         "id": "scw-12147293051",
@@ -1539,7 +1799,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147293051",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "110",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147293051"
       },
       {
         "id": "scw-12147293052",
@@ -1552,7 +1817,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147293052",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "25",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147293052"
       },
       {
         "id": "scw-12147293054",
@@ -1565,7 +1835,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147293054",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "100",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147293054"
       },
       {
         "id": "scw-12147293055",
@@ -1578,7 +1853,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147293055",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "55",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147293055"
       },
       {
         "id": "scw-12147293056",
@@ -1591,7 +1871,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147293056",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "300",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147293056"
       },
       {
         "id": "scw-12147293058",
@@ -1604,7 +1889,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147293058",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "85",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147293058"
       },
       {
         "id": "scw-12147294602",
@@ -1617,7 +1907,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147294602",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "110",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147294602"
       },
       {
         "id": "scw-12147366175",
@@ -1630,7 +1925,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12147366175",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "160",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12147366175"
       },
       {
         "id": "scw-12234262263",
@@ -1643,12 +1943,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12234262263",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "270",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12234262263"
       },
       {
         "id": "scw-12580937790",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера контроля скорости",
         "limit": 60,
         "lat": 56.638451,
         "lon": 47.88727,
@@ -1656,12 +1961,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "12580937790",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "200",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/12580937790"
       },
       {
         "id": "scw-13043290816",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.650234,
         "lon": 47.894622,
@@ -1669,12 +1979,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "13043290816",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "270",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/13043290816"
       },
       {
         "id": "scw-13043290817",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.650137,
         "lon": 47.895126,
@@ -1682,12 +1997,17 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "13043290817",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "125",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/13043290817"
       },
       {
         "id": "scw-13043290862",
         "name": "Speed camera 60 km/h",
-        "type": "fixed",
+        "type": "Камера на перекрёстке",
         "limit": 60,
         "lat": 56.649908,
         "lon": 47.894696,
@@ -1695,7 +2015,12 @@
         "sourceLabel": "SpeedCams.world / OpenStreetMap",
         "sourceUrl": "https://speedcams.world/download/russia",
         "osmId": "13043290862",
-        "note": "Координаты из опубликованной базы OSM."
+        "note": "Координаты из опубликованной базы OSM.",
+        "direction": "190",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "osmSourceUrl": "https://www.openstreetmap.org/node/13043290862"
       },
       {
         "id": "yola-mira-01",
@@ -3295,6 +3620,465 @@
         "sourceUrl": "https://helpradar.ru/kamery-gibdd/ioshkar-ola",
         "osmId": null,
         "note": "Адрес из стороннего списка; точные координаты устройства не подтверждены. Не участвует в GPS-предупреждениях."
+      },
+      {
+        "id": "osm-1902207927",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6289913,
+        "lon": 47.8458312,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/1902207927",
+        "osmId": "1902207927",
+        "direction": "310",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-9786493730",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6289818,
+        "lon": 47.8459959,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/9786493730",
+        "osmId": "9786493730",
+        "direction": "60",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-11754933788",
+        "name": "Камера контроля скорости 40 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 40,
+        "lat": 56.6527396,
+        "lon": 47.8819159,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11754933788",
+        "osmId": "11754933788",
+        "direction": "110",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-11754933790",
+        "name": "Камера контроля скорости 40 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 40,
+        "lat": 56.6511284,
+        "lon": 47.8901519,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11754933790",
+        "osmId": "11754933790",
+        "direction": "110",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-11754933796",
+        "name": "Камера контроля скорости 40 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 40,
+        "lat": 56.6457116,
+        "lon": 47.9083416,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11754933796",
+        "osmId": "11754933796",
+        "direction": "320",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-11754933798",
+        "name": "Камера контроля скорости 60 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 60,
+        "lat": 56.6433401,
+        "lon": 47.9206837,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11754933798",
+        "osmId": "11754933798",
+        "direction": "70",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-11754933803",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6379468,
+        "lon": 47.908586,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11754933803",
+        "osmId": "11754933803",
+        "direction": "290",
+        "description": "Комплекс видеофиксации, размещенный в определенном месте для фиксации нарушений ПДД. Это порталы, а так же размещенные на столбах, или иных сооружениях и конструкциях устройства.",
+        "category": "other",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-11754933805",
+        "name": "Камера контроля скорости 60 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 60,
+        "lat": 56.6588084,
+        "lon": 47.8250146,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11754933805",
+        "osmId": "11754933805",
+        "direction": "310",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-11782936914",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.641856,
+        "lon": 47.889504,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936914",
+        "osmId": "11782936914",
+        "direction": "100",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11782936915",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.6418215,
+        "lon": 47.8892817,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936915",
+        "osmId": "11782936915",
+        "direction": "290",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11782936918",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.6456791,
+        "lon": 47.892105,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936918",
+        "osmId": "11782936918",
+        "direction": "110",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11782936919",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.6457228,
+        "lon": 47.8918827,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936919",
+        "osmId": "11782936919",
+        "direction": "290",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11782936920",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.6457753,
+        "lon": 47.8920477,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936920",
+        "osmId": "11782936920",
+        "direction": "20",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11782936923",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.6395361,
+        "lon": 47.9011124,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936923",
+        "osmId": "11782936923",
+        "direction": "110",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11782936924",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.6393424,
+        "lon": 47.90068,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936924",
+        "osmId": "11782936924",
+        "direction": "200",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11782936927",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.638486,
+        "lon": 47.8952512,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11782936927",
+        "osmId": "11782936927",
+        "direction": "110",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "osm-11930475343",
+        "name": "Камера контроля скорости 40 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 40,
+        "lat": 56.6253319,
+        "lon": 47.8610589,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/11930475343",
+        "osmId": "11930475343",
+        "direction": "55",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12147272257",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6277903,
+        "lon": 47.9521465,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12147272257",
+        "osmId": "12147272257",
+        "direction": "350",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12147272259",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6136246,
+        "lon": 47.9605205,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12147272259",
+        "osmId": "12147272259",
+        "direction": "145",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12147293050",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6401988,
+        "lon": 47.9200203,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12147293050",
+        "osmId": "12147293050",
+        "direction": "110",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12147293053",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6311496,
+        "lon": 47.9295602,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12147293053",
+        "osmId": "12147293053",
+        "direction": "200",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12147293057",
+        "name": "Камера OSM 40 км/ч",
+        "type": "Камера OSM",
+        "limit": 40,
+        "lat": 56.6182825,
+        "lon": 47.8977899,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12147293057",
+        "osmId": "12147293057",
+        "direction": "120",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12147294601",
+        "name": "Камера OSM 40 км/ч",
+        "type": "Камера OSM",
+        "limit": 40,
+        "lat": 56.6473471,
+        "lon": 47.8836203,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12147294601",
+        "osmId": "12147294601",
+        "direction": "110",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12288415982",
+        "name": "Камера контроля скорости 40 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 40,
+        "lat": 56.6487218,
+        "lon": 47.8307775,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12288415982",
+        "osmId": "12288415982",
+        "direction": "0",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12289792264",
+        "name": "Камера OSM 60 км/ч",
+        "type": "Камера OSM",
+        "limit": 60,
+        "lat": 56.6288763,
+        "lon": 47.8459895,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12289792264",
+        "osmId": "12289792264",
+        "direction": "150",
+        "description": "",
+        "category": "unknown",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-12580937800",
+        "name": "Камера контроля скорости 60 км/ч",
+        "type": "Камера контроля скорости",
+        "limit": 60,
+        "lat": 56.6383709,
+        "lon": 47.8871914,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/12580937800",
+        "osmId": "12580937800",
+        "direction": "30",
+        "description": "Радар со слабым излучателем, в результате этого поймать его радар-детектором за 600-700 метров не представляется возможным, на таком расстоянии сигнала нет. Он начинает сканировать за 50-70 метров и сразу делает фото.",
+        "category": "speed",
+        "overpassSnapshot": true,
+        "note": "Данные из выгрузки Overpass; фактическое наличие требует проверки."
+      },
+      {
+        "id": "osm-13043290821",
+        "name": "Камера на перекрёстке 60 км/ч",
+        "type": "Камера на перекрёстке",
+        "limit": 60,
+        "lat": 56.6503398,
+        "lon": 47.8949734,
+        "source": "OpenStreetMap-Overpass",
+        "sourceLabel": "OpenStreetMap / Overpass (08.11.2026)",
+        "sourceUrl": "https://www.openstreetmap.org/node/13043290821",
+        "osmId": "13043290821",
+        "direction": "35",
+        "description": "Комплекс, контролирующий соблюдение сигналов светофоров водителями. Дополнительно может фиксировать нарушение правил проезда перекрестков.",
+        "category": "intersection",
+        "overpassSnapshot": true,
+        "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
       }
     ],
     "moscow": [],
@@ -3310,6 +4094,19 @@
       "osm": 84,
       "local": 5,
       "helpradar": 120
+    }
+  },
+  "overpassSnapshot": {
+    "source": "OpenStreetMap / Overpass",
+    "timestamp": "2026-11-08T22:29:21Z",
+    "count": 92,
+    "added": 27,
+    "enriched": 65,
+    "categories": {
+      "speed": 19,
+      "intersection": 28,
+      "other": 2,
+      "unknown": 43
     }
   }
 }
