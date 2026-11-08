@@ -26,10 +26,11 @@ assert.strictEqual(new ProximityWarnings().update({lat:56.629,lon:47.931,speedKm
 assert.strictEqual(new ProximityWarnings().update({lat:56.629,lon:47.928,speedKmh:0,headingDeg:0,accuracyM:10},[near]).length,0,
   'Do not warn when course is unreliable at very low speed');
 const limited={id:'limited-camera',name:'60 zone',lat:56.63,lon:47.928,limit:60};
+const limitFix={lat:56.6264,lon:47.928,speedKmh:77,headingDeg:0,accuracyM:10};
 let w=new ProximityWarnings();
-assert(!w.update({lat:56.63,lon:47.928,speedKmh:77,accuracyM:10},[limited]).some(e=>e.type==='speeding'), 'No speeding alert below +18 km/h');
+assert(!w.update(limitFix,[limited]).some(e=>e.type==='speeding'), 'No speeding alert below +18 km/h');
 w=new ProximityWarnings();
-assert(w.update({lat:56.63,lon:47.928,speedKmh:78,accuracyM:10},[limited]).some(e=>e.type==='speeding'&&e.excessKmh===18), 'Speeding alert must trigger at exactly +18 km/h');
+assert(w.update(Object.assign({},limitFix,{speedKmh:78}),[limited]).some(e=>e.type==='speeding'&&e.excessKmh===18), 'Speeding alert must trigger at exactly +18 km/h');
 w=new ProximityWarnings();
 const road={name:'Тестовая улица',limitKmh:40,a:[56.6299,47.928],b:[56.6301,47.928]};
 const roadEvent=w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accuracyM:10},[near],[road]).find(e=>e.type==='speeding');
