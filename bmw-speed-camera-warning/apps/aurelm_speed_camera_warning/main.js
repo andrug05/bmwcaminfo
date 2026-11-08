@@ -7,6 +7,7 @@ const {BmwGps}=require('./gps');
 const {RoadGuidanceWarnings,prepare}=require('./road-guidance');
 const {LocalCameraStore}=require('./local-camera-store');
 const {CameraVoiceAlerts}=require('./voice-alert');
+const {CameraClusterOutput}=require('./cluster-output');
 const roadZones=require('./road-zones.json');
 const CITY_LABELS={'yoshkar-ola':'Йошкар-Ола','mari-el':'Республика Марий Эл',moscow:'Москва',sochi:'Сочи'};
 const REFRESH_INTERVAL_MS=21600000,W=1600,H=520;
@@ -16,7 +17,8 @@ mgu.run({async start(ctx){
  const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),view='MAP',index=0,zoom=.75,zoomIndex=1,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
  const store=new CameraStore({dataDir,bundled:bundledDatabase});let database=store.loadLocal().database;
  const localStore=new LocalCameraStore(dataDir);let localCameras=localStore.load(),addScreenActive=false,captureFixes=[],cameraDraft=null,captureStatus='Ожидание GPS...',cameraLimit=60,cameraType=0,cameraDirection='forward',gpsTrack=[];
- const gps=new BmwGps(),roadGuidance=new RoadGuidanceWarnings(roadZones.zones||[]),voice=new CameraVoiceAlerts({assetDir:__dirname,log:(m)=>log.warn(m)});let refreshInFlight=null,refreshBusy=false,refreshError=false,refreshStatus='База готова · '+store.source;
+ const gps=new BmwGps(),roadGuidance=new RoadGuidanceWarnings(roadZones.zones||[]),voice=new CameraVoiceAlerts({assetDir:__dirname,log:(m)=>log.warn(m)});
+ const clusterOutput=new CameraClusterOutput({mode:String(settings.get('camera_display')||'kombi'),log:(m)=>log.info(m)});let refreshInFlight=null,refreshBusy=false,refreshError=false,refreshStatus='База готова · '+store.source;
  const cameras=()=>((database.cities&&Array.isArray(database.cities[city])?database.cities[city]:[]).concat(localCameras));
  const monitoringCameras=()=>{
   const primary=cameras().filter(c=>c&&typeof c.lat==='number'&&typeof c.lon==='number');
@@ -122,7 +124,7 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
    else if(!Number.isFinite(fix.speedKmh)||fix.speedKmh>5){captureStatus='Остановитесь рядом с камерой';captureFixes=[];}
    else {captureFixes.push({lat:fix.lat,lon:fix.lon,accuracyM:fix.accuracyM,timeMs:fix.timeMs});if(captureFixes.length>5)captureFixes.shift();captureStatus='Сбор координат: '+captureFixes.length+'/5';if(captureFixes.length===5){const lat=captureFixes.reduce((a,x)=>a+x.lat,0)/5,lon=captureFixes.reduce((a,x)=>a+x.lon,0)/5,accuracy=Math.max(...captureFixes.map(x=>x.accuracyM)),spread=Math.max(...captureFixes.map(x=>Math.hypot((x.lat-lat)*111320,(x.lon-lon)*111320*Math.cos(lat*Math.PI/180))));if(spread>15){cameraDraft=null;captureStatus='GPS нестабилен · ждём более точные координаты';captureFixes.shift();}else{cameraDraft={lat,lon,accuracyM:accuracy};captureStatus='Координаты получены';}}}
   }
-  roadGuidance.update(fix,monitoringCameras(),Date.now()).forEach(e=>{if(e.type==='camera'){log.info('VOICE_ALERT_REQUEST stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id);voice.camera(e.stage).then(ok=>log.info('VOICE_ALERT_COMPLETED stage='+e.stage+' ok='+!!ok+' error='+(voice.lastError||'none'))).catch(err=>log.warn('VOICE_ALERT_CALLBACK_FAILED '+String(err&&err.stack||err)));}activeAlert=e;lastAlert=e.type==='speeding'?'ПРЕВЫШЕНИЕ · '+e.speedKmh+' при '+e.limitKmh+' км/ч (+'+e.excessKmh+') · '+(e.roadName||e.camera.name):(e.stage===1?'КАМЕРА ЧЕРЕЗ':'ПОВТОР · КАМЕРА ЧЕРЕЗ')+' '+e.distanceM+' м · '+e.camera.name;alertUntil=Date.now()+10000;log.warn((e.type==='speeding'?'SPEEDING_WARNING':'PROXIMITY_WARNING')+' stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id+(e.type==='speeding'?' speed='+e.speedKmh+' limit='+e.limitKmh:''));});}renderSafe();}
+  roadGuidance.update(fix,monitoringCameras(),Date.now()).forEach(e=>{if(e.type==='camera'||e.type==='speeding')clusterOutput.show(e);if(e.type==='camera'){log.info('VOICE_ALERT_REQUEST stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id);voice.camera(e.stage).then(ok=>log.info('VOICE_ALERT_COMPLETED stage='+e.stage+' ok='+!!ok+' error='+(voice.lastError||'none'))).catch(err=>log.warn('VOICE_ALERT_CALLBACK_FAILED '+String(err&&err.stack||err)));}activeAlert=e;lastAlert=e.type==='speeding'?'ПРЕВЫШЕНИЕ · '+e.speedKmh+' при '+e.limitKmh+' км/ч (+'+e.excessKmh+') · '+(e.roadName||e.camera.name):(e.stage===1?'КАМЕРА ЧЕРЕЗ':'ПОВТОР · КАМЕРА ЧЕРЕЗ')+' '+e.distanceM+' м · '+e.camera.name;alertUntil=Date.now()+10000;log.warn((e.type==='speeding'?'SPEEDING_WARNING':'PROXIMITY_WARNING')+' stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id+(e.type==='speeding'?' speed='+e.speedKmh+' limit='+e.limitKmh:''));});}renderSafe();}
  async function refresh(){if(refreshInFlight)return refreshInFlight;refreshBusy=true;refreshError=false;refreshStatus='Проверка обновлений...';renderSafe();refreshInFlight=store.refresh((state)=>{refreshStatus=state;renderSafe();}).then(r=>{database=r.database;if(r.updated){index=0;roadGuidance.reset();refreshStatus='Обновлено успешно';refreshError=false;}else if(r.error){refreshStatus='Ошибка: '+String(r.error).slice(0,42);refreshError=true;}else{refreshStatus='Обновлений нет';refreshError=false;}renderSafe();return r;}).catch(e=>{refreshStatus='Ошибка: '+String(e&&e.message||e).slice(0,42);refreshError=true;log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshBusy=false;refreshInFlight=null;renderSafe();return r;});return refreshInFlight;}
  const CAMERA_TYPES=['Камера скорости','Контроль светофора','Скорость + светофор'];
  function drawTabs(cv,active){
@@ -210,8 +212,8 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
    alertUntil=Date.now()+10000;renderSafe();
   });
  });
- settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;roadGuidance.reset();renderSafe();}});
+ settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;roadGuidance.reset();renderSafe();}else if(k==='camera_display'){clusterOutput.setMode(String(settings.get('camera_display')||'kombi'));}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
  renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,renderSafe);
- log.info('Speed Camera Warning 0.7.30 started; road-matched camera alerts only; voice warnings through privileged BMW voice service at 500/700 m and 200 m; no nearby fallback');
+ log.info('Speed Camera Warning 0.7.31 started; KOMBI/HUD output mode='+String(settings.get('camera_display')||'kombi')+'; road-matched camera alerts only; voice warnings through privileged BMW voice service at 500/700 m and 200 m; no nearby fallback');
 }});
