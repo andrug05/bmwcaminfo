@@ -11,7 +11,16 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.7.19');assert.strictEqual(app.screens[0].kind,'canvas');
+assert.strictEqual(app.version,'0.7.20');assert.strictEqual(app.screens[0].kind,'canvas');
+assert(app.screens[0].buttons.some(b=>b[0]==='BTN_ADD_CAMERA'),'Add-camera button must be present');
+assert(app.screens.some(x=>x.name==='ADD_CAMERA'&&x.kind==='canvas'),'Add-camera screen must be present');
+const addScreen=app.screens.find(x=>x.name==='ADD_CAMERA');
+for(const id of ['BTN_LIMIT_DOWN','BTN_LIMIT_UP','BTN_TYPE','BTN_DIRECTION','BTN_SAVE_CAMERA','BTN_CANCEL_CAMERA'])assert(addScreen.buttons.some(b=>b[0]===id),'Missing add-camera control '+id);
+const {LocalCameraStore}=require(path.join(base,'local-camera-store'));
+const os=require('os'),tmp=fs.mkdtempSync(path.join(os.tmpdir(),'local-cameras-'));
+try{const local=new LocalCameraStore(tmp);local.add({id:'local-test-1234',lat:56.63,lon:47.92,limit:60,type:'Камера скорости',direction:'both',road:null});
+const reloaded=new LocalCameraStore(tmp).load();assert.strictEqual(reloaded.length,1);assert.strictEqual(reloaded[0].limit,60);assert.strictEqual(reloaded[0].source,'local-user');}
+finally{fs.rmSync(tmp,{recursive:true,force:true});}
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_VOICE_TEST'),'Voice test button must be present');
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_CAM_PREV'&&b[1]==='< Назад'),'Previous-camera button must be present with a text label');
@@ -40,7 +49,7 @@ const roadEvent=w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accura
 assert(!roadEvent,'OSM road-segment limits must not trigger speeding alerts');
 w=new ProximityWarnings();
 assert(!w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accuracyM:10},[{id:'unknown-limit',lat:56.63,lon:47.928}]).some(e=>e.type==='speeding'), 'Do not infer speeding when camera limit is unknown');
-for(const f of ['main.js','gps.js','camera-store.js','proximity.js','road-guidance.js','voice-alert.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
+for(const f of ['main.js','gps.js','camera-store.js','local-camera-store.js','proximity.js','road-guidance.js','voice-alert.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_camera_sources.py')]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_city_roads.py')]);
 console.log('Speed Camera Warning 0.7.6 rollback base tests passed');
