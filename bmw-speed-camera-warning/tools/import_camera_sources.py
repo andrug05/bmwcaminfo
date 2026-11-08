@@ -8,13 +8,13 @@ from datetime import datetime, timezone
 
 CSV_URL = "https://speedcams.world/downloads/ru/ru-all.csv"
 NOMINATIM = "https://nominatim.openstreetmap.org/search"
-OVERPASS_ENDPOINTS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+OVERPASS_ENDPOINTS = ["https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter", "https://overpass-api.de/api/interpreter", "https://overpass.nchc.org.tw/api/interpreter"]
 UA = "BMW-Speed-Camera-Warning/0.5.0 (camera database build)"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data", "camera-db.json")
 APP = os.path.join(ROOT, "apps", "aurelm_speed_camera_warning", "camera-db.json")
 
-def fetch(url, data=None, timeout=60):
+def fetch(url, data=None, timeout=25):
     req = urllib.request.Request(url, data=data, headers={"User-Agent": UA, "Accept": "*/*"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
@@ -79,14 +79,14 @@ def osm_nodes(geometry):
     payload = urllib.parse.urlencode({"data": query}).encode()
     last_error=None
     for endpoint in OVERPASS_ENDPOINTS:
-        for attempt in range(2):
+        for attempt in range(1):
             try:
-                result=json.loads(fetch(endpoint,payload,timeout=25).decode("utf-8"))
+                result=json.loads(fetch(endpoint,payload,timeout=12).decode("utf-8"))
                 last_error=None
                 break
             except Exception as exc:
                 last_error=exc
-                time.sleep(1 + attempt*2)
+                time.sleep(0.25)
         if last_error is None: break
     if last_error is not None: raise last_error
     out=[]
@@ -145,7 +145,7 @@ class HelpRadarParser(HTMLParser):
 def helpradar_candidates():
     url = "https://helpradar.ru/kamery-gibdd/ioshkar-ola"
     parser = HelpRadarParser()
-    parser.feed(fetch(url, timeout=45).decode("utf-8", "replace"))
+    parser.feed(fetch(url, timeout=20).decode("utf-8", "replace"))
     result=[]; seen=set()
     for row in parser.rows:
         if not row: continue
@@ -170,7 +170,7 @@ def helpradar_candidates():
 def main():
     region=nominatim_polygon("Республика Марий Эл, Россия")
     city=nominatim_polygon("Йошкар-Ола, Республика Марий Эл, Россия")
-    raw=fetch(CSV_URL,timeout=90).decode("utf-8-sig")
+    raw=fetch(CSV_URL,timeout=45).decode("utf-8-sig")
     rows=list(csv.DictReader(io.StringIO(raw)))
     speed_region=[]; speed_city=[]
     for row in rows:
