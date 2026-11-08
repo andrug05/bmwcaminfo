@@ -174,19 +174,22 @@ jobs:
       - name: Restore the 0.7.6 MGU presentation settings
         run: |
           python3 - <<'PY'
+          import re
           p='upstream/kit/tools/build.py'
           s=open(p,encoding='utf-8').read()
-          old="'priority': 'PRIO_LOW',\\n            'visibility': 'FOREGROUND', 'latencyClass': 'FOREGROUND', 'loggingId': spec['loggingId'],\\n            'userLoginRequired': False, 'backgroundPriority': 200, 'someipManifest': 'manifest.json',"
-          new="'priority': 'PRIO_HIGHEST',\\n            'visibility': 'BACKGROUND', 'latencyClass': 'HIGH_PRIO_BACKGROUND', 'loggingId': spec['loggingId'],\\n            'userLoginRequired': False, 'backgroundPriority': 50, 'someipManifest': 'manifest.json',"
-          if new in s:
-              print('0.7.6 OAP settings already applied')
-          elif old in s:
-              open(p,'w',encoding='utf-8').write(s.replace(old,new,1))
-              print('Restored exact OAP settings used by 0.7.6')
-          else:
-              raise SystemExit('Could not locate expected OAP settings')
+          replacements = {
+              r"('priority':\s*)'[^']+'": r"\1'PRIO_HIGHEST'",
+              r"('visibility':\s*)'[^']+'": r"\1'BACKGROUND'",
+              r"('latencyClass':\s*)'[^']+'": r"\1'HIGH_PRIO_BACKGROUND'",
+              r"('backgroundPriority':\s*)\d+": r"\g<1>50",
+          }
+          for pattern, value in replacements.items():
+              s, count = re.subn(pattern, value, s, count=1)
+              if count != 1:
+                  raise SystemExit(f'Could not patch OAP setting: {pattern}')
+          open(p,'w',encoding='utf-8').write(s)
+          print('Restored OAP settings from known-good 0.7.6')
           PY
-
       - name: Validate and build
         run: |
           node --check upstream/apps/${APP_ID}/main.js
