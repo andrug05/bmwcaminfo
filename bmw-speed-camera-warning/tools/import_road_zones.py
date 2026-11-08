@@ -6,12 +6,13 @@ parsed, or written. A camera is associated with its nearest road within 30 m;
 nearby intersecting/parallel roads are retained to let the runtime reject ambiguity.
 """
 import json, math, os, sys, time, urllib.parse, urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "apps", "aurelm_speed_camera_warning")
 DB_PATH = os.path.join(APP, "camera-db.json")
 OUT_PATH = os.path.join(APP, "road-zones.json")
-ENDPOINTS = ["https://overpass.kumi.systems/api/interpreter", "https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter"]
+ENDPOINTS = ["https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter", "https://overpass-api.de/api/interpreter", "https://overpass.nchc.org.tw/api/interpreter"]
 UA = "BMW-Speed-Camera-Warning/0.7.0 (offline road geometry build)"
 ROAD_FILTER = '^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|living_street|road|track)$'
 RADIUS_M = 800
@@ -20,7 +21,7 @@ CAMERA_SNAP_M = 30
 
 def fetch(endpoint, payload):
     req = urllib.request.Request(endpoint, data=payload, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=18) as response:
+    with urllib.request.urlopen(req, timeout=14) as response:
         return json.loads(response.read().decode("utf-8"))
 
 def local(lon, lat, origin):
@@ -78,19 +79,28 @@ def main():
         clauses = []
         for c in batch:
             clauses.append('way["highway"~"%s"](around:%d,%.7f,%.7f);' % (ROAD_FILTER,RADIUS_M,c["lat"],c["lon"]))
-        query = "[out:json][timeout:15];(" + "".join(clauses) + ");out tags geom;"
+        query = "[out:json][timeout:10];(" + "".join(clauses) + ");out tags geom;"
         payload = urllib.parse.urlencode({"data":query}).encode()
-        result = None; last_error = None
-        for endpoint in ENDPOINTS:
-            try:
-                result = fetch(endpoint,payload); last_error=None; break
-            except Exception as exc:
-                last_error=exc
+        result = None; errors = []
+        # Race independent Overpass mirrors: the slowest mirror must not add
+        # another full timeout to every batch.
+        with ThreadPoolExecutor(max_workers=len(ENDPOINTS)) as pool:
+            futures = {pool.submit(fetch, endpoint, payload): endpoint for endpoint in ENDPOINTS}
+            for future in as_completed(futures):
+                try:
+                    result = future.result()
+                    for pending in futures:
+                        if pending is not future: pending.cancel()
+                    break
+                except Exception as exc:
+                    errors.append(f"{futures[future]}: {exc}")
         if result is None:
             failed.extend(c["id"] for c in batch)
-            print("Skipping road geometry batch",start+1,"-",min(start+len(batch),len(items)),":",last_error,file=sys.stderr)
-            time.sleep(0.5)
-            continue
+            detail = "; ".join(errors[:2]) or "all Overpass mirrors unavailable"
+            print("Road geometry batch failed",start+1,"-",min(start+len(batch),len(items)),":",detail,file=sys.stderr)
+            # Repeatedly retrying every remaining batch cannot recover from a
+            # regional Overpass outage; fail immediately instead of burning minutes.
+            raise RuntimeError("Overpass mirrors unavailable; stopped after first failed batch. " + detail)
         ways = result.get("elements", [])
         for camera in batch:
             candidates=[]
@@ -148,7 +158,6 @@ def main():
         }
         with open(OUT_PATH,"w",encoding="utf-8") as f:
             json.dump(checkpoint,f,ensure_ascii=False,separators=(",",":"))
-        time.sleep(0.2)
     if len(zones) < max(1, int(len(items)*0.20)):
         raise RuntimeError("Too few road-confirmed camera zones (%d/%d); refusing to publish a low-coverage geometry file" % (len(zones),len(items)))
     payload={"schemaVersion":1,"region":"RU-ME","source":"OpenStreetMap contributors (ODbL 1.0)",
