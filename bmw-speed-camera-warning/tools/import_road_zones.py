@@ -21,7 +21,7 @@ CAMERA_SNAP_M = 30
 
 def fetch(endpoint, payload):
     req = urllib.request.Request(endpoint, data=payload, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=14) as response:
+    with urllib.request.urlopen(req, timeout=24) as response:
         return json.loads(response.read().decode("utf-8"))
 
 def local(lon, lat, origin):
@@ -74,12 +74,12 @@ def main():
     items = list(cameras.values())
     zones = []
     failed = []
-    for start in range(0, len(items), 8):
-        batch = items[start:start+8]
+    for start in range(0, len(items), 2):
+        batch = items[start:start+2]
         clauses = []
         for c in batch:
             clauses.append('way["highway"~"%s"](around:%d,%.7f,%.7f);' % (ROAD_FILTER,RADIUS_M,c["lat"],c["lon"]))
-        query = "[out:json][timeout:10];(" + "".join(clauses) + ");out tags geom;"
+        query = "[out:json][timeout:20];(" + "".join(clauses) + ");out tags geom;"
         payload = urllib.parse.urlencode({"data":query}).encode()
         result = None; errors = []
         # Race independent Overpass mirrors: the slowest mirror must not add
