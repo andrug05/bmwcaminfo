@@ -135,7 +135,7 @@ jobs:
           set -euo pipefail
           VOICE_DIR="bmw-speed-camera-warning/native/bmwcaminfo-voice"
           mkdir -p "${VOICE_DIR}/audio"
-          python3 -m pip install --break-system-packages --disable-pip-version-check edge-tts
+          python3 -m pip install --break-system-packages --disable-pip-version-check edge-tts gTTS
 
           synthesize() {
             local text="$1"
@@ -154,8 +154,9 @@ jobs:
               echo "Edge TTS attempt $attempt failed; retrying..."
               sleep 3
             done
-            echo "Microsoft Edge neural TTS failed after 3 attempts" >&2
-            return 1
+            echo "Microsoft Edge TTS unavailable; using Google Translate TTS fallback"
+            gtts-cli "$text" --lang ru --output "$output"
+            test -s "$output"
           }
 
           echo "Generating Russian female neural voice: ru-RU-SvetlanaNeural"
@@ -223,7 +224,7 @@ jobs:
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --clobber
           else
-            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Uses Microsoft Edge neural Russian female voice ru-RU-SvetlanaNeural; audio is generated during CI and played offline in the vehicle. Install this tool before BMW Speed Camera Warning 0.7.5. Restores the pre-existing audio route and resumes previously playing music after voice prompts."
+            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Uses Microsoft Edge neural Russian female voice ru-RU-SvetlanaNeural with Google Translate TTS fallback; audio is generated during CI and played offline in the vehicle. Install this tool before BMW Speed Camera Warning 0.7.5. Restores the pre-existing audio route and resumes previously playing music after voice prompts."
           fi
 
       - name: Publish standalone app
