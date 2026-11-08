@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.4"
+        default: "0.7.5"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -31,14 +31,24 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.4' }}
+      APP_VERSION: ${{ inputs.version || '0.7.5' }}
       APP_ID: aurelm_speed_camera_warning
+      VOICE_VERSION: 0.1.0
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
         with:
           repository: aurelmarius/bmw-games
           path: upstream
+
+      - uses: actions/checkout@v5
+        with:
+          repository: robertnisipeanu/mgu-store
+          path: mgu-store
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Restore generated camera and map data cache
         id: data_cache
@@ -120,16 +130,19 @@ jobs:
           python3 kit/tools/bake_fonts.py
           cd ..
 
-      - name: Generate Russian voice alert files
+      - name: Generate Russian voice assets and pack privileged service
         run: |
-          APP_DIR="upstream/apps/${APP_ID}"
-          mkdir -p "${APP_DIR}/audio"
+          VOICE_DIR="bmw-speed-camera-warning/native/bmwcaminfo-voice"
+          mkdir -p "${VOICE_DIR}/audio"
           espeak-ng -v ru -s 155 -a 170 -w /tmp/camera-500.wav "Внимание, впереди камера"
           espeak-ng -v ru -s 150 -a 170 -w /tmp/camera-200.wav "Повторное предупреждение. Камера через двести метров"
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.wav -c:a aac -b:a 96k -movflags +faststart "${APP_DIR}/audio/camera-500.m4a"
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.wav -c:a aac -b:a 96k -movflags +faststart "${APP_DIR}/audio/camera-200.m4a"
-          test -s "${APP_DIR}/audio/camera-500.m4a"
-          test -s "${APP_DIR}/audio/camera-200.m4a"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.wav -c:a aac -b:a 96k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.wav -c:a aac -b:a 96k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
+          test -s "${VOICE_DIR}/audio/camera-500.m4a"
+          test -s "${VOICE_DIR}/audio/camera-200.m4a"
+          node --check "${VOICE_DIR}/voice.js"
+          node mgu-store/deploy/hu artifact "${VOICE_DIR}" --out release
+          test -s "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz"
 
       - name: Validate and build
         run: |
@@ -139,8 +152,8 @@ jobs:
           node --check upstream/apps/${APP_ID}/proximity.js
           node --check upstream/apps/${APP_ID}/road-guidance.js
           node --check upstream/apps/${APP_ID}/voice-alert.js
-          test -s upstream/apps/${APP_ID}/audio/camera-500.m4a
-          test -s upstream/apps/${APP_ID}/audio/camera-200.m4a
+          node --check bmw-speed-camera-warning/native/bmwcaminfo-voice/voice.js
+          test -s release/bmwcaminfo-voice@${VOICE_VERSION}.tgz
           node bmw-speed-camera-warning/tests/readout-config.test.js
           node bmw-speed-camera-warning/tests/road-guidance.test.js
           python3 -m py_compile bmw-speed-camera-warning/tools/import_road_zones.py
@@ -175,6 +188,17 @@ jobs:
           if not os.environ['APP_ID'].startswith('aurelm_'):
               raise SystemExit('MGU app id must have a unique vendor prefix')
           PY
+
+      - name: Publish privileged voice service tool
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="bmwcaminfo-voice@${VOICE_VERSION}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Install this tool before BMW Speed Camera Warning 0.7.5."
+          fi
 
       - name: Publish standalone app
         env:
