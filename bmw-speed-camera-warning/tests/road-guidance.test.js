@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('assert');
-const {RoadGuidanceWarnings,candidate}=require('../apps/aurelm_speed_camera_warning/road-guidance');
+const {RoadGuidanceWarnings,candidate,prepare}=require('../apps/aurelm_speed_camera_warning/road-guidance');
 const camera={id:'road-camera',name:'Test camera',lat:56.63,lon:47.928,limit:60};
 const zone={id:camera.id,lat:camera.lat,lon:camera.lon,travel:[0,180],roads:[
  {id:'main-way',pts:[[0,-1000],[0,1000]],camM:1000,dir:0},
@@ -29,7 +29,7 @@ const ambiguous={id:'ambiguous',lat:camera.lat,lon:camera.lon,travel:[0,180],roa
  {id:'a',pts:[[0,-1000],[0,1000]],camM:1000,dir:0},
  {id:'b',pts:[[5,-1000],[5,1000]],camM:null,dir:0}
 ]};
-assert.strictEqual(candidate(ambiguous,fix(-300,400000,36),500,null),null,'Ambiguous parallel road geometry must suppress warning');
+assert.strictEqual(candidate(prepare(ambiguous),fix(-300,400000,36),500,null),null,'Ambiguous parallel road geometry must suppress warning');
 
 w=new RoadGuidanceWarnings([zone]);
 assert.strictEqual(w.update(Object.assign(fix(-300,500000,36),{accuracyM:20}),[camera],500000).length,0,'Poor GPS accuracy must suppress road-confirmed warnings');
@@ -37,7 +37,7 @@ assert.strictEqual(w.update(Object.assign(fix(-300,500000,36),{accuracyM:20}),[c
 const oneWay={id:camera.id,lat:camera.lat,lon:camera.lon,travel:[0],roads:[
  {id:'oneway',pts:[[0,-1000],[0,1000]],camM:1000,dir:1}
 ]};
-assert.strictEqual(candidate(oneWay,Object.assign(fix(300,600000,36),{headingDeg:180}),500,null),null,'One-way geometry must reject travel against its direction');
+assert.strictEqual(candidate(prepare(oneWay),Object.assign(fix(300,600000,36),{headingDeg:180}),500,null),null,'One-way geometry must reject travel against its direction');
 
 w=new RoadGuidanceWarnings([zone]);
 let speeding=w.update(fix(-300,700000,78),[camera],700000);
