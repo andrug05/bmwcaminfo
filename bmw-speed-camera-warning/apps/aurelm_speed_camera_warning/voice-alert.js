@@ -24,14 +24,20 @@ class CameraVoiceAlerts {
     }
 
     _say(file) {
-        this.queue = this.queue.then(() => this._play(file)).catch((e) => {
+        const task = this.queue.then(() => this._play(file)).then(() => true);
+        this.queue = task.catch((e) => {
             this.log('voice alert failed: ' + (e && e.stack || e));
+            return false;
         });
         return this.queue;
     }
 
     camera(stage) {
         return this._say(stage === 2 ? 'camera-200.m4a' : 'camera-500.m4a');
+    }
+
+    test() {
+        return this._say('camera-500.m4a');
     }
 
     async _init() {
