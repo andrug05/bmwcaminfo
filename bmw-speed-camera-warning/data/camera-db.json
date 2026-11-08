@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 13,
-  "updatedAt": "2026-11-08T22:29:21Z",
+  "revision": 14,
+  "updatedAt": "2026-11-08T23:25:00.950Z",
   "attribution": "© OpenStreetMap contributors; ODbL 1.0. SpeedCams.world data is derived from OpenStreetMap.",
   "cities": {
     "mari-el": [
@@ -4079,6 +4079,19 @@
         "category": "intersection",
         "overpassSnapshot": true,
         "note": "Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+      },
+      {
+        "id": "yola-tatneft-sernursky-2b-speed-70",
+        "name": "Камера контроля скорости — Сернурский тракт, рядом с АЗС Татнефть 2Б",
+        "type": "Стационарная камера контроля скорости",
+        "limit": 70,
+        "lat": 56.6532,
+        "lon": 47.9548,
+        "source": "local-curated",
+        "sourceLabel": "Сообщение пользователя / координаты АЗС",
+        "sourceUrl": "https://www.openstreetmap.org/?mlat=56.6532&mlon=47.9548#map=18/56.6532/47.9548",
+        "osmId": null,
+        "note": "Камера указана пользователем как расположенная рядом с АЗС Татнефть, Сернурский тракт, 2Б. Координата привязана к точке АЗС и является приблизительной; направление движения не подтверждено."
       }
     ],
     "moscow": [],
