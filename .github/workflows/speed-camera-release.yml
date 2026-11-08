@@ -33,7 +33,7 @@ jobs:
     env:
       APP_VERSION: ${{ inputs.version || '0.7.5' }}
       APP_ID: aurelm_speed_camera_warning
-      VOICE_VERSION: 0.1.4
+      VOICE_VERSION: 0.1.5
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
@@ -223,7 +223,7 @@ jobs:
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --clobber
           else
-            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Uses Microsoft Edge neural Russian female voice ru-RU-SvetlanaNeural; audio is generated during CI and played offline in the vehicle. Install this tool before BMW Speed Camera Warning 0.7.5."
+            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Uses Microsoft Edge neural Russian female voice ru-RU-SvetlanaNeural; audio is generated during CI and played offline in the vehicle. Install this tool before BMW Speed Camera Warning 0.7.5. Restores the pre-existing audio route and resumes previously playing music after voice prompts."
           fi
 
       - name: Publish standalone app
