@@ -31,6 +31,7 @@ function VoiceService() {
   this.mpAvailable = false;
   this.connectionId = null;
   this.previousConnections = [];
+  this.previousPlayerState = null;
   this.playerState = null;
 }
 
@@ -104,6 +105,7 @@ VoiceService.prototype.play = async function (file) {
       log('audio routes before voice: ' + JSON.stringify(self.previousConnections));
     } catch (routeError) {
       self.previousConnections = [];
+      self.previousPlayerState = null;
       log('could not inspect existing audio routes: ' + routeError.message);
     }
     var connected = await self.cc.callMethod('connect', { sourceID: SRC_ID, sinkID: SINK_ID }, 7000);
@@ -146,11 +148,48 @@ VoiceService.prototype.release = async function () {
     } catch (e2) { log('disconnect: ' + e2.message); }
   }
   await sleep(700);
+  await this.restorePreviousAudio();
+};
+
+VoiceService.prototype.restorePreviousAudio = async function () {
+  var previous = this.previousConnections || [];
+  if (!previous.length || !this.cc) {
+    this.previousConnections = [];
+    this.previousPlayerState = null;
+    return;
+  }
   try {
-    var after = await this.cc.getValue('listOfMainConnections');
-    log('audio routes after voice: ' + JSON.stringify(after));
-  } catch (e3) { log('could not inspect audio routes after voice: ' + e3.message); }
-  this.previousConnections = [];
+    var current = await this.cc.getValue('listOfMainConnections');
+    current = Array.isArray(current) ? current : [];
+    log('audio routes after voice disconnect: ' + JSON.stringify(current));
+    for (var i = 0; i < previous.length; i++) {
+      var wanted = previous[i];
+      var present = current.some(function (c) {
+        return c && c.sourceID === wanted.sourceID && c.sinkID === wanted.sinkID;
+      });
+      if (!present) {
+        var restored = await this.cc.callMethod('connect', {
+          sourceID: wanted.sourceID,
+          sinkID: wanted.sinkID
+        }, 7000);
+        log('restore previous audio route ' + wanted.sourceID + '->' + wanted.sinkID + ': ' + JSON.stringify(restored));
+        if (!restored || (restored.amError !== 'E_OK' && restored.amError !== 'E_ALREADY_EXISTS')) {
+          throw new Error('could not restore previous route ' + wanted.sourceID + '->' + wanted.sinkID + ': ' + JSON.stringify(restored));
+        }
+      }
+    }
+    if (this.previousPlayerState === 'PLAYER_STATE_PLAY') {
+      await sleep(350);
+      var resumed = await this.mp.callMethod('sendButtonEvent', { button: 'PLAY', action: 'PRESS' }, 5000);
+      log('resume previous music with PLAY: ' + JSON.stringify(resumed));
+    }
+  } catch (e) {
+    log('RESTORE_PREVIOUS_AUDIO_FAILED: ' + (e && e.stack || e));
+    this.lastError = 'Audio restore: ' + (e && e.message ? e.message : String(e));
+  } finally {
+    this.previousConnections = [];
+    this.previousPlayerState = null;
+  }
 };
 
 var voice = new VoiceService();
