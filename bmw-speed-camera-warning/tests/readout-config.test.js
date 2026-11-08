@@ -11,7 +11,7 @@ assert(map.roads.length>=20);
 assert(map.source && map.source.includes('OpenStreetMap'));
 for(const r of map.roads){assert.strictEqual(r.length,5);assert(r.slice(1).every(Number.isFinite));}
 const app=JSON.parse(fs.readFileSync(path.join(base,'app.json'),'utf8'));
-assert.strictEqual(app.version,'0.7.22');assert.strictEqual(app.screens[0].kind,'canvas');
+assert.strictEqual(app.version,'0.7.23');assert.strictEqual(app.screens[0].kind,'canvas');
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_CAMERA_MENU'),'Camera management button must be present');
 assert(app.screens.some(x=>x.name==='CAMERA_MENU'&&x.buttons.some(b=>b[0]==='BTN_MENU_MANAGE')),'Camera management menu must be present');
 const manageScreen=app.screens.find(x=>x.name==='MY_CAMERAS');
@@ -22,9 +22,10 @@ assert(app.screens.some(x=>x.name==='ADD_CAMERA'&&x.kind==='canvas'),'Add-camera
 const addScreen=app.screens.find(x=>x.name==='ADD_CAMERA');
 for(const id of ['BTN_LIMIT_DOWN','BTN_LIMIT_UP','BTN_TYPE','BTN_DIRECTION','BTN_SAVE_CAMERA','BTN_CANCEL_CAMERA'])assert(addScreen.buttons.some(b=>b[0]===id),'Missing add-camera control '+id);
 const mainSource=fs.readFileSync(path.join(base,'main.js'),'utf8');
-assert(mainSource.includes("ctx.loop('ADD_CAMERA',1000,drawAddCamera)"),'Add-camera screen must not redraw at 1 ms');
-assert(mainSource.includes("ctx.loop('CAMERA_MENU',1000,drawCameraMenu)"),'Camera menu must use a reasonable redraw interval');
-assert(mainSource.includes("ctx.loop('MY_CAMERAS',1000,drawMyCameras)"),'Camera list must use a reasonable redraw interval');
+assert(!mainSource.includes("ctx.loop('ADD_CAMERA'"),'Add-camera screen must be event-driven, not continuously redrawn');
+assert(!mainSource.includes("ctx.loop('CAMERA_MENU'"),'Camera menu must be event-driven, not continuously redrawn');
+assert(!mainSource.includes("ctx.loop('MY_CAMERAS'"),'Camera list must be event-driven, not continuously redrawn');
+assert(mainSource.includes("ui.onVisible((n,v)=>{if(n==='ADD_CAMERA'&&v)"),'Add-camera screen must render when it becomes visible');
 const {LocalCameraStore}=require(path.join(base,'local-camera-store'));
 const os=require('os'),tmp=fs.mkdtempSync(path.join(os.tmpdir(),'local-cameras-'));
 try{const local=new LocalCameraStore(tmp);local.add({id:'local-test-1234',lat:56.63,lon:47.92,limit:60,type:'Камера скорости',direction:'both',road:null});
@@ -65,4 +66,4 @@ assert(!w.update({lat:56.629,lon:47.928,speedKmh:100,headingDeg:0,accuracyM:10},
 for(const f of ['main.js','gps.js','camera-store.js','local-camera-store.js','proximity.js','road-guidance.js','voice-alert.js'])cp.execFileSync(process.execPath,['--check',path.join(base,f)]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_camera_sources.py')]);
 cp.execFileSync('python3',['-m','py_compile',path.join(__dirname,'../tools/import_city_roads.py')]);
-console.log('Speed Camera Warning 0.7.6 rollback base tests passed');
+console.log('Speed Camera Warning 0.7.23 tests passed');
