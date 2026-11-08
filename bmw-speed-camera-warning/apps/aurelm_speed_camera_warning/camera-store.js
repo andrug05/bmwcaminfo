@@ -4,6 +4,7 @@ const path = require('path');
 const https = require('https');
 const urlModule = require('url');
 const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmwcaminfo/main/bmw-speed-camera-warning/data/camera-db.json';
+const DATABASE_API_URL = 'https://api.github.com/repos/andrug05/bmwcaminfo/contents/bmw-speed-camera-warning/data/camera-db.json?ref=main';
 const MAX_BYTES = 1024 * 1024;
 const MAX_REDIRECTS = 3;
 
@@ -48,7 +49,7 @@ function getHttps(requestUrl, redirects) {
     return new Promise((resolve, reject) => {
         let parsed;
         try { parsed = urlModule.parse(requestUrl); } catch (e) { reject(e); return; }
-        if (parsed.protocol !== 'https:' || parsed.hostname !== 'raw.githubusercontent.com') {
+        if (parsed.protocol !== 'https:' || ['raw.githubusercontent.com', 'api.github.com'].indexOf(parsed.hostname) < 0) {
             reject(new Error('CAMERA_DB_URL_NOT_ALLOWED')); return;
         }
         // Use the two-argument overload for compatibility with the MGU Node.js runtime.
@@ -77,6 +78,39 @@ function getHttps(requestUrl, redirects) {
         req.on('error', reject);
     });
 }
+function isTemporaryNetworkError(error) {
+    return !!error && ['EAI_AGAIN', 'ETIMEDOUT', 'ECONNRESET', 'EHOSTUNREACH'].indexOf(error.code) >= 0;
+}
+function wait(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+async function getWithRetry(requestUrl, attempts) {
+    let lastError;
+    for (let i = 0; i < attempts; i++) {
+        try { return await getHttps(requestUrl, 0); }
+        catch (error) {
+            lastError = error;
+            if (!isTemporaryNetworkError(error) || i === attempts - 1) throw error;
+            await wait(1000 * Math.pow(2, i));
+        }
+    }
+    throw lastError || new Error('CAMERA_DB_DOWNLOAD_FAILED');
+}
+async function downloadDatabaseBody() {
+    try {
+        return await getWithRetry(DATABASE_URL, 3);
+    } catch (rawError) {
+        try {
+            const apiBody = await getWithRetry(DATABASE_API_URL, 2);
+            const payload = JSON.parse(apiBody);
+            if (!payload || payload.encoding !== 'base64' || typeof payload.content !== 'string') {
+                throw new Error('CAMERA_DB_API_RESPONSE_INVALID');
+            }
+            return Buffer.from(payload.content.replace(/\\s/g, ''), 'base64').toString('utf8');
+        } catch (apiError) {
+            throw new Error('raw: ' + (rawError.code || rawError.message || 'network') +
+                '; api: ' + (apiError.code || apiError.message || 'network'));
+        }
+    }
+}
 class CameraStore {
     constructor(options) {
         const o = options || {};
@@ -104,7 +138,7 @@ class CameraStore {
         const status = typeof onStatus === 'function' ? onStatus : function () {};
         try {
             status('Загрузка базы камер...');
-            const body = await getHttps(DATABASE_URL, 0);
+            const body = await downloadDatabaseBody();
             status('Проверка полученной базы...');
             const next = validateDatabase(JSON.parse(body));
             if (next.revision > this.current.revision) {
