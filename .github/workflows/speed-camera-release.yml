@@ -60,9 +60,9 @@ jobs:
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/camera-db.json
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/road-zones.json
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/city-map.json
-          key: speed-camera-data-v1-${{ github.run_id }}
+          key: speed-camera-data-v2-${{ github.run_id }}
           restore-keys: |
-            speed-camera-data-v1-
+            speed-camera-data-v2-
 
       - name: Import regional camera sources
         if: inputs.refresh_data == true || github.event_name == 'schedule'
@@ -98,7 +98,7 @@ jobs:
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/camera-db.json
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/road-zones.json
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/city-map.json
-          key: speed-camera-data-v1-${{ github.run_id }}
+          key: speed-camera-data-v2-${{ github.run_id }}
 
       - name: Prepare standalone app
         run: |
