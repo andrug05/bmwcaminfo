@@ -84,6 +84,7 @@ jobs:
         with:
           path: |
             bmw-speed-camera-warning/data/camera-db.json
+            bmw-speed-camera-warning/data/mari_el_republic.osm.pbf
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/camera-db.json
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/road-zones.json
             bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/city-map.json
