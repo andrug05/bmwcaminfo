@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.35"
+        default: "0.7.36"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -31,7 +31,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.35' }}
+      APP_VERSION: ${{ inputs.version || '0.7.36' }}
       APP_ID: aurelm_speed_camera_warning
       VOICE_VERSION: 0.1.7
     steps:
@@ -195,6 +195,18 @@ jobs:
                   raise SystemExit(f'Could not patch OAP setting: {pattern}')
           open(p,'w',encoding='utf-8').write(s)
           print('Restored OAP settings from known-good 0.7.6')
+          PY
+      - name: Enable internet access through MGU Store uplink
+        run: |
+          python3 - <<'PY'
+          p='upstream/kit/tools/build.py'
+          s=open(p,encoding='utf-8').read()
+          old="'mguHmi': ['ID7'],"
+          new="'mguHmi': ['ID7'], 'mguInternet': True,"
+          if s.count(old) != 1:
+              raise SystemExit('Could not locate generated package internet setting')
+          open(p,'w',encoding='utf-8').write(s.replace(old,new,1))
+          print('Enabled mguInternet for this app package')
           PY
       - name: Validate and build
         run: |
