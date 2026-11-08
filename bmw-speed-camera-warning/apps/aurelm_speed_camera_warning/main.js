@@ -92,7 +92,7 @@ mgu.run({async start(ctx){
     txt(cv,'Скорость '+speed+' км/ч',x+1190,y+81,20,C.muted);
   }
 }
-function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),36,39,Date.now()<alertUntil?18:19,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);drawAlertBanner(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
+function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),660,39,Date.now()<alertUntil?16:18,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);drawAlertBanner(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
  function render(){if(view==='ADD')return drawAddCamera();if(view==='MY')return drawMyCameras();return drawMainMap();}
  function renderSafe(){Promise.resolve().then(render).catch(e=>log.warn('map render: '+e));}
  function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix){
@@ -140,7 +140,7 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
  }
  function drawAddCamera(){
   const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');
-  txt(cv,'ДОБАВЛЕНИЕ КАМЕРЫ',36,39,19,C.text);txt(cv,'GPS автомобиля · локальное сохранение',W-38,39,15,C.muted,{align:'right'});
+  txt(cv,'ДОБАВЛЕНИЕ КАМЕРЫ',660,39,19,C.text);txt(cv,'GPS автомобиля · локальное сохранение',W-38,39,15,C.muted,{align:'right'});
   cv.roundRect(48,72,W-96,420,16,C.panel);
   txt(cv,'КООРДИНАТЫ',82,116,15,C.muted);
   if(cameraDraft){txt(cv,cameraDraft.lat.toFixed(6)+' , '+cameraDraft.lon.toFixed(6),82,158,27,C.green);txt(cv,'Точность GPS: '+cameraDraft.accuracyM.toFixed(1)+' м',82,190,18,C.text);}
@@ -159,7 +159,7 @@ function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W
  let localCameraIndex=0,deletePending=false;
  function drawCameraMenu(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'УПРАВЛЕНИЕ КАМЕРАМИ',36,39,20,C.text);cv.roundRect(260,100,1080,310,18,C.panel);txt(cv,'Мои камеры',800,190,34,C.text,{align:'center'});txt(cv,'Добавляйте новые камеры или просматривайте и удаляйте сохранённые.',800,240,20,C.muted,{align:'center'});txt(cv,'Сохранено вручную: '+localCameras.length,800,300,24,C.green,{align:'center'});drawTabs(cv,'MENU');return ui.image('MAIN_GFX',cv);}
  function renderMenuSafe(){Promise.resolve().then(drawCameraMenu).catch(e=>log.warn('camera menu render: '+e));}
- function drawMyCameras(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'МОИ КАМЕРЫ',36,39,20,C.text);cv.roundRect(48,72,W-96,420,16,C.panel);
+ function drawMyCameras(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'МОИ КАМЕРЫ',660,39,20,C.text);cv.roundRect(48,72,W-96,420,16,C.panel);
   if(!localCameras.length){txt(cv,'Пользовательских камер пока нет',800,220,28,C.muted,{align:'center'});txt(cv,'Добавленные вручную камеры появятся здесь',800,265,18,C.muted,{align:'center'});}
   else{localCameraIndex=Math.max(0,Math.min(localCameraIndex,localCameras.length-1));const c=localCameras[localCameraIndex];txt(cv,(localCameraIndex+1)+' / '+localCameras.length,82,120,18,C.blue);txt(cv,c.type||c.name||'Камера',82,178,32,C.text);txt(cv,c.lat.toFixed(6)+' , '+c.lon.toFixed(6),82,225,22,C.green);txt(cv,'Ограничение: '+(c.limit===null?'не указано':c.limit+' км/ч'),82,270,20,C.text);txt(cv,'Направление: '+(c.direction==='both'?'Оба направления':'По направлению движения'),82,310,18,C.muted);txt(cv,c.road?'Дорожная привязка: есть':'Дорожная привязка: нет',82,350,18,c.road?C.green:C.yellow);txt(cv,'Источник: добавлена вручную',82,390,17,C.muted);}
   if(deletePending){cv.roundRect(300,165,1000,190,18,'#35121a');cv.strokeRoundRect(300,165,1000,190,18,2,C.red);txt(cv,'УДАЛИТЬ ЭТУ КАМЕРУ?',800,225,30,C.text,{align:'center'});txt(cv,'Нажми «Подтвердить», чтобы удалить только эту локальную запись.',800,275,18,C.muted,{align:'center'});}
