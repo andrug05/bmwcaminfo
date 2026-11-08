@@ -1,8 +1,8 @@
 {
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
-  "description": "Предупреждения только о камерах на текущей дороге впереди автомобиля; offline OSM road matching, BMW GPS and camera-record speed limits only.",
-  "version": "0.7.1",
+  "description": "Голосовые и визуальные предупреждения только о камерах на текущей дороге впереди автомобиля; BMW MediaPlayer, offline OSM road matching, BMW GPS and camera-record speed limits only.",
+  "version": "0.7.2",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
