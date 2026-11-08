@@ -1,8 +1,8 @@
 {
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
-  "description": "Предупреждения только о камерах впереди по направлению движения BMW; GPS-course filtering, offline camera database and street map.",
-  "version": "0.6.0",
+  "description": "Предупреждения только о камерах на текущей дороге впереди автомобиля; offline OSM road matching, BMW GPS and camera-record speed limits only.",
+  "version": "0.7.0",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
