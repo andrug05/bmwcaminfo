@@ -1,8 +1,8 @@
 {
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
-  "description": "Голосовые и визуальные предупреждения только о камерах на текущей дороге впереди автомобиля; privileged BMW voice service, offline OSM road matching, BMW GPS and camera-record speed limits only.",
-  "version": "0.7.19",
+  "description": "Голосовые и визуальные предупреждения о камерах на текущей дороге впереди автомобиля; добавление пользовательских камер с GPS в локальную базу.",
+  "version": "0.7.20",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
@@ -35,6 +35,41 @@
         [
           "BTN_VOICE_TEST",
           "Проверка голоса"
+        ],
+        [
+          "BTN_ADD_CAMERA",
+          "＋ Добавить камеру"
+        ]
+      ]
+    },
+    {
+      "name": "ADD_CAMERA",
+      "kind": "canvas",
+      "title": "Добавить камеру",
+      "buttons": [
+        [
+          "BTN_LIMIT_DOWN",
+          "Лимит −"
+        ],
+        [
+          "BTN_LIMIT_UP",
+          "Лимит +"
+        ],
+        [
+          "BTN_TYPE",
+          "Тип камеры"
+        ],
+        [
+          "BTN_DIRECTION",
+          "Направление"
+        ],
+        [
+          "BTN_SAVE_CAMERA",
+          "Сохранить"
+        ],
+        [
+          "BTN_CANCEL_CAMERA",
+          "Отмена"
         ]
       ]
     }
