@@ -7,14 +7,16 @@ function validateCamera(c) {
         !Number.isFinite(c.lat) || c.lat < -90 || c.lat > 90 ||
         !Number.isFinite(c.lon) || c.lon < -180 || c.lon > 180 ||
         !Number.isFinite(c.limit) || c.limit < 5 || c.limit > 250 ||
-        !Number.isFinite(c.headingDeg) || c.headingDeg < 0 || c.headingDeg >= 360 ||
-        ['forward', 'both'].indexOf(c.direction) < 0) {
+        ['forward', 'both'].indexOf(c.direction) < 0 ||
+        (c.road !== null && c.road !== undefined && (!Array.isArray(c.road.pts) || c.road.pts.length < 2 ||
+            !Number.isFinite(c.road.camM) || c.road.camM < 0 || c.road.pts.some(p => !Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite))))) {
         throw new Error('LOCAL_CAMERA_INVALID');
     }
     return {
         id: c.id, name: 'Моя камера', type: String(c.type || 'Камера').slice(0, 60),
         limit: c.limit, lat: c.lat, lon: c.lon, headingDeg: c.headingDeg,
-        direction: c.direction, source: 'local-user', sourceLabel: 'Добавлена вручную',
+        direction: c.direction, road: c.road ? { pts: c.road.pts.map(p => [p[0], p[1]]), camM: c.road.camM } : null,
+        source: 'local-user', sourceLabel: 'Добавлена вручную',
         note: 'Локальная камера, сохранённая с GPS автомобиля'
     };
 }
