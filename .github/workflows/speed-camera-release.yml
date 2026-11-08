@@ -195,7 +195,7 @@ jobs:
           cp "release/${APP_ID}@${APP_VERSION}.tgz" bundle/
           cp "release/${APP_ID}@${APP_VERSION}.mgu" bundle/
           cp "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" bundle/
-          cat > bundle/INSTALL.txt <<'EOF'
+          cat > bundle/INSTALL.txt <<EOF
           BMW SPEED CAMERA WARNING - COMBINED INSTALLATION
 
           This bundle contains:
