@@ -2,7 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmw-weather-road-info/main/bmw-speed-camera-warning/data/camera-db.json';
+const urlModule = require('url');
+const DATABASE_URL = 'https://raw.githubusercontent.com/andrug05/bmwcaminfo/main/bmw-speed-camera-warning/data/camera-db.json';
 const MAX_BYTES = 1024 * 1024;
 const MAX_REDIRECTS = 3;
 
@@ -43,21 +44,21 @@ function validateDatabase(value) {
     return { schemaVersion: 1, revision: value.revision,
         updatedAt: typeof value.updatedAt === 'string' ? value.updatedAt : '', cities };
 }
-function getHttps(url, redirects) {
+function getHttps(requestUrl, redirects) {
     return new Promise((resolve, reject) => {
         let parsed;
-        try { parsed = new URL(url); } catch (e) { reject(e); return; }
+        try { parsed = urlModule.parse(requestUrl); } catch (e) { reject(e); return; }
         if (parsed.protocol !== 'https:' || parsed.hostname !== 'raw.githubusercontent.com') {
             reject(new Error('CAMERA_DB_URL_NOT_ALLOWED')); return;
         }
-        const req = https.get(parsed, {
-            headers: { 'User-Agent': 'BMW-Speed-Camera-Warning/0.5.0', 'Accept': 'application/json' }
+        const req = https.get(requestUrl, {
+            headers: { 'User-Agent': 'BMW-Speed-Camera-Warning/0.7.13', 'Accept': 'application/json' }
         }, (res) => {
             if ([301, 302, 303, 307, 308].indexOf(res.statusCode) >= 0) {
                 const location = res.headers.location;
                 res.resume();
                 if (!location || redirects >= MAX_REDIRECTS) { reject(new Error('CAMERA_DB_REDIRECT_LIMIT')); return; }
-                getHttps(new URL(location, parsed).toString(), redirects + 1).then(resolve, reject);
+                getHttps(urlModule.resolve(requestUrl, location), redirects + 1).then(resolve, reject);
                 return;
             }
             if (res.statusCode !== 200) { res.resume(); reject(new Error('CAMERA_DB_HTTP_' + res.statusCode)); return; }
