@@ -1,8 +1,8 @@
 {
   "id": "aurelm_speed_camera_warning",
   "title": "Speed Camera Warning",
-  "description": "Голосовые и визуальные предупреждения о камерах на текущей дороге впереди автомобиля; добавление пользовательских камер с GPS в локальную базу.",
-  "version": "0.7.20",
+  "description": "Голосовые и визуальные предупреждения о камерах; локальное добавление и удаление пользовательских камер.",
+  "version": "0.7.21",
   "vendor": "Andrug05",
   "loggingId": "SCAM",
   "iconGlyph": "camera",
@@ -33,8 +33,8 @@
           "Проверка голоса"
         ],
         [
-          "BTN_ADD_CAMERA",
-          "＋ Добавить камеру"
+          "BTN_CAMERA_MENU",
+          "Мои камеры"
         ]
       ]
     },
@@ -66,6 +66,52 @@
         [
           "BTN_CANCEL_CAMERA",
           "Отмена"
+        ]
+      ]
+    },
+    {
+      "name": "CAMERA_MENU",
+      "kind": "canvas",
+      "title": "Мои камеры",
+      "buttons": [
+        [
+          "BTN_MENU_ADD",
+          "Добавить камеру"
+        ],
+        [
+          "BTN_MENU_MANAGE",
+          "Список камер"
+        ],
+        [
+          "BTN_MENU_BACK",
+          "Назад"
+        ]
+      ]
+    },
+    {
+      "name": "MY_CAMERAS",
+      "kind": "canvas",
+      "title": "Мои камеры",
+      "buttons": [
+        [
+          "BTN_LOCAL_PREV",
+          "< Назад"
+        ],
+        [
+          "BTN_LOCAL_NEXT",
+          "Вперёд >"
+        ],
+        [
+          "BTN_LOCAL_DELETE",
+          "Удалить"
+        ],
+        [
+          "BTN_LOCAL_CONFIRM",
+          "Подтвердить"
+        ],
+        [
+          "BTN_LOCAL_BACK",
+          "Выход"
         ]
       ]
     }
