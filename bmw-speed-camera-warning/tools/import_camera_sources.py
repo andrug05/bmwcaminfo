@@ -107,6 +107,78 @@ def osm_nodes(geometry):
             "osmId":str(node["id"]),"note":"Объект OSM; статус и фактическое наличие требуют проверки."})
     return out
 
+
+def osm_snapshot_nodes():
+    """Read the dated local Overpass export so rebuilds retain these OSM records."""
+    snapshot_path = os.path.join(ROOT, "export-1.geojson")
+    if not os.path.exists(snapshot_path):
+        return []
+    payload = json.load(open(snapshot_path, encoding="utf-8"))
+    out = []
+    for feature in payload.get("features", []):
+        props = feature.get("properties", {})
+        geometry = feature.get("geometry", {})
+        coords = geometry.get("coordinates", [])
+        if geometry.get("type") != "Point" or len(coords) < 2:
+            continue
+        lon, lat = coords[0], coords[1]
+        if not isinstance(lat, (int, float)) or not isinstance(lon, (int, float)):
+            continue
+        osm_id = str(props.get("@id") or feature.get("id") or "").replace("node/", "")
+        if not osm_id.isdigit():
+            continue
+        raw_limit = str(props.get("maxspeed") or "").split()[0]
+        try: limit = int(float(raw_limit))
+        except (ValueError, IndexError): limit = None
+        if limit is not None and not (5 <= limit <= 250): limit = None
+        description = str(props.get("description") or "").strip()[:500]
+        lower = description.lower()
+        if re.search(r"светофор|перекр[её]ст|стоп[\\s-]*линия|выезд за стоп", lower):
+            category, kind = "intersection", "Камера на перекрёстке"
+        elif re.search(r"скорост|скоростн|радар|speed|автоматическ.*контрол", lower):
+            category, kind = "speed", "Камера контроля скорости"
+        elif not description:
+            category, kind = "unknown", "Камера OSM"
+        else:
+            category, kind = "other", "Камера OSM"
+        direction = str(props.get("direction") or "").strip() or None
+        out.append({"id":"osm-"+osm_id,"name":(kind + (" " + str(limit) + " км/ч" if limit else ""))[:160],
+            "type":kind,"limit":limit,"lat":float(lat),"lon":float(lon),
+            "source":"OpenStreetMap-Overpass","sourceLabel":"OpenStreetMap / Overpass (08.11.2026)",
+            "sourceUrl":"https://www.openstreetmap.org/node/"+osm_id,"osmId":osm_id,
+            "direction":direction,"description":description,"category":category,"overpassSnapshot":True,
+            "note":("Описание OSM указывает на перекрёсток/светофор; фактический тип контроля требует проверки."
+                    if category == "intersection" else
+                    "Лимит скорости в OSM не указан." if limit is None else
+                    "Данные из выгрузки Overpass; фактическое наличие требует проверки.")})
+    return out
+
+
+def merge_osm_snapshot(cameras, snapshot):
+    """Enrich existing OSM IDs and add distinct nodes without proximity-dropping opposite directions."""
+    by_osm = {str(c.get("osmId")): c for c in cameras if c.get("osmId")}
+    added = 0
+    for incoming in snapshot:
+        osm_id = incoming["osmId"]
+        current = by_osm.get(osm_id)
+        if current is not None:
+            current["direction"] = incoming.get("direction")
+            current["description"] = incoming.get("description") or current.get("description", "")
+            current["category"] = incoming.get("category", "unknown")
+            current["overpassSnapshot"] = True
+            if incoming.get("limit") is not None:
+                current["limit"] = incoming["limit"]
+            if incoming.get("category") == "intersection":
+                current["type"] = "Камера на перекрёстке"
+            elif incoming.get("category") == "speed":
+                current["type"] = "Камера контроля скорости"
+            current["osmSourceUrl"] = incoming["sourceUrl"]
+        else:
+            cameras.append(incoming)
+            by_osm[osm_id] = incoming
+            added += 1
+    return cameras, added
+
 def dedupe(items):
     result=[]; ids=set()
     for c in items:
@@ -203,6 +275,8 @@ def main():
     manual_geo=[c for c in manual if isinstance(c.get("lat"),(int,float)) and isinstance(c.get("lon"),(int,float))]
     manual_unlocated=[c for c in manual if c not in manual_geo]
     city_cameras=dedupe(speed_city+live_city+manual_geo)+manual_unlocated
+    snapshot_nodes=osm_snapshot_nodes()
+    city_cameras, snapshot_added=merge_osm_snapshot(city_cameras,snapshot_nodes)
     try:
         third_party=helpradar_candidates()
     except Exception as exc:
@@ -216,6 +290,8 @@ def main():
         updated_at=old.get("updatedAt") or updated_at
     db={"schemaVersion":1,"revision":next_revision,"updatedAt":updated_at,
         "attribution":"© OpenStreetMap contributors; ODbL 1.0. SpeedCams.world data is derived from OpenStreetMap.",
+        "overpassSnapshot":{"source":"OpenStreetMap / Overpass","timestamp":json.load(open(os.path.join(ROOT,"export-1.geojson"),encoding="utf-8")).get("timestamp") if snapshot_nodes else None,
+                            "count":len(snapshot_nodes),"added":snapshot_added},
         "cities":{"mari-el":region_cameras,"yoshkar-ola":city_cameras,"moscow":[],"sochi":[]},
         "sourceCounts":{"mari-el":{"speedcams":len(speed_region),"osm":len(live_region)},
                         "yoshkar-ola":{"speedcams":len(speed_city),"osm":len(live_city),"local":len(manual),"helpradar":len(third_party)}}}
