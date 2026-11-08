@@ -35,6 +35,20 @@ class LocalCameraStore {
         }
         return this.cameras.slice();
     }
+    remove(id) {
+        if (typeof id !== 'string' || !/^local-[a-z0-9-]{4,48}$/.test(id)) {
+            throw new Error('LOCAL_CAMERA_ID_INVALID');
+        }
+        const next = this.cameras.filter(camera => camera.id !== id);
+        if (next.length === this.cameras.length) return false;
+        const dir = path.dirname(this.file);
+        fs.mkdirSync(dir, { recursive: true });
+        const tmp = this.file + '.tmp';
+        fs.writeFileSync(tmp, JSON.stringify(next, null, 2), 'utf8');
+        fs.renameSync(tmp, this.file);
+        this.cameras = next;
+        return true;
+    }
     add(camera) {
         const clean = validateCamera(camera);
         if (this.cameras.some(c => c.id === clean.id)) throw new Error('LOCAL_CAMERA_DUPLICATE_ID');
