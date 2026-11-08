@@ -13,7 +13,7 @@ const REFRESH_INTERVAL_MS=21600000,W=1600,H=520;
 const MAP={x:24,y:66,w:1120,h:420},P={x:1170,y:66,w:406,h:420};
 const C={bg:'#080d13',panel:'#101923',road:'#334252',edge:'#637487',text:'#e9f0f6',muted:'#91a2b5',blue:'#58b6ff',red:'#ff525e',green:'#5de0a1',yellow:'#ffd166',grid:'#172430'};
 mgu.run({async start(ctx){
- const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),index=0,zoom=.75,zoomIndex=1,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
+ const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),view='MAP',index=0,zoom=.75,zoomIndex=1,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
  const store=new CameraStore({dataDir,bundled:bundledDatabase});let database=store.loadLocal().database;
  const localStore=new LocalCameraStore(dataDir);let localCameras=localStore.load(),addScreenActive=false,captureFixes=[],cameraDraft=null,captureStatus='Ожидание GPS...',cameraLimit=60,cameraType=0,cameraDirection='forward',gpsTrack=[];
  const gps=new BmwGps(),roadGuidance=new RoadGuidanceWarnings(roadZones.zones||[]),voice=new CameraVoiceAlerts({assetDir:__dirname,log:(m)=>log.warn(m)});let refreshInFlight=null,refreshBusy=false,refreshError=false,refreshStatus='База готова · '+store.source;
@@ -92,7 +92,8 @@ mgu.run({async start(ctx){
     txt(cv,'Скорость '+speed+' км/ч',x+1190,y+81,20,C.muted);
   }
 }
-function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),36,39,Date.now()<alertUntil?18:19,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);drawAlertBanner(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
+function drawMainMap(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,Date.now()<alertUntil?'#7b1820':'#111c27');txt(cv,Date.now()<alertUntil?'⚠ '+lastAlert:'КАРТА КАМЕР · '+(CITY_LABELS[city]||city),36,39,Date.now()<alertUntil?18:19,Date.now()<alertUntil?'#ffffff':C.text);txt(cv,'Локальная схема · без интернета',W-38,39,15,C.muted,{align:'right'});drawMap(cv);drawPanel(cv);drawAlertBanner(cv);txt(cv,'Схема улиц по опубликованным координатам участков контроля; не навигационная карта.',MAP.x+2,H-8,12,C.muted);return ui.image('MAIN_GFX',cv);}
+ function render(){if(view==='ADD')return drawAddCamera();if(view==='MY')return drawMyCameras();return drawMainMap();}
  function renderSafe(){Promise.resolve().then(render).catch(e=>log.warn('map render: '+e));}
  function gpsChanged(s){gpsStatus=s||gpsStatus;fix=s&&s.fix?s.fix:null;if(fix){
   if(Number.isFinite(fix.accuracyM)&&fix.accuracyM<=15&&Number.isFinite(fix.speedKmh)&&fix.speedKmh>=8&&Number.isFinite(fix.headingDeg)){
@@ -108,6 +109,22 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
   roadGuidance.update(fix,monitoringCameras(),Date.now()).forEach(e=>{if(e.type==='camera')voice.camera(e.stage);activeAlert=e;lastAlert=e.type==='speeding'?'ПРЕВЫШЕНИЕ · '+e.speedKmh+' при '+e.limitKmh+' км/ч (+'+e.excessKmh+') · '+(e.roadName||e.camera.name):(e.stage===1?'КАМЕРА ЧЕРЕЗ':'ПОВТОР · КАМЕРА ЧЕРЕЗ')+' '+e.distanceM+' м · '+e.camera.name;alertUntil=Date.now()+10000;log.warn((e.type==='speeding'?'SPEEDING_WARNING':'PROXIMITY_WARNING')+' stage='+e.stage+' distance='+e.distanceM+' camera='+e.camera.id+(e.type==='speeding'?' speed='+e.speedKmh+' limit='+e.limitKmh:''));});}renderSafe();if(addScreenActive)renderAddSafe();}
  async function refresh(){if(refreshInFlight)return refreshInFlight;refreshBusy=true;refreshError=false;refreshStatus='Проверка обновлений...';renderSafe();refreshInFlight=store.refresh((state)=>{refreshStatus=state;renderSafe();}).then(r=>{database=r.database;if(r.updated){index=0;roadGuidance.reset();refreshStatus='Обновлено успешно';refreshError=false;}else if(r.error){refreshStatus='Ошибка: '+String(r.error).slice(0,42);refreshError=true;}else{refreshStatus='Обновлений нет';refreshError=false;}renderSafe();return r;}).catch(e=>{refreshStatus='Ошибка: '+String(e&&e.message||e).slice(0,42);refreshError=true;log.warn('DB refresh '+e);renderSafe();return {error:String(e)};}).then(r=>{refreshBusy=false;refreshInFlight=null;renderSafe();return r;});return refreshInFlight;}
  const CAMERA_TYPES=['Камера скорости','Контроль светофора','Скорость + светофор'];
+ function drawTabs(cv,active){
+  const tabs=[['MAP','КАРТА'],['ADD','ДОБАВИТЬ'],['MY','МОИ КАМЕРЫ']];
+  let x=24;tabs.forEach(([id,label])=>{const w=id==='MY'?210:190;cv.roundRect(x,8,w,42,9,active===id?'#17496a':'#172431');if(active===id)cv.strokeRoundRect(x,8,w,42,9,2,C.blue);txt(cv,label,x+w/2,35,17,active===id?C.text:C.muted,{align:'center'});x+=w+10;});
+ }
+ function drawActionLegend(cv,mode){
+  const items=mode==='ADD'?['Лимит −','Лимит +','Тип камеры','Направление','Сохранить','Следующая вкладка']:
+    ['Предыдущая','Следующая','Удалить','Подтвердить','Добавить камеру','Следующая вкладка'];
+  txt(cv,'КНОПКИ УПРАВЛЕНИЯ',30,482,12,C.muted);
+  items.forEach((label,i)=>txt(cv,(i+1)+'. '+label,220+i*225,482,14,C.text));
+ }
+ function cycleView(){
+  if(view==='MAP'){view='MY';addScreenActive=false;}
+  else if(view==='MY'){view='ADD';beginAddCamera();}
+  else{view='MAP';addScreenActive=false;}
+  renderSafe();
+ }
  const renderAddSafe=()=>Promise.resolve().then(drawAddCamera).catch(e=>log.warn('add-camera render: '+e));
  function beginAddCamera(){addScreenActive=true;captureFixes=[];cameraDraft=null;captureStatus='Ожидание пяти точных GPS-измерений...';cameraLimit=60;cameraType=0;cameraDirection='forward';}
  function addCameraRoad(lat,lon){
@@ -137,16 +154,16 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
   const road= cameraDraft?addCameraRoad(cameraDraft.lat,cameraDraft.lon):null;
   txt(cv,road?'Дорожная траектория записана · предупреждения будут привязаны к ней':'Для дорожной привязки нужна запись GPS-траектории при подъезде',82,405,17,road?C.green:C.yellow);
   txt(cv,'Добавляйте камеру на стоянке. Текущая база камер не изменяется.',82,448,15,C.muted);
-  return ui.image('ADD_CAMERA_GFX',cv);
+  drawTabs(cv,'ADD');drawActionLegend(cv,'ADD');return ui.image('MAIN_GFX',cv);
  }
  let localCameraIndex=0,deletePending=false;
- function drawCameraMenu(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'УПРАВЛЕНИЕ КАМЕРАМИ',36,39,20,C.text);cv.roundRect(260,100,1080,310,18,C.panel);txt(cv,'Мои камеры',800,190,34,C.text,{align:'center'});txt(cv,'Добавляйте новые камеры или просматривайте и удаляйте сохранённые.',800,240,20,C.muted,{align:'center'});txt(cv,'Сохранено вручную: '+localCameras.length,800,300,24,C.green,{align:'center'});return ui.image('CAMERA_MENU_GFX',cv);}
+ function drawCameraMenu(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'УПРАВЛЕНИЕ КАМЕРАМИ',36,39,20,C.text);cv.roundRect(260,100,1080,310,18,C.panel);txt(cv,'Мои камеры',800,190,34,C.text,{align:'center'});txt(cv,'Добавляйте новые камеры или просматривайте и удаляйте сохранённые.',800,240,20,C.muted,{align:'center'});txt(cv,'Сохранено вручную: '+localCameras.length,800,300,24,C.green,{align:'center'});drawTabs(cv,'MENU');return ui.image('MAIN_GFX',cv);}
  function renderMenuSafe(){Promise.resolve().then(drawCameraMenu).catch(e=>log.warn('camera menu render: '+e));}
  function drawMyCameras(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,40,10,'#111c27');txt(cv,'МОИ КАМЕРЫ',36,39,20,C.text);cv.roundRect(48,72,W-96,420,16,C.panel);
   if(!localCameras.length){txt(cv,'Пользовательских камер пока нет',800,220,28,C.muted,{align:'center'});txt(cv,'Добавленные вручную камеры появятся здесь',800,265,18,C.muted,{align:'center'});}
   else{localCameraIndex=Math.max(0,Math.min(localCameraIndex,localCameras.length-1));const c=localCameras[localCameraIndex];txt(cv,(localCameraIndex+1)+' / '+localCameras.length,82,120,18,C.blue);txt(cv,c.type||c.name||'Камера',82,178,32,C.text);txt(cv,c.lat.toFixed(6)+' , '+c.lon.toFixed(6),82,225,22,C.green);txt(cv,'Ограничение: '+(c.limit===null?'не указано':c.limit+' км/ч'),82,270,20,C.text);txt(cv,'Направление: '+(c.direction==='both'?'Оба направления':'По направлению движения'),82,310,18,C.muted);txt(cv,c.road?'Дорожная привязка: есть':'Дорожная привязка: нет',82,350,18,c.road?C.green:C.yellow);txt(cv,'Источник: добавлена вручную',82,390,17,C.muted);}
   if(deletePending){cv.roundRect(300,165,1000,190,18,'#35121a');cv.strokeRoundRect(300,165,1000,190,18,2,C.red);txt(cv,'УДАЛИТЬ ЭТУ КАМЕРУ?',800,225,30,C.text,{align:'center'});txt(cv,'Нажми «Подтвердить», чтобы удалить только эту локальную запись.',800,275,18,C.muted,{align:'center'});}
-  return ui.image('MY_CAMERAS_GFX',cv);
+  drawTabs(cv,'MY');drawActionLegend(cv,'MY');return ui.image('MAIN_GFX',cv);
  }
  function renderMyCamerasSafe(){Promise.resolve().then(drawMyCameras).catch(e=>log.warn('my cameras render: '+e));}
  function removeSelectedCamera(){if(!deletePending)return;const c=localCameras[localCameraIndex];if(!c){deletePending=false;renderMyCamerasSafe();return;}try{if(!localStore.remove(c.id))throw new Error('Камера не найдена в локальном хранилище');localCameras=localCameras.filter(x=>x.id!==c.id);delete roadGuidance.zones[c.id];roadGuidance.reset();deletePending=false;localCameraIndex=Math.max(0,Math.min(localCameraIndex,localCameras.length-1));index=0;lastAlert='Пользовательская камера удалена';alertUntil=Date.now()+8000;log.info('LOCAL_CAMERA_REMOVED id='+c.id);renderMyCamerasSafe();}catch(e){log.warn('LOCAL_CAMERA_REMOVE_FAILED '+e);deletePending=false;renderMyCamerasSafe();}}
@@ -161,27 +178,14 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
   if(road){roadGuidance.zones[id]=prepare({id,lat:saved.lat,lon:saved.lon,roads:[{id:'user-road-'+id,pts:road.pts,camM:road.camM,dir:cameraDirection==='forward'?1:0}]});roadGuidance.reset();}
   index=Math.max(0,cameras().length-1);lastAlert=road?'Камера добавлена · дорожная привязка готова':'Камера сохранена · дорожную траекторию нужно записать';alertUntil=Date.now()+10000;
   log.info('LOCAL_CAMERA_ADDED id='+id+' roadGeometry='+(road?'yes':'no')+' accuracy='+cameraDraft.accuracyM);
-  addScreenActive=false;ui.open('MAIN');renderSafe();
+  addScreenActive=false;view='MY';renderSafe();
  }
- ui.onClick('BTN_CAMERA_MENU',()=>{ui.open('CAMERA_MENU');renderMenuSafe();});
- ui.onClick('BTN_MENU_ADD',()=>{beginAddCamera();ui.open('ADD_CAMERA');renderAddSafe();});
- ui.onClick('BTN_MENU_MANAGE',()=>{localCameraIndex=0;deletePending=false;ui.open('MY_CAMERAS');renderMyCamerasSafe();});
- ui.onClick('BTN_MENU_BACK',()=>{ui.open('MAIN');renderSafe();});
- ui.onClick('BTN_LOCAL_PREV',()=>{deletePending=false;localCameraIndex=Math.max(0,localCameraIndex-1);renderMyCamerasSafe();});
- ui.onClick('BTN_LOCAL_NEXT',()=>{deletePending=false;localCameraIndex=Math.min(Math.max(0,localCameras.length-1),localCameraIndex+1);renderMyCamerasSafe();});
- ui.onClick('BTN_LOCAL_DELETE',()=>{if(localCameras.length){deletePending=true;renderMyCamerasSafe();}});
- ui.onClick('BTN_LOCAL_CONFIRM',removeSelectedCamera);
- ui.onClick('BTN_LOCAL_BACK',()=>{deletePending=false;ui.open('CAMERA_MENU');renderMenuSafe();});
- ui.onClick('BTN_LIMIT_DOWN',()=>{cameraLimit=Math.max(20,cameraLimit-10);renderAddSafe();});
- ui.onClick('BTN_LIMIT_UP',()=>{cameraLimit=Math.min(130,cameraLimit+10);renderAddSafe();});
- ui.onClick('BTN_TYPE',()=>{cameraType=(cameraType+1)%CAMERA_TYPES.length;renderAddSafe();});
- ui.onClick('BTN_DIRECTION',()=>{cameraDirection=cameraDirection==='forward'?'both':'forward';renderAddSafe();});
- ui.onClick('BTN_SAVE_CAMERA',saveLocalCamera);
- ui.onClick('BTN_CANCEL_CAMERA',()=>{addScreenActive=false;ui.open('MAIN');renderSafe();});
- ui.onVisible((n,v)=>{if(n==='ADD_CAMERA'&&v){addScreenActive=true;renderAddSafe();}else if(n==='ADD_CAMERA'&&!v)addScreenActive=false;if(n==='CAMERA_MENU'&&v)renderMenuSafe();if(n==='MY_CAMERAS'&&v)renderMyCamerasSafe();if(n==='MAIN'&&v)renderSafe();});
- ui.onClick('BTN_CAM_PREV',()=>{index=Math.max(0,index-1);renderSafe();});ui.onClick('BTN_CAM_NEXT',()=>{index=Math.min(Math.max(0,cameras().length-1),index+1);renderSafe();});
- ui.onClick('BTN_ZOOM',()=>{const steps=[.55,.75,1,1.25,1.6,2,2.5];zoomIndex=(zoomIndex+1)%steps.length;zoom=steps[zoomIndex];renderSafe();});ui.onClick('BTN_REFRESH',refresh);
- ui.onClick('BTN_VOICE_TEST',()=>{
+ ui.onClick('BTN_CAMERA_MENU',cycleView);
+ ui.onClick('BTN_CAM_PREV',()=>{if(view==='ADD'){cameraLimit=Math.max(20,cameraLimit-10);renderSafe();}else if(view==='MY'){deletePending=false;localCameraIndex=Math.max(0,localCameraIndex-1);renderSafe();}else{index=Math.max(0,index-1);renderSafe();}});
+ ui.onClick('BTN_CAM_NEXT',()=>{if(view==='ADD'){cameraLimit=Math.min(130,cameraLimit+10);renderSafe();}else if(view==='MY'){deletePending=false;localCameraIndex=Math.min(Math.max(0,localCameras.length-1),localCameraIndex+1);renderSafe();}else{index=Math.min(Math.max(0,cameras().length-1),index+1);renderSafe();}});
+ ui.onClick('BTN_ZOOM',()=>{if(view==='ADD'){cameraType=(cameraType+1)%CAMERA_TYPES.length;renderSafe();}else if(view==='MY'){if(localCameras.length){deletePending=true;renderSafe();}}else{const steps=[.55,.75,1,1.25,1.6,2,2.5];zoomIndex=(zoomIndex+1)%steps.length;zoom=steps[zoomIndex];renderSafe();}});
+ ui.onClick('BTN_REFRESH',()=>{if(view==='ADD'){cameraDirection=cameraDirection==='forward'?'both':'forward';renderSafe();}else if(view==='MY'){removeSelectedCamera();}else refresh();});
+ ui.onClick('BTN_VOICE_TEST',()=>{if(view==='ADD'){saveLocalCamera();return;}if(view==='MY'){beginAddCamera();view='ADD';renderSafe();return;}
   lastAlert='ПРОВЕРКА ГОЛОСОВОГО ОПОВЕЩЕНИЯ...';alertUntil=Date.now()+10000;renderSafe();
   voice.test().then(ok=>{
    if(!ok)log.warn('VOICE TEST FAILED: '+String(voice.lastError||'unknown'));
@@ -192,5 +196,5 @@ function render(){const cv=ctx.canvas(W,H).clear(C.bg);cv.roundRect(18,12,W-36,4
  settings.onChange(k=>{if(k==='city'){city=String(settings.get('city')||'yoshkar-ola');index=0;roadGuidance.reset();renderSafe();}});
  gps.on('change',gpsChanged);gps.start();ui.onVisible((n,v)=>{if(n==='MAIN'&&v)renderSafe();});
  renderSafe();refresh();setInterval(refresh,REFRESH_INTERVAL_MS);ctx.loop('MAIN',1000,render);
- log.info('Speed Camera Warning 0.7.23 started; road-matched camera alerts only; voice warnings through privileged BMW voice service at 500/700 m and 200 m; no nearby fallback');
+ log.info('Speed Camera Warning 0.7.24 started; road-matched camera alerts only; voice warnings through privileged BMW voice service at 500/700 m and 200 m; no nearby fallback');
 }});
