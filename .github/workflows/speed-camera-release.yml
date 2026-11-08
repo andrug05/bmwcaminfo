@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.5"
+        default: "0.7.6"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -31,7 +31,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.5' }}
+      APP_VERSION: ${{ inputs.version || '0.7.6' }}
       APP_ID: aurelm_speed_camera_warning
       VOICE_VERSION: 0.1.0
     steps:
@@ -189,18 +189,33 @@ jobs:
               raise SystemExit('MGU app id must have a unique vendor prefix')
           PY
 
-      - name: Publish privileged voice service tool
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Assemble one combined installation bundle
         run: |
-          TAG="bmwcaminfo-voice@${VOICE_VERSION}"
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --clobber
-          else
-            gh release create "$TAG" "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --title "BMW Camera Voice Service ${VOICE_VERSION}" --notes "Privileged ID7 system service for BMW MediaPlayer voice prompts. Install this tool before BMW Speed Camera Warning 0.7.5."
-          fi
+          mkdir -p bundle
+          cp "release/${APP_ID}@${APP_VERSION}.tgz" bundle/
+          cp "release/${APP_ID}@${APP_VERSION}.mgu" bundle/
+          cp "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" bundle/
+          cat > bundle/INSTALL.txt <<'EOF'
+          BMW SPEED CAMERA WARNING - COMBINED INSTALLATION
 
-      - name: Publish standalone app
+          This bundle contains:
+            - OAP application (.tgz and .mgu)
+            - privileged BMW MediaPlayer voice service (.tgz)
+
+          The voice service requires root/systemd privileges and therefore
+          cannot be installed from inside the sandboxed OAP application.
+          Install both artifacts in one mgu-deploy transaction, tools first:
+
+          mgu-deploy.sh install --artifact bmwcaminfo-voice@0.1.0.tgz --artifact aurelm_speed_camera_warning@${APP_VERSION}.tgz --yes
+
+          Alternatively use the .mgu application package with the same voice
+          service artifact. Do not install the voice service by itself after
+          the app; install the tool first.
+          EOF
+          (cd bundle && zip -q "../release/bmwcaminfo-complete@${APP_VERSION}.zip" .)
+          test -s "release/bmwcaminfo-complete@${APP_VERSION}.zip"
+
+      - name: Publish combined release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -209,12 +224,16 @@ jobs:
             gh release upload "$TAG" \
               "release/${APP_ID}@${APP_VERSION}.tgz" \
               "release/${APP_ID}@${APP_VERSION}.mgu" \
+              "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" \
+              "release/bmwcaminfo-complete@${APP_VERSION}.zip" \
               --repo "$GITHUB_REPOSITORY" --clobber
           else
             gh release create "$TAG" \
               "release/${APP_ID}@${APP_VERSION}.tgz" \
               "release/${APP_ID}@${APP_VERSION}.mgu" \
+              "release/bmwcaminfo-voice@${VOICE_VERSION}.tgz" \
+              "release/bmwcaminfo-complete@${APP_VERSION}.zip" \
               --repo "$GITHUB_REPOSITORY" \
-              --title "BMW Speed Camera Warning ${APP_VERSION}" \
-              --notes "Standalone offline BMW MGU ID7 speed camera database; road-geometry-matched camera-ahead warnings only; GPS accuracy must be <=15 m; no nearby fallback, no OSM road speed limits, camera-record speed limits only. No OSM road speed-limit detection. Voice warnings use BMW MediaPlayer; the app includes a manual voice test button."
+              --title "BMW Speed Camera Warning ${APP_VERSION} (combined)" \
+              --notes "One combined release: BMW MGU ID7 camera-warning app plus its privileged BMW MediaPlayer voice service. The voice service must be installed as a root tool before the OAP app; use the combined ZIP and INSTALL.txt for one transaction. The app retains road-geometry-only camera-ahead warnings, no radial fallback, and the manual voice test button."
           fi
