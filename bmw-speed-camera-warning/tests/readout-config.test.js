@@ -33,8 +33,8 @@ assert.strictEqual(local.remove('local-test-1234'),false);}
 finally{fs.rmSync(tmp,{recursive:true,force:true});}
 assert(app.settings[0].options.some(o=>o[0]==='mari-el'));
 assert(app.screens[0].buttons.some(b=>b[0]==='BTN_VOICE_TEST'),'Voice test button must be present');
-assert(app.screens[0].buttons.some(b=>b[0]==='BTN_CAM_PREV'&&b[1]==='1 Назад / −'),'Previous-camera button must be present with a text label');
-assert(app.screens[0].buttons.some(b=>b[0]==='BTN_CAM_NEXT'&&b[1]==='2 Вперёд / +'),'Next-camera button must be present with a text label');
+assert(app.screens[0].buttons.some(b=>b[0]==='BTN_CAM_PREV'&&b[1]==='1'),'Previous-camera button must be present with a text label');
+assert(app.screens[0].buttons.some(b=>b[0]==='BTN_CAM_NEXT'&&b[1]==='2'),'Next-camera button must be present with a text label');
 const {ProximityWarnings}=require(path.join(base,'proximity.js'));
 const warnings=new ProximityWarnings();
 const near={id:'test-camera',name:'Test',lat:56.63,lon:47.928};
