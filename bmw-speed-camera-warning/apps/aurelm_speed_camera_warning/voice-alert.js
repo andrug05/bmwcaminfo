@@ -21,12 +21,17 @@ class CameraVoiceAlerts {
         this.mp = null;
         this.connectionId = null;
         this.busy = false;
+        this.lastError = null;
     }
 
     _say(file) {
-        const task = this.queue.then(() => this._play(file)).then(() => true);
+        const task = this.queue.then(() => this._play(file)).then(() => {
+            this.lastError = null;
+            return true;
+        });
         this.queue = task.catch((e) => {
-            this.log('voice alert failed: ' + (e && e.stack || e));
+            this.lastError = e && e.message ? e.message : String(e);
+            this.log('VOICE_TEST_OR_ALERT_FAILED: ' + (e && e.stack || e));
             return false;
         });
         return this.queue;
@@ -72,12 +77,14 @@ class CameraVoiceAlerts {
         const audioPath = path.join(this.assetDir, 'audio', file);
         if (!fs.existsSync(audioPath)) throw new Error('voice file missing: ' + audioPath);
         const connected = await this.cc.callMethod('connect', { sourceID: SOURCE_ID, sinkID: SINK_ID }, 5000);
+        this.log('BMW MediaPlayer connect response: ' + JSON.stringify(connected));
         if (!connected || (connected.amError !== 'E_OK' && connected.amError !== 'E_ALREADY_EXISTS')) {
             throw new Error('BMW audio connect failed: ' + JSON.stringify(connected));
         }
         this.connectionId = connected.mainConnectionID;
         try {
             const result = await this.mp.callMethod('playFile', { path: audioPath, languageCode: LANGUAGE_CODE }, 5000);
+            this.log('BMW MediaPlayer playFile response: ' + JSON.stringify(result));
             if (!result || result.EntError !== 'OK') throw new Error('BMW playFile failed: ' + JSON.stringify(result));
             await new Promise((resolve) => setTimeout(resolve, PLAY_TIMEOUT_MS));
         } finally {
