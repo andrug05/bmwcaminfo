@@ -54,7 +54,7 @@ jobs:
             speed-camera-data-v1-
 
       - name: Import regional camera sources
-        if: steps.data_cache.outputs.cache-hit != 'true' || inputs.refresh_data == true || github.event_name == 'schedule'
+        if: inputs.refresh_data == true || github.event_name == 'schedule'
         run: |
           python3 bmw-speed-camera-warning/tools/import_camera_sources.py
           # Imported databases are consumed directly by this build.
