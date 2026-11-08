@@ -81,10 +81,20 @@ class CameraStore {
         this.dataDir = o.dataDir || process.cwd();
         this.bundled = validateDatabase(o.bundled);
         this.cachePath = path.join(this.dataDir, 'camera-db-cache.json');
+        this.statusPath = path.join(this.dataDir, 'camera-db-status.json');
+        this.lastCheckAt = '';
+        this.lastSuccessAt = '';
+        this.lastError = '';
         this.current = this.bundled;
         this.source = 'bundle';
     }
     loadLocal() {
+        try {
+            const status = JSON.parse(fs.readFileSync(this.statusPath, 'utf8'));
+            this.lastCheckAt = typeof status.lastCheckAt === 'string' ? status.lastCheckAt : '';
+            this.lastSuccessAt = typeof status.lastSuccessAt === 'string' ? status.lastSuccessAt : '';
+            this.lastError = typeof status.lastError === 'string' ? status.lastError : '';
+        } catch (e) { /* first launch or no saved status */ }
         let cached = null;
         try { cached = validateDatabase(JSON.parse(fs.readFileSync(this.cachePath, 'utf8'))); }
         catch (e) { cached = null; }
@@ -98,9 +108,21 @@ class CameraStore {
         }
         return { database: this.current, source: this.source };
     }
+    saveStatus() {
+        try {
+            fs.mkdirSync(this.dataDir, { recursive: true });
+            const tmp = this.statusPath + '.tmp';
+            fs.writeFileSync(tmp, JSON.stringify({ lastCheckAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, lastError: this.lastError }), 'utf8');
+            fs.renameSync(tmp, this.statusPath);
+        } catch (e) { /* status display is best-effort; camera cache remains authoritative */ }
+    }
     async refresh() {
         try {
             const next = validateDatabase(JSON.parse(await getHttps(DATABASE_URL, 0)));
+            const checkedAt = new Date().toISOString();
+            this.lastCheckAt = checkedAt;
+            this.lastSuccessAt = checkedAt;
+            this.lastError = '';
             if (next.revision > this.current.revision) {
                 fs.mkdirSync(this.dataDir, { recursive: true });
                 const tmp = this.cachePath + '.tmp';
@@ -108,7 +130,8 @@ class CameraStore {
                 fs.renameSync(tmp, this.cachePath);
                 this.current = next;
                 this.source = 'download';
-                return { updated: true, database: this.current, source: this.source };
+                this.saveStatus();
+                return { updated: true, database: this.current, source: this.source, checkedAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, serverUpdatedAt: this.current.updatedAt };
             }
             if (this.source === 'bundle' && !fs.existsSync(this.cachePath)) {
                 fs.mkdirSync(this.dataDir, { recursive: true });
@@ -118,10 +141,14 @@ class CameraStore {
                 this.current = next;
                 this.source = 'cache';
             }
-            return { updated: false, database: this.current, source: this.source };
+            this.saveStatus();
+            return { updated: false, database: this.current, source: this.source, checkedAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, serverUpdatedAt: this.current.updatedAt };
         } catch (error) {
+            this.lastCheckAt = new Date().toISOString();
+            this.lastError = error && error.message ? error.message : 'CAMERA_DB_UPDATE_FAILED';
+            this.saveStatus();
             return { updated: false, database: this.current, source: this.source,
-                error: error && error.message ? error.message : 'CAMERA_DB_UPDATE_FAILED' };
+                error: this.lastError, checkedAt: this.lastCheckAt, lastSuccessAt: this.lastSuccessAt, serverUpdatedAt: this.current.updatedAt };
         }
     }
 }
