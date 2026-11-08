@@ -38,41 +38,19 @@ jobs:
       - name: Import regional camera sources
         run: |
           python3 bmw-speed-camera-warning/tools/import_camera_sources.py
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add bmw-speed-camera-warning/data/camera-db.json bmw-speed-camera-warning/apps/${APP_ID}/camera-db.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Update regional camera database [skip ci]"
-            git fetch origin main
-            git rebase origin/main
-            git push
-          fi
+          # Imported databases are consumed directly by this build.
+          # Do not push generated data from the runner: concurrent builds can race
+          # and create rebase conflicts in camera-db.json.
 
       - name: Import offline camera road geometry
         run: |
           python3 bmw-speed-camera-warning/tools/import_road_zones.py
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add bmw-speed-camera-warning/apps/${APP_ID}/road-zones.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Update offline camera road geometry [skip ci]"
-            git fetch origin main
-            git rebase origin/main
-            git push
-          fi
+          # Generated geometry is included in the release without committing from CI.
 
       - name: Import offline Yoshkar-Ola street geometry
         run: |
           python3 bmw-speed-camera-warning/tools/import_city_roads.py
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add bmw-speed-camera-warning/apps/${APP_ID}/city-map.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Update offline Yoshkar-Ola street geometry [skip ci]"
-            git fetch origin main
-            git rebase origin/main
-            git push
-          fi
+          # Generated geometry is included in the release without committing from CI.
 
       - name: Prepare standalone app
         run: |
