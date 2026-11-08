@@ -135,7 +135,7 @@ class RoadGuidanceWarnings {
                 state.stage = 1;
                 events.push({ type: 'camera', stage: 1, distanceM: d, thresholdM: range,
                     camera, speedKmh: Math.round(fix.speedKmh), roadConfirmed: true, way: next.way });
-            } else if (state.stage === 1 && next.distanceM <= SECOND_WARNING_M) {
+            } else if (fresh && state.stage === 1 && next.distanceM <= SECOND_WARNING_M) {
                 state.stage = 2;
                 events.push({ type: 'camera', stage: 2, distanceM: d, thresholdM: SECOND_WARNING_M,
                     camera, speedKmh: Math.round(fix.speedKmh), roadConfirmed: true, way: next.way });
