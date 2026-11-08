@@ -96,9 +96,16 @@ class RoadGuidanceWarnings {
             const camera = byId[id], zone = this.zones[id];
             if (!camera || !Number.isFinite(camera.lat) || !Number.isFinite(camera.lon)) return;
             seen[id] = true;
-            const previousState = this.states[id];
+            let previousState = this.states[id];
+            if (previousState && now - previousState.lastSeenAt > 5000) {
+                delete this.states[id]; previousState = null;
+            }
             const range = fix.speedKmh > FAST_SPEED_KMH ? FAST_WARNING_M : FIRST_WARNING_M;
-            const next = candidate(zone, fix, range, previousState);
+            let next = candidate(zone, fix, range, previousState);
+            if (previousState && fresh && (!next || !plausible(previousState, next, fix, dt))) {
+                delete this.states[id]; previousState = null;
+                next = candidate(zone, fix, range, null);
+            }
             const prior = this.prior[id];
             const approaching = fresh && next && plausible(prior, next, fix, dt) &&
                 prior.distanceM - next.distanceM > 0.5 && prior.way === next.way && prior.sign === next.sign;
@@ -117,11 +124,12 @@ class RoadGuidanceWarnings {
             let state = previousState;
             if (!state && approaching) {
                 state = this.states[id] = { stage: 0, speedingAlerted: false, way: next.way,
-                    sign: next.sign, dir: next.dir, lastSeenAt: now };
+                    sign: next.sign, dir: next.dir, distanceM: next.distanceM, lastSeenAt: now };
             }
             if (!state) return;
             state.lastSeenAt = now;
             state.way = next.way; state.sign = next.sign; state.dir = next.dir;
+            state.distanceM = next.distanceM;
             const d = Math.round(next.distanceM);
             if (state.stage === 0 && next.distanceM <= range) {
                 state.stage = 1;
