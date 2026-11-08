@@ -6,7 +6,7 @@ function validateCamera(c) {
     if (!c || typeof c.id !== 'string' || !/^local-[a-z0-9-]{4,48}$/.test(c.id) ||
         !Number.isFinite(c.lat) || c.lat < -90 || c.lat > 90 ||
         !Number.isFinite(c.lon) || c.lon < -180 || c.lon > 180 ||
-        !Number.isFinite(c.limit) || c.limit < 5 || c.limit > 250 ||
+        (c.limit !== null && (!Number.isFinite(c.limit) || c.limit < 5 || c.limit > 250)) ||
         ['forward', 'both'].indexOf(c.direction) < 0 ||
         (c.road !== null && c.road !== undefined && (!Array.isArray(c.road.pts) || c.road.pts.length < 2 ||
             !Number.isFinite(c.road.camM) || c.road.camM < 0 || c.road.pts.some(p => !Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite))))) {
