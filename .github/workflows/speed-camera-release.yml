@@ -63,6 +63,12 @@ jobs:
           key: speed-camera-data-v2-${{ github.run_id }}
           restore-keys: |
             speed-camera-data-v2-
+            speed-camera-data-v1-
+
+      - name: Restore committed camera database after cache restore
+        run: |
+          git checkout HEAD -- bmw-speed-camera-warning/data/camera-db.json
+          git checkout HEAD -- bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/camera-db.json
 
       - name: Import regional camera sources
         if: inputs.refresh_data == true || github.event_name == 'schedule'
