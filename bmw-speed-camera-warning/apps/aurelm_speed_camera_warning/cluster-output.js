@@ -78,6 +78,13 @@ class CameraClusterOutput{
   // Failsafe: clear stale alerts if GPS stops updating or the vehicle leaves the monitored segment.
   this.hideTimer=setTimeout(()=>this.clear(),45000);
  }
+ sync(states){
+  if(!this.current)return;
+  const state=states&&states[this.current.camera.id];
+  if(!state){this.clear();return;}
+  const distance=Math.max(0,Math.round(state.distanceM));
+  if(Number.isFinite(distance)&&Math.abs(distance-this.current.distanceM)>=8){this.current.distanceM=distance;this._draw(this.current);}
+ }
  clear(){
   if(this.hideTimer)clearTimeout(this.hideTimer);this.hideTimer=null;this.current=null;
   if(this.cr)Object.keys(this.layers).forEach(target=>this.cr.set(this.layers[target],{visible:false}));
