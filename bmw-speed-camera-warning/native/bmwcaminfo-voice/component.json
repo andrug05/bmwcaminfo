@@ -1,0 +1,20 @@
+{
+  "id": "bmwcaminfo-voice",
+  "kind": "tool",
+  "version": "0.1.0",
+  "license": "MIT",
+  "title": "BMW Camera Voice Service",
+  "description": "Privileged BMW MediaPlayer voice service for BMW Speed Camera Warning",
+  "requires": { "mgu-deploy": "0.7.0" },
+  "uninstallable": true,
+  "mguHmi": ["ID7"],
+  "files": [
+    { "path": "voice.js", "from": "voice.js", "mode": "0644" },
+    { "path": "audio/camera-500.m4a", "from": "audio/camera-500.m4a", "mode": "0644" },
+    { "path": "audio/camera-200.m4a", "from": "audio/camera-200.m4a", "mode": "0644" }
+  ],
+  "units": [{ "name": "bmwcaminfo-voice.service", "from": "systemd/bmwcaminfo-voice.service" }],
+  "enable": [{ "unit": "bmwcaminfo-voice.service", "target": "multi-user.target" }],
+  "restart": ["bmwcaminfo-voice.service"],
+  "crashNames": ["bmwcaminfo-voice"]
+}
