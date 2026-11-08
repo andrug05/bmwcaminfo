@@ -5,12 +5,12 @@ import json, os, time, urllib.parse, urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = os.path.join(ROOT, "apps", "aurelm_speed_camera_warning")
 MAP_PATH = os.path.join(BASE, "city-map.json")
-ENDPOINTS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+ENDPOINTS = ["https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter", "https://overpass-api.de/api/interpreter", "https://overpass.nchc.org.tw/api/interpreter"]
 UA = "BMW-Speed-Camera-Warning/0.5.5 (offline street map)"
 
 def fetch(endpoint, payload):
     req = urllib.request.Request(endpoint, data=payload, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=90) as response:
+    with urllib.request.urlopen(req, timeout=25) as response:
         return json.loads(response.read().decode("utf-8"))
 
 def inside(lon, lat, ring):
@@ -29,7 +29,7 @@ def main():
     # Yoshkar-Ola municipal boundary from Nominatim; road geometry is fetched at build time.
     q = urllib.parse.urlencode({"q": "Йошкар-Ола, Республика Марий Эл, Россия", "format": "jsonv2", "polygon_geojson": 1, "limit": 1})
     req = urllib.request.Request("https://nominatim.openstreetmap.org/search?" + q, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=45) as response:
+    with urllib.request.urlopen(req, timeout=15) as response:
         places = json.loads(response.read().decode("utf-8"))
     if not places or "geojson" not in places[0]:
         raise RuntimeError("Nominatim returned no Yoshkar-Ola boundary")
@@ -40,19 +40,19 @@ def main():
     south, west = min(p[1] for p in all_points), min(p[0] for p in all_points)
     north, east = max(p[1] for p in all_points), max(p[0] for p in all_points)
     bbox = f"{south},{west},{north},{east}"
-    query = f'[out:json][timeout:75];way["highway"~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street|service|pedestrian|road)$"]({bbox});out tags geom;'
+    query = f'[out:json][timeout:25];way["highway"~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street|service|pedestrian|road)$"]({bbox});out tags geom;'
     payload = urllib.parse.urlencode({"data": query}).encode()
     result = None
     last_error = None
     for endpoint in ENDPOINTS:
-        for attempt in range(2):
+        for attempt in range(1):
             try:
                 result = fetch(endpoint, payload)
                 last_error = None
                 break
             except Exception as exc:
                 last_error = exc
-                time.sleep(2 + attempt * 3)
+                time.sleep(0.25)
         if result is not None:
             break
     if result is None:
