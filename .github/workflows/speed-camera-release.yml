@@ -195,6 +195,7 @@ jobs:
           node --check upstream/apps/${APP_ID}/main.js
           node --check upstream/apps/${APP_ID}/gps.js
           node --check upstream/apps/${APP_ID}/camera-store.js
+          node --check upstream/apps/${APP_ID}/local-camera-store.js
           node --check upstream/apps/${APP_ID}/proximity.js
           node --check upstream/apps/${APP_ID}/road-guidance.js
           node --check upstream/apps/${APP_ID}/voice-alert.js
