@@ -37,7 +37,7 @@ function rect(px,x,y,w,h,c){for(let yy=y*S;yy<(y+h)*S;yy++)for(let xx=x*S;xx<(x+
 function circle(px,cx,cy,r,c){const rr=r*S,ccx=cx*S,ccy=cy*S;for(let y=Math.floor(ccy-rr-1);y<=Math.ceil(ccy+rr+1);y++)for(let x=Math.floor(ccx-rr-1);x<=Math.ceil(ccx+rr+1);x++){const dx=x+0.5-ccx,dy=y+0.5-ccy,d=Math.sqrt(dx*dx+dy*dy),coverage=Math.max(0,Math.min(1,rr+0.5-d));if(coverage>0){const a=Math.round(c[3]*coverage);put(px,x,y,[c[0],c[1],c[2],a]);}}}
 function text(px,s,x,y,scale,c){
  let at=x;
- const thickness=Math.max(0.72,scale*0.19)*S;
+ const thickness=Math.max(1.15,scale*0.34)*S;
  String(s).toUpperCase().split('').forEach(ch=>{
   const paths=VF[ch]||[];
   paths.forEach(path=>{
