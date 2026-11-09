@@ -3,6 +3,18 @@ const { ClusterRender } = require('./cluster_render_client');
 const W=420,H=116,S=4,IW=W*S,IH=H*S;
 // Single-stroke vector font. Coordinates use a 4x6 em grid; strokes are
 // rasterized directly into the supersampled RGBA buffer with round caps.
+const RASTER_DIGITS={
+ '0':['01110','10001','10011','10101','11001','10001','01110'],
+ '1':['00100','01100','00100','00100','00100','00100','01110'],
+ '2':['01110','10001','00001','00010','00100','01000','11111'],
+ '3':['11110','00001','00001','01110','00001','00001','11110'],
+ '4':['00010','00110','01010','10010','11111','00010','00010'],
+ '5':['11111','10000','10000','11110','00001','00001','11110'],
+ '6':['01110','10000','10000','11110','10001','10001','01110'],
+ '7':['11111','00001','00010','00100','01000','01000','01000'],
+ '8':['01110','10001','10001','01110','10001','10001','01110'],
+ '9':['01110','10001','10001','01111','00001','00001','01110']
+};
 const VF={
  '0':[[0,0,4,0,4,6,0,6,0,0],[0,0,4,6]],
  '1':[[1,1,2,0,2,6],[0,6,4,6]],
@@ -39,6 +51,23 @@ function text(px,s,x,y,scale,c){
  let at=x;
  const thickness=Math.max(1.15,scale*0.34)*S;
  String(s).toUpperCase().split('').forEach(ch=>{
+  // Preserve the original 5x7 bitmap silhouettes for numerals.
+  if(RASTER_DIGITS[ch]){
+   const glyph=RASTER_DIGITS[ch];
+   const radius=Math.max(0.28,Math.min(0.42,scale*0.085))*S;
+   for(let yy=0;yy<7;yy++)for(let xx=0;xx<5;xx++)if(glyph[yy][xx]==='1'){
+    const x0=(at+xx*scale)*S,y0=(y+yy*scale)*S,w=scale*S,h=scale*S,r=radius*S;
+    for(let py=Math.floor(y0);py<Math.ceil(y0+h);py++)for(let pxX=Math.floor(x0);pxX<Math.ceil(x0+w);pxX++){
+     const qx=Math.max(x0+r,Math.min(pxX+0.5,x0+w-r));
+     const qy=Math.max(y0+r,Math.min(py+0.5,y0+h-r));
+     const dx=pxX+0.5-qx,dy=py+0.5-qy;
+     const coverage=Math.max(0,Math.min(1,r+0.5-Math.sqrt(dx*dx+dy*dy)));
+     if(coverage>0){const i=(py*IW+pxX)*4,a=Math.round(c[3]*coverage);px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=Math.max(px[i+3],a);}
+    }
+   }
+   at+=6*scale;
+   return;
+  }
   const paths=VF[ch]||[];
   paths.forEach(path=>{
    for(let n=0;n<path.length-2;n+=2){
