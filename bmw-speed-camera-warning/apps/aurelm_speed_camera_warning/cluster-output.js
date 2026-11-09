@@ -69,20 +69,22 @@ function text(px,s,x,y,scale,c){
    return;
   }
   const paths=VF[ch]||[];
+  // Make the M noticeably heavier without changing the weight of other letters.
+  const glyphThickness=ch==='M'?thickness*1.55:thickness;
   paths.forEach(path=>{
    for(let n=0;n<path.length-2;n+=2){
     const x1=(at+path[n]*scale)*S,y1=(y+path[n+1]*scale)*S;
     const x2=(at+path[n+2]*scale)*S,y2=(y+path[n+3]*scale)*S;
-    const minX=Math.max(0,Math.floor(Math.min(x1,x2)-thickness/2-1));
-    const maxX=Math.min(IW-1,Math.ceil(Math.max(x1,x2)+thickness/2+1));
-    const minY=Math.max(0,Math.floor(Math.min(y1,y2)-thickness/2-1));
-    const maxY=Math.min(IH-1,Math.ceil(Math.max(y1,y2)+thickness/2+1));
+    const minX=Math.max(0,Math.floor(Math.min(x1,x2)-glyphThickness/2-1));
+    const maxX=Math.min(IW-1,Math.ceil(Math.max(x1,x2)+glyphThickness/2+1));
+    const minY=Math.max(0,Math.floor(Math.min(y1,y2)-glyphThickness/2-1));
+    const maxY=Math.min(IH-1,Math.ceil(Math.max(y1,y2)+glyphThickness/2+1));
     const dx=x2-x1,dy=y2-y1,len2=dx*dx+dy*dy;
     for(let py=minY;py<=maxY;py++)for(let xx=minX;xx<=maxX;xx++){
      const qx=xx+0.5-x1,qy=py+0.5-y1;
      const t=len2?Math.max(0,Math.min(1,(qx*dx+qy*dy)/len2)):0;
      const dist=Math.sqrt((qx-t*dx)*(qx-t*dx)+(qy-t*dy)*(qy-t*dy));
-     const coverage=Math.max(0,Math.min(1,thickness/2+0.5-dist));
+     const coverage=Math.max(0,Math.min(1,glyphThickness/2+0.5-dist));
      if(coverage>0){const i=(py*IW+xx)*4,a=Math.round(c[3]*coverage);px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=Math.max(px[i+3],a);}
     }
    }
