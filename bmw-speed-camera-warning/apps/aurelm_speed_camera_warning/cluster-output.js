@@ -48,7 +48,7 @@ class CameraClusterOutput{
   try{
    this.cr=new ClusterRender('aurelm_speed_camera_warning');
    this.cr.on('ready',()=>{this.log('CLUSTER_RENDER_READY backend='+this.cr.backend+' targets='+this.cr.targets);this._makeLayers();if(this.current)this._draw(this.current);});
-   this.cr.on('target',(name,state,holder,reason)=>this.log('CLUSTER_RENDER_TARGET '+name+' '+state+(holder?' holder='+holder:'')+(reason?' '+reason:'')));
+   this.cr.on('target',(name,state,holder,reason,guideDisabled,disabled)=>this.log('CLUSTER_RENDER_TARGET '+name+' '+state+(holder?' holder='+holder:'')+(reason?' '+reason:'')+' guide_disabled='+!!guideDisabled+' disabled='+!!disabled));
    this.cr.on('layer',(ref,state,reason)=>this.log('CLUSTER_RENDER_LAYER '+ref+' '+state+(reason?' '+reason:'')));
    this.cr.on('refused',(op,ref,reason)=>this.log('CLUSTER_RENDER_REFUSED '+op+' '+reason));
    this.cr.on('disconnected',()=>this.log('CLUSTER_RENDER_DISCONNECTED'));
@@ -61,8 +61,8 @@ class CameraClusterOutput{
   targets.forEach(target=>{
    if(this.layers[target])return;
    const hud=target==='hud';
-   const ref=this.cr.image({target,klass:'alert',z:900,x:hud?190:1450,y:hud?330:44,w:W,h:H,iw:W,ih:H,visible:false,opacity:1});
-   if(ref)this.layers[target]=ref;
+   const ref=this.cr.image({target,klass:'overlay',z:900,x:hud?190:1450,y:hud?182:44,w:W,h:H,iw:W,ih:H,visible:false,opacity:1});
+   if(ref){this.layers[target]=ref;this.log('CLUSTER_RENDER_LAYER_CREATED target='+target+' ref='+ref+' x='+(hud?190:1450)+' y='+(hud?182:44)+' size='+W+'x'+H+' class=overlay');}else this.log('CLUSTER_RENDER_LAYER_CREATE_FAILED target='+target);
   });
  }
  _draw(e){
@@ -92,7 +92,7 @@ class CameraClusterOutput{
  setMode(mode){
   mode=String(mode||'kombi');if(['kombi','hud','both','off'].indexOf(mode)<0)return;
   if(mode===this.mode)return;this.clear();if(this.cr)this.cr.close();this.cr=null;this.layers={};this.mode=mode;
-  if(mode!=='off'){try{this.cr=new ClusterRender('aurelm_speed_camera_warning');this.cr.on('ready',()=>{this.log('CLUSTER_RENDER_READY backend='+this.cr.backend+' targets='+this.cr.targets);this._makeLayers();if(this.current)this._draw(this.current);});this.cr.on('target',(n,s,h,r)=>this.log('CLUSTER_RENDER_TARGET '+n+' '+s+(r?' '+r:'')));this.cr.on('refused',(o,ref,r)=>this.log('CLUSTER_RENDER_REFUSED '+o+' '+r));this.cr.connect();}catch(e){this.log('CLUSTER_RENDER_INIT_FAILED '+String(e));}}
+  if(mode!=='off'){try{this.cr=new ClusterRender('aurelm_speed_camera_warning');this.cr.on('ready',()=>{this.log('CLUSTER_RENDER_READY backend='+this.cr.backend+' targets='+this.cr.targets);this._makeLayers();if(this.current)this._draw(this.current);});this.cr.on('target',(n,state,h,r,guideDisabled,disabled)=>this.log('CLUSTER_RENDER_TARGET '+n+' '+state+(h?' holder='+h:'')+(r?' '+r:'')+' guide_disabled='+!!guideDisabled+' disabled='+!!disabled));this.cr.on('refused',(o,ref,r)=>this.log('CLUSTER_RENDER_REFUSED '+o+' '+r));this.cr.connect();}catch(e){this.log('CLUSTER_RENDER_INIT_FAILED '+String(e));}}
  }
  close(){this.closed=true;this.clear();if(this.cr)this.cr.close();this.cr=null;}
 }
