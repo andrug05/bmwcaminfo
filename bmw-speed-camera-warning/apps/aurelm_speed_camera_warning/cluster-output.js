@@ -14,7 +14,11 @@ const RASTER_DIGITS={
  '7':['11111','00001','00010','00100','01000','01000','01000'],
  '8':['01110','10001','10001','01110','10001','10001','01110'],
  '9':['01110','10001','10001','01111','00001','00001','01110'],
- 'M':['10001','11011','10101','10101','10001','10001','10001']
+ 'M':['10001','11011','10101','10101','10001','10001','10001'],
+ 'К':['10001','10010','10100','11000','10100','10010','10001'],
+ 'А':['01110','10001','10001','11111','10001','10001','10001'],
+ 'Е':['11111','10000','10000','11110','10000','10000','11111'],
+ 'Р':['11110','10001','10001','11110','10000','10000','10000']
 };
 const VF={
  '0':[[0,0,4,0,4,6,0,6,0,0],[0,0,4,6]],
@@ -100,7 +104,7 @@ function makeFrame(e){
  // camera glyph
  rect(px,34,46,42,25,white);rect(px,43,41,17,7,white);
  for(let y=0;y<15;y++)for(let x=0;x<15;x++){const dx=x-7,dy=y-7;if(dx*dx+dy*dy<=49)rect(px,55+x,51+y,1,1,rgba(7,15,24));}
- text(px,'CAMERA',108,18,3,white);
+ text(px,'КАМЕРА',108,18,3,white);
  text(px,String(Math.max(0,Math.round(e.distanceM||0))+' M'),108,52,5,accent);
  const limit=Number(e.camera&&e.camera.limit);
  if(Number.isFinite(limit)&&limit>0){circle(px,357,59,32,rgba(211,44,54));circle(px,357,59,26,rgba(255,255,255));const label=String(limit);const scale=label.length<=2?4:label.length===3?3:2;const width=label.length*6*scale-scale;const tx=357-width/2;const ty=59-(7*scale)/2;text(px,label,tx,ty,scale,rgba(20,29,38));}
