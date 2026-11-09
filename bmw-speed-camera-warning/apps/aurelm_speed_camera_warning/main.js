@@ -1,5 +1,6 @@
 'use strict';
 const mgu=require('./kit/mgu');
+const uplink=require('./kit/uplink');
 const bundledDatabase=require('./camera-db.json');
 const cityMap=require('./city-map.json');
 const {CameraStore}=require('./camera-store');
@@ -14,7 +15,7 @@ const REFRESH_INTERVAL_MS=21600000,W=1600,H=520;
 const MAP={x:24,y:66,w:1120,h:420},P={x:1170,y:66,w:406,h:420};
 const C={bg:'#080d13',panel:'#101923',road:'#334252',edge:'#637487',text:'#e9f0f6',muted:'#91a2b5',blue:'#58b6ff',red:'#ff525e',green:'#5de0a1',yellow:'#ffd166',grid:'#172430'};
 mgu.run({async start(ctx){
- const {ui,settings,log,dataDir}=ctx;let city=String(settings.get('city')||'yoshkar-ola'),view='MAP',index=0,zoom=.75,zoomIndex=1,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
+ const {ui,settings,log,dataDir}=ctx;uplink.init(dataDir);log.info('UPLINK '+uplink.describe());uplink.checkInternet({timeout:3500}).then(ok=>log.info('UPLINK_HTTPS_PROBE '+(ok?'online':'offline')+'; '+uplink.describe())).catch(e=>log.warn('UPLINK_PROBE_ERROR '+e));let city=String(settings.get('city')||'yoshkar-ola'),view='MAP',index=0,zoom=.75,zoomIndex=1,fix=null,gpsStatus={state:'starting',errorCode:null,eventsReceived:0,invalidEvents:0},lastAlert='Нет предупреждений',alertUntil=0,activeAlert=null;
  const store=new CameraStore({dataDir,bundled:bundledDatabase});let database=store.loadLocal().database;
  const localStore=new LocalCameraStore(dataDir);let localCameras=localStore.load(),addScreenActive=false,captureFixes=[],cameraDraft=null,captureStatus='Ожидание GPS...',cameraLimit=60,cameraType=0,cameraDirection='forward',gpsTrack=[];
  const gps=new BmwGps(),roadGuidance=new RoadGuidanceWarnings(roadZones.zones||[]),voice=new CameraVoiceAlerts({assetDir:__dirname,log:(m)=>log.warn(m)});
