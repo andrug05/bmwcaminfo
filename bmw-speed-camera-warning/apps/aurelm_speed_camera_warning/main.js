@@ -259,7 +259,8 @@ function displayModeLabel(mode){return ({kombi:'KOMBI',hud:'HUD (экспери�
   log.info('LOCAL_CAMERA_ADDED id='+id+' roadGeometry='+(road?'yes':'no')+' accuracy='+cameraDraft.accuracyM);
   addScreenActive=false;view='MY';renderSafe();
  }
- ctx.onTap(handlePageTap);\n ui.onClick('BTN_CAMERA_MENU',cycleView);
+ ctx.onTap(handlePageTap);
+ ui.onClick('BTN_CAMERA_MENU',cycleView);
  ui.onClick('BTN_CAM_PREV',()=>{if(view==='SETTINGS'){cycleDisplayMode(-1);return;}if(view==='ADD'){cameraLimit=Math.max(20,cameraLimit-10);renderSafe();}else if(view==='MY'){deletePending=false;localCameraIndex=Math.max(0,localCameraIndex-1);renderSafe();}else{index=Math.max(0,index-1);renderSafe();}});
  ui.onClick('BTN_CAM_NEXT',()=>{if(view==='SETTINGS'){cycleDisplayMode(1);return;}if(view==='ADD'){cameraLimit=Math.min(130,cameraLimit+10);renderSafe();}else if(view==='MY'){deletePending=false;localCameraIndex=Math.min(Math.max(0,localCameras.length-1),localCameraIndex+1);renderSafe();}else{index=Math.min(Math.max(0,cameras().length-1),index+1);renderSafe();}});
  ui.onClick('BTN_ZOOM',()=>{if(view==='ADD'){cameraType=(cameraType+1)%CAMERA_TYPES.length;renderSafe();}else if(view==='MY'){if(localCameras.length){deletePending=true;renderSafe();}}else{const steps=[.55,.75,1,1.25,1.6,2,2.5];zoomIndex=(zoomIndex+1)%steps.length;zoom=steps[zoomIndex];renderSafe();}});
