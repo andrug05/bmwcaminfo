@@ -33,7 +33,7 @@ function makeFrame(e){
  rect(px,0,0,W,5,accent);
  // camera glyph
  rect(px,34,46,42,25,white);rect(px,43,41,17,7,white);
- for(let y=0;y<15;y++)for(let x=0;x<15;x++){const dx=x-7,dy=y-7;if(dx*dx+dy*dy<=49)put(px,55+x,51+y,rgba(7,15,24));}
+ for(let y=0;y<15;y++)for(let x=0;x<15;x++){const dx=x-7,dy=y-7;if(dx*dx+dy*dy<=49)rect(px,55+x,51+y,1,1,rgba(7,15,24));}
  text(px,'CAMERA',108,18,3,white);
  text(px,String(Math.max(0,Math.round(e.distanceM||0))+' M'),108,52,5,accent);
  const limit=Number(e.camera&&e.camera.limit);
