@@ -1,6 +1,6 @@
 'use strict';
 const { ClusterRender } = require('./cluster_render_client');
-const W=420,H=116,S=3,IW=W*S,IH=H*S;
+const W=420,H=116,S=4,IW=W*S,IH=H*S;
 const FONT={
  '0':['01110','10001','10011','10101','11001','10001','01110'],
  '1':['00100','01100','00100','00100','00100','00100','01110'],
@@ -32,13 +32,13 @@ const FONT={
 function rgba(r,g,b,a){return [r,g,b,a===undefined?255:a];}
 function put(px,x,y,c){if(x<0||y<0||x>=IW||y>=IH)return;const i=(y*IW+x)*4;px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=c[3];}
 function rect(px,x,y,w,h,c){for(let yy=y*S;yy<(y+h)*S;yy++)for(let xx=x*S;xx<(x+w)*S;xx++)put(px,xx,yy,c);}
-function circle(px,cx,cy,r,c){const rr=r*S,ccx=cx*S,ccy=cy*S;for(let y=Math.floor(ccy-rr);y<=Math.ceil(ccy+rr);y++)for(let x=Math.floor(ccx-rr);x<=Math.ceil(ccx+rr);x++){const dx=x+0.5-ccx,dy=y+0.5-ccy;if(dx*dx+dy*dy<=rr*rr)put(px,x,y,c);}}
+function circle(px,cx,cy,r,c){const rr=r*S,ccx=cx*S,ccy=cy*S;for(let y=Math.floor(ccy-rr-1);y<=Math.ceil(ccy+rr+1);y++)for(let x=Math.floor(ccx-rr-1);x<=Math.ceil(ccx+rr+1);x++){const dx=x+0.5-ccx,dy=y+0.5-ccy,d=Math.sqrt(dx*dx+dy*dy),coverage=Math.max(0,Math.min(1,rr+0.5-d));if(coverage>0){const a=Math.round(c[3]*coverage);put(px,x,y,[c[0],c[1],c[2],a]);}}}
 function text(px,s,x,y,scale,c){
  let at=x;
  // Draw each bitmap-font cell as a softly antialiased rounded stroke instead
- // of a hard square. The 3x backing buffer preserves edge coverage when the
+ // of a hard square. The 4x backing buffer preserves edge coverage when the
  // cluster renderer scales the image to its 420x116 destination.
- const radius=Math.max(0.18,Math.min(0.34,scale*0.07));
+ const radius=Math.max(0.28,Math.min(0.42,scale*0.085));
  String(s).toUpperCase().split('').forEach(ch=>{
   const g=FONT[ch]||FONT[' '];
   for(let yy=0;yy<7;yy++)for(let xx=0;xx<5;xx++)if(g[yy][xx]==='1'){
