@@ -29,9 +29,10 @@ function rect(px,x,y,w,h,c){for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)pu
 function text(px,s,x,y,scale,c){let at=x;String(s).toUpperCase().split('').forEach(ch=>{const g=FONT[ch]||FONT[' '];for(let yy=0;yy<7;yy++)for(let xx=0;xx<5;xx++)if(g[yy][xx]==='1')rect(px,at+xx*scale,y+yy*scale,scale,scale,c);at+=6*scale;});}
 function makeFrame(e){
  const px=Buffer.alloc(W*H*4),red=e.type==='speeding',white=rgba(245,249,252),muted=rgba(169,190,207),accent=red?rgba(255,75,88):rgba(255,205,74);
- rect(px,0,0,W,H,rgba(7,15,24,242));rect(px,0,0,W,5,accent);
+ // Keep the image transparent: an opaque canvas hides OEM consumption/cluster data.
+ rect(px,0,0,W,5,accent);
  // camera glyph
- rect(px,22,35,66,46,rgba(24,43,59));rect(px,34,46,42,25,white);rect(px,43,41,17,7,white);
+ rect(px,34,46,42,25,white);rect(px,43,41,17,7,white);
  for(let y=0;y<15;y++)for(let x=0;x<15;x++){const dx=x-7,dy=y-7;if(dx*dx+dy*dy<=49)put(px,55+x,51+y,rgba(7,15,24));}
  text(px,'CAMERA',108,18,3,white);
  text(px,String(Math.max(0,Math.round(e.distanceM||0))+' M'),108,52,5,accent);
