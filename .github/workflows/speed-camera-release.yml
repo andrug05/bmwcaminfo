@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.36"
+        default: "0.7.37"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -31,7 +31,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.36' }}
+      APP_VERSION: ${{ inputs.version || '0.7.37' }}
       APP_ID: aurelm_speed_camera_warning
       VOICE_VERSION: 0.1.7
     steps:
@@ -213,6 +213,7 @@ jobs:
           node --check upstream/apps/${APP_ID}/main.js
           node --check upstream/apps/${APP_ID}/gps.js
           node --check upstream/apps/${APP_ID}/camera-store.js
+          node --check upstream/apps/${APP_ID}/uplink.js
           node --check upstream/apps/${APP_ID}/local-camera-store.js
           node --check upstream/apps/${APP_ID}/proximity.js
           node --check upstream/apps/${APP_ID}/road-guidance.js
@@ -236,6 +237,18 @@ jobs:
         run: |
           test -s "release/${APP_ID}@${APP_VERSION}.tgz"
           test -s "release/${APP_ID}@${APP_VERSION}.mgu"
+          python3 - <<'PY'
+          import json, os, tarfile
+          package=f"release/{os.environ['APP_ID']}@{os.environ['APP_VERSION']}.tgz"
+          with tarfile.open(package, 'r:gz') as archive:
+              member=next((n for n in archive.getnames() if n.endswith('/package.json')), None)
+              if not member: raise SystemExit('package.json missing from release')
+              pkg=json.load(archive.extractfile(member))
+              if pkg.get('mguInternet') is not True: raise SystemExit('mguInternet missing from built package.json')
+              names=archive.getnames()
+              if not any(n.endswith('/uplink.js') for n in names): raise SystemExit('uplink.js missing from built app')
+          print('Verified mguInternet=true and uplink.js are present in the install package')
+          PY
           python3 - <<'PY'
           import json, os
           p=f"bmw-speed-camera-warning/apps/{os.environ['APP_ID']}/app.json"
