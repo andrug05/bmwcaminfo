@@ -1,6 +1,6 @@
 'use strict';
 const mgu=require('./kit/mgu');
-const uplink=require('./kit/uplink');
+const uplink=require('./uplink');
 const bundledDatabase=require('./camera-db.json');
 const cityMap=require('./city-map.json');
 const {CameraStore}=require('./camera-store');
