@@ -32,6 +32,7 @@ const FONT={
 function rgba(r,g,b,a){return [r,g,b,a===undefined?255:a];}
 function put(px,x,y,c){if(x<0||y<0||x>=IW||y>=IH)return;const i=(y*IW+x)*4;px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=c[3];}
 function rect(px,x,y,w,h,c){for(let yy=y*S;yy<(y+h)*S;yy++)for(let xx=x*S;xx<(x+w)*S;xx++)put(px,xx,yy,c);}
+function circle(px,cx,cy,r,c){const rr=r*S,ccx=cx*S,ccy=cy*S;for(let y=Math.floor(ccy-rr);y<=Math.ceil(ccy+rr);y++)for(let x=Math.floor(ccx-rr);x<=Math.ceil(ccx+rr);x++){const dx=x+0.5-ccx,dy=y+0.5-ccy;if(dx*dx+dy*dy<=rr*rr)put(px,x,y,c);}}
 function text(px,s,x,y,scale,c){
  let at=x;
  // Draw each bitmap-font cell as a softly antialiased rounded stroke instead
@@ -63,7 +64,7 @@ function makeFrame(e){
  text(px,'CAMERA',108,18,3,white);
  text(px,String(Math.max(0,Math.round(e.distanceM||0))+' M'),108,52,5,accent);
  const limit=Number(e.camera&&e.camera.limit);
- if(Number.isFinite(limit)&&limit>0){rect(px,315,27,84,64,rgba(248,249,250));rect(px,321,33,72,52,rgba(211,44,54));rect(px,326,38,62,42,rgba(255,255,255));text(px,String(limit),338,49,4,rgba(20,29,38));}
+ if(Number.isFinite(limit)&&limit>0){circle(px,357,59,32,rgba(211,44,54));circle(px,357,59,26,rgba(255,255,255));const label=String(limit);const scale=label.length<=2?4:label.length===3?3:2;const width=label.length*6*scale-scale;const tx=357-width/2;const ty=59-(7*scale)/2;text(px,label,tx,ty,scale,rgba(20,29,38));}
  else text(px,'LIMIT N/A',300,52,2,muted);
  if(red)text(px,'SPEED',108,94,2,rgba(255,112,120));
  return px;
