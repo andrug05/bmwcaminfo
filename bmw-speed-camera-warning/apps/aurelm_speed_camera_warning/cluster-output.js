@@ -1,6 +1,6 @@
 'use strict';
 const { ClusterRender } = require('./cluster_render_client');
-const W=840,H=232,BASE_W=420,BASE_H=116;
+const W=420,H=116;
 const FONT={
  '0':['01110','10001','10011','10101','11001','10001','01110'],
  '1':['00100','01100','00100','00100','00100','00100','01110'],
@@ -24,13 +24,13 @@ const FONT={
  '+':['00000','00100','00100','11111','00100','00100','00000']
 };
 function rgba(r,g,b,a){return [r,g,b,a===undefined?255:a];}
-function put(px,x,y,c){if(x<0||y<0||x>=BASE_W||y>=BASE_H)return;for(let dy=0;dy<2;dy++)for(let dx=0;dx<2;dx++){const i=((y*2+dy)*W+(x*2+dx))*4;px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=c[3];}}
+function put(px,x,y,c){if(x<0||y<0||x>=W||y>=H)return;const i=(y*W+x)*4;px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=c[3];}
 function rect(px,x,y,w,h,c){for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)put(px,xx,yy,c);}
 function text(px,s,x,y,scale,c){let at=x;String(s).toUpperCase().split('').forEach(ch=>{const g=FONT[ch]||FONT[' '];for(let yy=0;yy<7;yy++)for(let xx=0;xx<5;xx++)if(g[yy][xx]==='1')rect(px,at+xx*scale,y+yy*scale,scale,scale,c);at+=6*scale;});}
 function makeFrame(e){
  const px=Buffer.alloc(W*H*4),red=e.type==='speeding',white=rgba(245,249,252),muted=rgba(169,190,207),accent=red?rgba(255,75,88):rgba(255,205,74);
  // Keep the image transparent: an opaque canvas hides OEM consumption/cluster data.
- rect(px,0,0,BASE_W,5,accent);
+ rect(px,0,0,W,5,accent);
  // camera glyph
  rect(px,34,46,42,25,white);rect(px,43,41,17,7,white);
  for(let y=0;y<15;y++)for(let x=0;x<15;x++){const dx=x-7,dy=y-7;if(dx*dx+dy*dy<=49)put(px,55+x,51+y,rgba(7,15,24));}
@@ -62,8 +62,8 @@ class CameraClusterOutput{
   targets.forEach(target=>{
    if(this.layers[target])return;
    const hud=target==='hud';
-   const ref=this.cr.image({target,klass:'overlay',z:900,x:hud?20:540,y:hud?135:244,w:hud?760:W,h:hud?210:H,iw:W,ih:H,sampling:'linear',visible:false,opacity:1});
-   if(ref){this.layers[target]=ref;this.log('CLUSTER_RENDER_LAYER_CREATED target='+target+' ref='+ref+' x='+(hud?20:540)+' y='+(hud?135:244)+' size='+W+'x'+H+' class=overlay');}else this.log('CLUSTER_RENDER_LAYER_CREATE_FAILED target='+target);
+   const ref=this.cr.image({target,klass:'overlay',z:900,x:hud?190:1450,y:hud?182:44,w:W,h:H,iw:W,ih:H,visible:false,opacity:1});
+   if(ref){this.layers[target]=ref;this.log('CLUSTER_RENDER_LAYER_CREATED target='+target+' ref='+ref+' x='+(hud?190:1450)+' y='+(hud?182:44)+' size='+W+'x'+H+' class=overlay');}else this.log('CLUSTER_RENDER_LAYER_CREATE_FAILED target='+target);
   });
  }
  _draw(e){
@@ -82,9 +82,7 @@ class CameraClusterOutput{
  sync(states){
   if(!this.current)return;
   const state=states&&states[this.current.camera.id];
-  // A proximity event may be emitted after its transient state has already been removed.
-  // Keep the accepted alert visible; the failsafe timer in show() owns its lifetime.
-  if(!state)return;
+  if(!state){this.clear();return;}
   const distance=Math.max(0,Math.round(state.distanceM));
   if(Number.isFinite(distance)&&Math.abs(distance-this.current.distanceM)>=8){this.current.distanceM=distance;this._draw(this.current);}
  }
