@@ -1,6 +1,6 @@
 'use strict';
 const { ClusterRender } = require('./cluster_render_client');
-const W=420,H=116,S=2,IW=W*S,IH=H*S;
+const W=420,H=116,S=3,IW=W*S,IH=H*S;
 const FONT={
  '0':['01110','10001','10011','10101','11001','10001','01110'],
  '1':['00100','01100','00100','00100','00100','00100','01110'],
