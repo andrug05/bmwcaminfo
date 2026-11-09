@@ -18,6 +18,12 @@ const FONT={
  'I':['11111','00100','00100','00100','00100','00100','11111'],
  'L':['10000','10000','10000','10000','10000','10000','11111'],
  'M':['10001','11011','10101','10101','10001','10001','10001'],
+ 'N':['10001','11001','10101','10011','10001','10001','10001'],
+ 'P':['11110','10001','10001','11110','10000','10000','10000'],
+ 'S':['01111','10000','10000','01110','00001','00001','11110'],
+ 'T':['11111','00100','00100','00100','00100','00100','00100'],
+ 'D':['11110','10001','10001','10001','10001','10001','11110'],
+ '/':['00001','00010','00010','00100','01000','01000','10000'],
  'R':['11110','10001','10001','11110','10100','10010','10001'],
  ' ':['00000','00000','00000','00000','00000','00000','00000'],
  ':':['00000','00100','00100','00000','00100','00100','00000'],
@@ -26,7 +32,27 @@ const FONT={
 function rgba(r,g,b,a){return [r,g,b,a===undefined?255:a];}
 function put(px,x,y,c){if(x<0||y<0||x>=IW||y>=IH)return;const i=(y*IW+x)*4;px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=c[3];}
 function rect(px,x,y,w,h,c){for(let yy=y*S;yy<(y+h)*S;yy++)for(let xx=x*S;xx<(x+w)*S;xx++)put(px,xx,yy,c);}
-function text(px,s,x,y,scale,c){let at=x;String(s).toUpperCase().split('').forEach(ch=>{const g=FONT[ch]||FONT[' '];for(let yy=0;yy<7;yy++)for(let xx=0;xx<5;xx++)if(g[yy][xx]==='1')rect(px,at+xx*scale,y+yy*scale,scale,scale,c);at+=6*scale;});}
+function text(px,s,x,y,scale,c){
+ let at=x;
+ // Draw each bitmap-font cell as a softly antialiased rounded stroke instead
+ // of a hard square. The 3x backing buffer preserves edge coverage when the
+ // cluster renderer scales the image to its 420x116 destination.
+ const radius=Math.max(0.18,Math.min(0.34,scale*0.07));
+ String(s).toUpperCase().split('').forEach(ch=>{
+  const g=FONT[ch]||FONT[' '];
+  for(let yy=0;yy<7;yy++)for(let xx=0;xx<5;xx++)if(g[yy][xx]==='1'){
+   const x0=(at+xx*scale)*S,y0=(y+yy*scale)*S,w=scale*S,h=scale*S,r=radius*S;
+   for(let py=Math.floor(y0);py<Math.ceil(y0+h);py++)for(let pxX=Math.floor(x0);pxX<Math.ceil(x0+w);pxX++){
+    const qx=Math.max(x0+r,Math.min(pxX+0.5,x0+w-r));
+    const qy=Math.max(y0+r,Math.min(py+0.5,y0+h-r));
+    const dx=pxX+0.5-qx,dy=py+0.5-qy;
+    const coverage=Math.max(0,Math.min(1,r+0.5-Math.sqrt(dx*dx+dy*dy)));
+    if(coverage>0){const i=(py*IW+pxX)*4,a=Math.round(c[3]*coverage);px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=Math.max(px[i+3],a);}
+   }
+  }
+  at+=6*scale;
+ });
+}
 function makeFrame(e){
  const px=Buffer.alloc(IW*IH*4),red=e.type==='speeding',white=rgba(245,249,252),muted=rgba(169,190,207),accent=red?rgba(255,75,88):rgba(255,205,74);
  // Keep the image transparent: an opaque canvas hides OEM consumption/cluster data.
