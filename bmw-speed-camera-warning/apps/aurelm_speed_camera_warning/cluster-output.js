@@ -1,6 +1,6 @@
 'use strict';
 const { ClusterRender } = require('./cluster_render_client');
-const W=420,H=116;
+const W=420,H=116,S=2,IW=W*S,IH=H*S;
 const FONT={
  '0':['01110','10001','10011','10101','11001','10001','01110'],
  '1':['00100','01100','00100','00100','00100','00100','01110'],
@@ -24,11 +24,11 @@ const FONT={
  '+':['00000','00100','00100','11111','00100','00100','00000']
 };
 function rgba(r,g,b,a){return [r,g,b,a===undefined?255:a];}
-function put(px,x,y,c){if(x<0||y<0||x>=W||y>=H)return;const i=(y*W+x)*4;px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=c[3];}
-function rect(px,x,y,w,h,c){for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)put(px,xx,yy,c);}
+function put(px,x,y,c){if(x<0||y<0||x>=IW||y>=IH)return;const i=(y*IW+x)*4;px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];px[i+3]=c[3];}
+function rect(px,x,y,w,h,c){for(let yy=y*S;yy<(y+h)*S;yy++)for(let xx=x*S;xx<(x+w)*S;xx++)put(px,xx,yy,c);}
 function text(px,s,x,y,scale,c){let at=x;String(s).toUpperCase().split('').forEach(ch=>{const g=FONT[ch]||FONT[' '];for(let yy=0;yy<7;yy++)for(let xx=0;xx<5;xx++)if(g[yy][xx]==='1')rect(px,at+xx*scale,y+yy*scale,scale,scale,c);at+=6*scale;});}
 function makeFrame(e){
- const px=Buffer.alloc(W*H*4),red=e.type==='speeding',white=rgba(245,249,252),muted=rgba(169,190,207),accent=red?rgba(255,75,88):rgba(255,205,74);
+ const px=Buffer.alloc(IW*IH*4),red=e.type==='speeding',white=rgba(245,249,252),muted=rgba(169,190,207),accent=red?rgba(255,75,88):rgba(255,205,74);
  // Keep the image transparent: an opaque canvas hides OEM consumption/cluster data.
  rect(px,0,0,W,5,accent);
  // camera glyph
@@ -62,8 +62,8 @@ class CameraClusterOutput{
   targets.forEach(target=>{
    if(this.layers[target])return;
    const hud=target==='hud';
-   const ref=this.cr.image({target,klass:'overlay',z:900,x:hud?190:750,y:hud?182:302,w:W,h:H,iw:W,ih:H,visible:false,opacity:1});
-   if(ref){this.layers[target]=ref;this.log('CLUSTER_RENDER_LAYER_CREATED target='+target+' ref='+ref+' x='+(hud?190:1450)+' y='+(hud?182:302)+' size='+W+'x'+H+' class=overlay');}else this.log('CLUSTER_RENDER_LAYER_CREATE_FAILED target='+target);
+   const ref=this.cr.image({target,klass:'overlay',z:900,x:hud?190:750,y:hud?182:302,w:W,h:H,iw:IW,ih:IH,sampling:'bilinear',visible:false,opacity:1});
+   if(ref){this.layers[target]=ref;this.log('CLUSTER_RENDER_LAYER_CREATED target='+target+' ref='+ref+' x='+(hud?190:750)+' y='+(hud?182:302)+' size='+W+'x'+H+' class=overlay');}else this.log('CLUSTER_RENDER_LAYER_CREATE_FAILED target='+target);
   });
  }
  _draw(e){
