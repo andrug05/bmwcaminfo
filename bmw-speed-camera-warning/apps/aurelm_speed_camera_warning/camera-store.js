@@ -8,6 +8,26 @@ const DATABASE_API_URL = 'https://api.github.com/repos/andrug05/bmwcaminfo/conte
 const MAX_BYTES = 1024 * 1024;
 const MAX_REDIRECTS = 3;
 
+function ensureDirectory(dir) {
+    // Create one level at a time for compatibility with the older MGU Node.js runtime.
+    if (!dir || dir === path.dirname(dir)) return;
+    try {
+        const st = fs.statSync(dir);
+        if (st.isDirectory()) return;
+        throw new Error('CAMERA_DB_PATH_NOT_DIRECTORY: ' + dir);
+    } catch (e) {
+        if (e && e.code !== 'ENOENT') throw e;
+    }
+    const parent = path.dirname(dir);
+    if (parent && parent !== dir) ensureDirectory(parent);
+    try {
+        fs.mkdirSync(dir);
+    } catch (e) {
+        if (e && e.code === 'EEXIST' && fs.statSync(dir).isDirectory()) return;
+        throw e;
+    }
+}
+
 function validateDatabase(value) {
     if (!value || value.schemaVersion !== 1 || !Number.isInteger(value.revision) || value.revision < 1 ||
         !value.cities || typeof value.cities !== 'object' || Array.isArray(value.cities)) {
@@ -149,7 +169,7 @@ class CameraStore {
             status('Проверка полученной базы...');
             const next = validateDatabase(JSON.parse(body));
             if (next.revision > this.current.revision) {
-                fs.mkdirSync(this.dataDir, { recursive: true });
+                ensureDirectory(this.dataDir);
                 const tmp = this.cachePath + '.tmp';
                 fs.writeFileSync(tmp, JSON.stringify(next), 'utf8');
                 fs.renameSync(tmp, this.cachePath);
@@ -158,7 +178,7 @@ class CameraStore {
                 return { updated: true, database: this.current, source: this.source };
             }
             if (this.source === 'bundle' && !fs.existsSync(this.cachePath)) {
-                fs.mkdirSync(this.dataDir, { recursive: true });
+                ensureDirectory(this.dataDir);
                 const tmp = this.cachePath + '.tmp';
                 fs.writeFileSync(tmp, JSON.stringify(next), 'utf8');
                 fs.renameSync(tmp, this.cachePath);
