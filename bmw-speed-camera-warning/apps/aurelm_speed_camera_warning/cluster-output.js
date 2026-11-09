@@ -62,8 +62,8 @@ class CameraClusterOutput{
   targets.forEach(target=>{
    if(this.layers[target])return;
    const hud=target==='hud';
-   const ref=this.cr.image({target,klass:'overlay',z:900,x:hud?190:1450,y:hud?182:44,w:W,h:H,iw:W,ih:H,visible:false,opacity:1});
-   if(ref){this.layers[target]=ref;this.log('CLUSTER_RENDER_LAYER_CREATED target='+target+' ref='+ref+' x='+(hud?190:1450)+' y='+(hud?182:44)+' size='+W+'x'+H+' class=overlay');}else this.log('CLUSTER_RENDER_LAYER_CREATE_FAILED target='+target);
+   const ref=this.cr.image({target,klass:'overlay',z:900,x:hud?190:750,y:hud?182:302,w:W,h:H,iw:W,ih:H,visible:false,opacity:1});
+   if(ref){this.layers[target]=ref;this.log('CLUSTER_RENDER_LAYER_CREATED target='+target+' ref='+ref+' x='+(hud?190:1450)+' y='+(hud?182:302)+' size='+W+'x'+H+' class=overlay');}else this.log('CLUSTER_RENDER_LAYER_CREATE_FAILED target='+target);
   });
  }
  _draw(e){
