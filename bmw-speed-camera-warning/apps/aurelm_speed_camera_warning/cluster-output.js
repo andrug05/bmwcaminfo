@@ -44,7 +44,7 @@ function makeFrame(e){
 }
 class CameraClusterOutput{
  constructor(options){
-  const o=options||{};this.log=o.log||function(){};this.mode=o.mode||'kombi';this.cr=null;this.layers={};this.current=null;this.hideTimer=null;this.closed=false;
+  const o=options||{};this.log=o.log||function(){};this.mode=o.mode||'kombi';this.cr=null;this.layers={};this.current=null;this.hideTimer=null;this.missingTimer=null;this.closed=false;
   if(this.mode==='off')return;
   try{
    this.cr=new ClusterRender('aurelm_speed_camera_warning');
@@ -75,19 +75,39 @@ class CameraClusterOutput{
   if(!event||!event.camera||!this.cr)return;
   this.current={type:event.type,distanceM:event.distanceM,camera:event.camera,speedKmh:event.speedKmh};
   if(this.hideTimer)clearTimeout(this.hideTimer);
+  if(this.missingTimer)clearTimeout(this.missingTimer);this.missingTimer=null;
   this._draw(this.current);
   // Failsafe: clear stale alerts if GPS stops updating or the vehicle leaves the monitored segment.
   this.hideTimer=setTimeout(()=>this.clear(),45000);
  }
  sync(states){
   if(!this.current)return;
+  // The manual output test uses a synthetic camera id that is intentionally
+  // absent from the live road-guidance state map. Let its own 10s timer clear it.
+  if(this.current.camera&&String(this.current.camera.id)==='camera-output-test'){
+   this.log('CLUSTER_OUTPUT_SYNC_TEST_SKIP');
+   return;
+  }
   const state=states&&states[this.current.camera.id];
-  if(!state){this.clear();return;}
+  if(!state){
+   // GPS/state-machine updates can briefly omit a camera. Do not blank HUD/KOMBI
+   // on the first missing sample; allow a short grace period for the next fix.
+   if(!this.missingTimer){
+    this.log('CLUSTER_OUTPUT_SYNC_MISSING camera='+this.current.camera.id+' grace_ms=10000');
+    this.missingTimer=setTimeout(()=>{
+     this.missingTimer=null;
+     if(this.current)this.clear();
+    },10000);
+   }
+   return;
+  }
+  if(this.missingTimer){clearTimeout(this.missingTimer);this.missingTimer=null;this.log('CLUSTER_OUTPUT_SYNC_RETURNED camera='+this.current.camera.id);}
   const distance=Math.max(0,Math.round(state.distanceM));
   if(Number.isFinite(distance)&&Math.abs(distance-this.current.distanceM)>=8){this.current.distanceM=distance;this._draw(this.current);}
  }
  clear(){
-  if(this.hideTimer)clearTimeout(this.hideTimer);this.hideTimer=null;this.current=null;
+  if(this.hideTimer)clearTimeout(this.hideTimer);this.hideTimer=null;
+  if(this.missingTimer)clearTimeout(this.missingTimer);this.missingTimer=null;this.current=null;
   if(this.cr)Object.keys(this.layers).forEach(target=>this.cr.set(this.layers[target],{visible:false}));
  }
  setMode(mode){
