@@ -31,7 +31,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ inputs.version || '0.7.55' }}
+      APP_VERSION: ${{ inputs.version || '0.7.57' }}
       APP_ID: aurelm_speed_camera_warning
       VOICE_VERSION: 0.1.9
     steps:
@@ -71,7 +71,7 @@ jobs:
           git checkout HEAD -- bmw-speed-camera-warning/apps/aurelm_speed_camera_warning/camera-db.json
 
       - name: Import regional camera sources
-        if: inputs.refresh_data == true || github.event_name == 'schedule'
+        if: inputs.refresh_data == true || github.event_name == 'schedule' || github.event_name == 'push'
         run: |
           python3 bmw-speed-camera-warning/tools/import_camera_sources.py
           # Imported databases are consumed directly by this build.
@@ -79,7 +79,7 @@ jobs:
           # and create rebase conflicts in camera-db.json.
 
       - name: Install OSM PBF parser
-        if: steps.data_cache.outputs.cache-hit != 'true' || inputs.refresh_data == true || github.event_name == 'schedule'
+        if: steps.data_cache.outputs.cache-hit != 'true' || inputs.refresh_data == true || github.event_name == 'schedule' || github.event_name == 'push'
         run: python3 -m pip install --break-system-packages osmium
 
       - name: Import offline camera road geometry
