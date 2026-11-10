@@ -14,9 +14,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data", "camera-db.json")
 APP = os.path.join(ROOT, "apps", "aurelm_speed_camera_warning", "camera-db.json")
 
-# MapCam RUS offline snapshot (permission granted by data provider).
-# Compact rows: id, lat, lon, type_key, speed_limit, direction_type, approach_heading_deg, warning_distance_m.
-MAPCAM_ROWS_B64 = "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"
+# MapCam RUS offline snapshot is read directly from the committed repository ZIP.
+MAPCAM_ARCHIVE = os.path.join(os.path.dirname(ROOT), "BMW_MapCam_RUS_package.zip")
 MAPCAM_TYPE_NAMES = {"fixed_speed":"Стационарная камера скорости","red_light":"Контроль проезда на красный","traffic_control_complex":"Комплекс контроля ПДД"}
 
 def fetch(url, data=None, timeout=25):
@@ -246,20 +245,48 @@ def helpradar_candidates():
     return result
 
 def mapcam_cameras():
-    rows = json.loads(zlib.decompress(__import__("base64").b64decode(MAPCAM_ROWS_B64)).decode("utf-8"))
+    """Load allowed camera categories from the committed MapCam SQLite archive."""
+    import sqlite3, tempfile, zipfile
+    if not os.path.isfile(MAPCAM_ARCHIVE):
+        raise RuntimeError("MapCam archive not found: " + MAPCAM_ARCHIVE)
+    with zipfile.ZipFile(MAPCAM_ARCHIVE) as archive:
+        members = [n for n in archive.namelist() if n.lower().endswith(".sqlite")]
+        if not members:
+            raise RuntimeError("MapCam archive contains no SQLite database")
+        with tempfile.TemporaryDirectory(prefix="mapcam-") as tmp:
+            db_path = archive.extract(members[0], tmp)
+            con = sqlite3.connect("file:" + urllib.parse.quote(db_path) + "?mode=ro", uri=True)
+            try:
+                rows = con.execute("""
+                    SELECT id, latitude, longitude, type_key, speed_limit_kmh,
+                           direction_type, approach_heading_deg, warning_distance_m
+                    FROM poi
+                    WHERE type_key IN ('fixed_speed','red_light','traffic_control_complex')
+                """).fetchall()
+            finally:
+                con.close()
     result = []
+    center_lat, center_lon = 56.6388, 47.8908
     for row in rows:
         ident, lat, lon, type_key, limit, direction_type, heading, warning_distance = row
+        lat, lon = float(lat), float(lon)
+        dy = (lat - center_lat) * 111320
+        dx = (lon - center_lon) * 111320 * math.cos(math.radians(center_lat))
+        if math.hypot(dx, dy) > 15000:
+            continue
+        direction_type = int(direction_type or 0)
         travel = ([float(heading)] if direction_type == 1 and heading is not None else
                   [float(heading), (float(heading) + 180.0) % 360.0] if direction_type == 2 and heading is not None else [])
         name = MAPCAM_TYPE_NAMES[type_key]
         result.append({"id":"mapcam-"+str(ident),"name":name,"type":name,"limit":limit,
-            "lat":float(lat),"lon":float(lon),"source":"MapCam.info",
+            "lat":lat,"lon":lon,"source":"MapCam.info",
             "sourceLabel":"MapCam.info RUS snapshot (2025-11-13)",
             "sourceUrl":"https://mapcam.info/","mapcamId":int(ident),"mapcamType":type_key,
-            "mapcamDirectionType":int(direction_type),"mapcamApproachHeadingDeg":heading,
+            "mapcamDirectionType":direction_type,"mapcamApproachHeadingDeg":heading,
             "mapcamTravel":travel,"mapcamWarningDistanceM":warning_distance,
             "note":"Разрешённая офлайн-выгрузка MapCam.info от 2025-11-13; направление контроля сохранено."})
+    if not result:
+        raise RuntimeError("MapCam archive loaded but no Yoshkar-Ola records matched")
     return result
 
 def merge_mapcam(cameras, incoming):
