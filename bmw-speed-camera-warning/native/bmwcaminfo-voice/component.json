@@ -1,10 +1,10 @@
 {
   "id": "bmwcaminfo-voice",
   "kind": "tool",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "license": "MIT",
   "title": "BMW Camera Voice Service",
-  "description": "BMW MediaPlayer voice service with louder normalized neural Russian female voice and restoration of previous audio playback",
+  "description": "High-loudness normalized BMW MediaPlayer Russian voice alerts with previous audio route restoration",
   "requires": {
     "mgu-deploy": "0.7.0"
   },
