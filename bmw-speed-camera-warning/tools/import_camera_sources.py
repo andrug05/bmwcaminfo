@@ -132,7 +132,8 @@ def osm_snapshot_nodes():
         osm_id = str(props.get("@id") or feature.get("id") or "").replace("node/", "")
         if not osm_id.isdigit():
             continue
-        raw_limit = str(props.get("maxspeed") or "").split()[0]
+        maxspeed_parts = str(props.get("maxspeed") or "").split()
+        raw_limit = maxspeed_parts[0] if maxspeed_parts else ""
         try: limit = int(float(raw_limit))
         except (ValueError, IndexError): limit = None
         if limit is not None and not (5 <= limit <= 250): limit = None
