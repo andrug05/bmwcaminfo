@@ -118,8 +118,22 @@ def main():
                               "camM":round(hit["s"],2) if way["id"]==main_id else None,
                               "dir":direction if way["id"]==main_id else 0})
         forward=main[3]["bearing"]
-        travel=[round((forward+(180 if direction==-1 else 0))%360,1)]
-        if direction==0: travel.append(round((forward+180)%360,1))
+        road_travel=[round((forward+(180 if direction==-1 else 0))%360,1)]
+        if direction==0: road_travel.append(round((forward+180)%360,1))
+        mapcam_type=camera.get("mapcamDirectionType")
+        mapcam_travel=camera.get("mapcamTravel") or []
+        if mapcam_type in (1,2):
+            # MapCam headings are directions of approaching traffic. Keep only headings
+            # that agree with the matched OSM road; never widen a one-way camera to both sides.
+            if not mapcam_travel:
+                continue
+            compatible=[round(float(h)%360,1) for h in mapcam_travel
+                        if min(abs((float(h)-r+180)%360-180) for r in road_travel)<=35]
+            if not compatible:
+                continue
+            travel=compatible
+        else:
+            travel=road_travel
         zones.append({"id":camera["id"],"lat":camera["lat"],"lon":camera["lon"],"roads":road_rows,"travel":travel})
         if index%25==0: print("Matched",index,"/",len(items),"cameras; zones:",len(zones))
     if len(zones) < max(1,int(len(items)*0.20)):
