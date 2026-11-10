@@ -335,7 +335,7 @@ def main():
         next_revision=int(old.get("revision",next_revision))
         updated_at=old.get("updatedAt") or updated_at
     db={"schemaVersion":1,"revision":next_revision,"updatedAt":updated_at,
-        "attribution":"© OpenStreetMap contributors; ODbL 1.0. SpeedCams.world data is derived from OpenStreetMap.",
+        "attribution":"© OpenStreetMap contributors; ODbL 1.0. SpeedCams.world data is derived from OpenStreetMap. MapCam.info RUS snapshot 2025-11-13 included under permission granted by the provider.",
         "overpassSnapshot":{"source":"OpenStreetMap / Overpass","timestamp":json.load(open(os.path.join(ROOT,"export-1.geojson"),encoding="utf-8")).get("timestamp") if snapshot_nodes else None,
                             "count":len(snapshot_nodes),"added":snapshot_added},
         "cities":{"mari-el":region_cameras,"yoshkar-ola":city_cameras,"moscow":[],"sochi":[]},
@@ -345,7 +345,7 @@ def main():
         os.makedirs(os.path.dirname(path),exist_ok=True)
         with open(path,"w",encoding="utf-8") as f: json.dump(db,f,ensure_ascii=False,indent=2)
     print("Mari El cameras:",len(region_cameras),"SpeedCams:",len(speed_region),"OSM:",len(live_region))
-    print("Yoshkar-Ola cameras:",len(city_cameras),"SpeedCams:",len(speed_city),"OSM:",len(live_city),"local:",len(manual),"HelpRadar:",len(third_party))
+    print("Yoshkar-Ola cameras:",len(city_cameras),"SpeedCams:",len(speed_city),"OSM:",len(live_city),"local:",len(manual),"MapCam:",len(mapcam_rows),"added:",mapcam_added,"merged:",mapcam_merged,"HelpRadar:",len(third_party))
     if not region_cameras or not city_cameras:
         raise RuntimeError("Source import returned an empty regional or city dataset")
 
