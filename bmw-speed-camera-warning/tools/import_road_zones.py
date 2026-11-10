@@ -136,12 +136,15 @@ def main():
             travel=road_travel
         zones.append({"id":camera["id"],"lat":camera["lat"],"lon":camera["lon"],"roads":road_rows,"travel":travel})
         if index%25==0: print("Matched",index,"/",len(items),"cameras; zones:",len(zones))
-    baseline_items=[c for c in items if c.get("mapcamId") is None]
-    baseline_zones=sum(1 for z in zones if not str(z.get("id","")).startswith("mapcam-"))
-    if baseline_zones < max(1,int(len(baseline_items)*0.20)):
-        raise RuntimeError("Too few road-confirmed baseline camera zones (%d/%d); refusing to publish" % (baseline_zones,len(baseline_items)))
-    mapcam_items=sum(1 for c in items if c.get("mapcamId") is not None)
-    mapcam_zones=sum(1 for z in zones if any(c.get("id")==z.get("id") and c.get("mapcamId") is not None for c in items))
+    baseline_ids={c["id"] for c in items if c.get("mapcamId") is None}
+    mapcam_ids={c["id"] for c in items if c.get("mapcamId") is not None}
+    zone_ids={z.get("id") for z in zones}
+    baseline_items=len(baseline_ids)
+    baseline_zones=len(baseline_ids & zone_ids)
+    if baseline_zones < max(1,int(baseline_items*0.20)):
+        raise RuntimeError("Too few road-confirmed baseline camera zones (%d/%d); refusing to publish" % (baseline_zones,baseline_items))
+    mapcam_items=len(mapcam_ids)
+    mapcam_zones=len(mapcam_ids & zone_ids)
     print("MapCam road-confirmed zones:",mapcam_zones,"/",mapcam_items)
     payload={"schemaVersion":1,"region":"RU-ME","source":"OpenStreetMap contributors (ODbL 1.0), regional PBF extract",
              "databaseRevision":db.get("revision"),"radiusM":RADIUS_M,"cameraCount":len(items),
