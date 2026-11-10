@@ -6,7 +6,7 @@ on:
       version:
         description: "Speed Camera Warning version"
         required: true
-        default: "0.7.56"
+        default: "0.7.57"
       refresh_data:
         description: "Force refresh camera and OSM data"
         required: false
@@ -33,7 +33,7 @@ jobs:
     env:
       APP_VERSION: ${{ inputs.version || '0.7.55' }}
       APP_ID: aurelm_speed_camera_warning
-      VOICE_VERSION: 0.1.8
+      VOICE_VERSION: 0.1.9
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
@@ -151,7 +151,7 @@ jobs:
               if timeout 90s edge-tts \
                 --voice "ru-RU-SvetlanaNeural" \
                 --rate="-5%" \
-                --volume="+20%" \
+                --volume="+50%" \
                 --text "$text" \
                 --write-media "$output"; then
                 test -s "$output"
@@ -169,8 +169,8 @@ jobs:
           synthesize "Внимание, впереди камера" /tmp/camera-500.mp3
           synthesize "Повторное предупреждение. Камера через двести метров" /tmp/camera-200.mp3
 
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.mp3 -af "loudnorm=I=-14:TP=-1.0:LRA=7,alimiter=limit=0.98" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.mp3 -af "volume=2.4,alimiter=limit=0.98" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-500.mp3 -af "acompressor=threshold=-24dB:ratio=4:attack=5:release=80:makeup=10dB,loudnorm=I=-8:TP=-0.3:LRA=4,alimiter=limit=0.99" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-500.m4a"
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/camera-200.mp3 -af "acompressor=threshold=-24dB:ratio=4:attack=5:release=80:makeup=10dB,loudnorm=I=-8:TP=-0.3:LRA=4,alimiter=limit=0.99" -c:a aac -b:a 128k -movflags +faststart "${VOICE_DIR}/audio/camera-200.m4a"
           test -s "${VOICE_DIR}/audio/camera-500.m4a"
           test -s "${VOICE_DIR}/audio/camera-200.m4a"
           node --check "${VOICE_DIR}/voice.js"
